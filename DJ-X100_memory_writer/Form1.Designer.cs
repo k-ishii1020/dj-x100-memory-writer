@@ -44,6 +44,7 @@ namespace DJ_X100_memory_writer
             終了NToolStripMenuItem = new ToolStripMenuItem();
             表示VToolStripMenuItem = new ToolStripMenuItem();
             オプションOToolStripMenuItem = new ToolStripMenuItem();
+            cOMポートCToolStripMenuItem = new ToolStripMenuItem();
             ヘルプHToolStripMenuItem = new ToolStripMenuItem();
             splitContainer1 = new SplitContainer();
             treeView1 = new TreeView();
@@ -51,6 +52,8 @@ namespace DJ_X100_memory_writer
             memoryChDataGridView = new DataGridView();
             statusStrip1 = new StatusStrip();
             toolStripProgressBar1 = new ToolStripProgressBar();
+            statusLabel1 = new ToolStripStatusLabel();
+            selectedComportLabel = new ToolStripStatusLabel();
             menuStrip1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)splitContainer1).BeginInit();
             splitContainer1.Panel1.SuspendLayout();
@@ -80,7 +83,7 @@ namespace DJ_X100_memory_writer
             // 
             新規作成NToolStripMenuItem.Name = "新規作成NToolStripMenuItem";
             新規作成NToolStripMenuItem.ShortcutKeys = Keys.Control | Keys.N;
-            新規作成NToolStripMenuItem.Size = new Size(186, 22);
+            新規作成NToolStripMenuItem.Size = new Size(257, 22);
             新規作成NToolStripMenuItem.Text = "新規作成(&N)";
             新規作成NToolStripMenuItem.Click += 新規作成NToolStripMenuItem_Click;
             // 
@@ -88,7 +91,7 @@ namespace DJ_X100_memory_writer
             // 
             開くNToolStripMenuItem.Name = "開くNToolStripMenuItem";
             開くNToolStripMenuItem.ShortcutKeys = Keys.Control | Keys.O;
-            開くNToolStripMenuItem.Size = new Size(186, 22);
+            開くNToolStripMenuItem.Size = new Size(257, 22);
             開くNToolStripMenuItem.Text = "開く(&O)...";
             開くNToolStripMenuItem.Click += 開くNToolStripMenuItem_Click;
             // 
@@ -96,19 +99,21 @@ namespace DJ_X100_memory_writer
             // 
             上書き保存NToolStripMenuItem.Name = "上書き保存NToolStripMenuItem";
             上書き保存NToolStripMenuItem.ShortcutKeys = Keys.Control | Keys.S;
-            上書き保存NToolStripMenuItem.Size = new Size(186, 22);
+            上書き保存NToolStripMenuItem.Size = new Size(257, 22);
             上書き保存NToolStripMenuItem.Text = "上書き保存(&S)";
             // 
             // 名前を付けて保存NToolStrpMenuItem
             // 
             名前を付けて保存NToolStrpMenuItem.Name = "名前を付けて保存NToolStrpMenuItem";
-            名前を付けて保存NToolStrpMenuItem.Size = new Size(186, 22);
+            名前を付けて保存NToolStrpMenuItem.ShortcutKeys = Keys.Control | Keys.Shift | Keys.S;
+            名前を付けて保存NToolStrpMenuItem.Size = new Size(257, 22);
             名前を付けて保存NToolStrpMenuItem.Text = "名前を付けて保存(&A)...";
+            名前を付けて保存NToolStrpMenuItem.Click += 名前を付けて保存NToolStrpMenuItem_Click;
             // 
             // 終了NToolStripMenuItem
             // 
             終了NToolStripMenuItem.Name = "終了NToolStripMenuItem";
-            終了NToolStripMenuItem.Size = new Size(186, 22);
+            終了NToolStripMenuItem.Size = new Size(257, 22);
             終了NToolStripMenuItem.Text = "終了(&X)";
             終了NToolStripMenuItem.Click += 終了NToolStripMenuItem_Click;
             // 
@@ -120,9 +125,16 @@ namespace DJ_X100_memory_writer
             // 
             // オプションOToolStripMenuItem
             // 
+            オプションOToolStripMenuItem.DropDownItems.AddRange(new ToolStripItem[] { cOMポートCToolStripMenuItem });
             オプションOToolStripMenuItem.Name = "オプションOToolStripMenuItem";
             オプションOToolStripMenuItem.Size = new Size(80, 20);
             オプションOToolStripMenuItem.Text = "オプション(&O)";
+            // 
+            // cOMポートCToolStripMenuItem
+            // 
+            cOMポートCToolStripMenuItem.Name = "cOMポートCToolStripMenuItem";
+            cOMポートCToolStripMenuItem.Size = new Size(142, 22);
+            cOMポートCToolStripMenuItem.Text = "COMポート(&C)";
             // 
             // ヘルプHToolStripMenuItem
             // 
@@ -192,7 +204,7 @@ namespace DJ_X100_memory_writer
             // 
             // statusStrip1
             // 
-            statusStrip1.Items.AddRange(new ToolStripItem[] { toolStripProgressBar1 });
+            statusStrip1.Items.AddRange(new ToolStripItem[] { toolStripProgressBar1, statusLabel1, selectedComportLabel });
             statusStrip1.Location = new Point(0, 689);
             statusStrip1.Name = "statusStrip1";
             statusStrip1.Size = new Size(1284, 22);
@@ -203,6 +215,17 @@ namespace DJ_X100_memory_writer
             // 
             toolStripProgressBar1.Name = "toolStripProgressBar1";
             toolStripProgressBar1.Size = new Size(100, 16);
+            // 
+            // statusLabel1
+            // 
+            statusLabel1.Name = "statusLabel1";
+            statusLabel1.Size = new Size(0, 17);
+            // 
+            // selectedComportLabel
+            // 
+            selectedComportLabel.Name = "selectedComportLabel";
+            selectedComportLabel.Size = new Size(148, 17);
+            selectedComportLabel.Text = "選択中のCOMポート: 未選択";
             // 
             // Form1
             // 
@@ -246,5 +269,8 @@ namespace DJ_X100_memory_writer
         private DataGridView memoryChDataGridView;
         private StatusStrip statusStrip1;
         private ToolStripProgressBar toolStripProgressBar1;
+        private ToolStripMenuItem cOMポートCToolStripMenuItem;
+        private ToolStripStatusLabel statusLabel1;
+        private ToolStripStatusLabel selectedComportLabel;
     }
 }

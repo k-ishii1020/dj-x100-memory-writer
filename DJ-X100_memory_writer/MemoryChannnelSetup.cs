@@ -50,7 +50,8 @@ namespace DJ_X100_memory_writer
                     case ColumnType.Dropdown:
                         viewColumn = new DataGridViewComboBoxColumn
                         {
-                            DataSource = columnSetup.Options
+                            DataSource = columnSetup.Options,
+                            FlatStyle = FlatStyle.Flat,
                         };
                         break;
 
