@@ -7,8 +7,12 @@ namespace DJ_X100_memory_writer
         public Form1()
         {
             InitializeComponent();
-            var configurer = new DataGridViewConfigurer(memoryChDataGridView);
+            var configurer = new MemoryChannnelSetup(memoryChDataGridView);
             configurer.SetupDataGridView();
+
+            var handler = new DataGridViewEventHandler(memoryChDataGridView);
+
+
         }
 
 

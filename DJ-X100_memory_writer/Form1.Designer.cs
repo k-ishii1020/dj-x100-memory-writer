@@ -132,7 +132,8 @@ namespace DJ_X100_memory_writer
             // 
             // splitContainer1
             // 
-            splitContainer1.Location = new Point(12, 27);
+            splitContainer1.Dock = DockStyle.Fill;
+            splitContainer1.Location = new Point(0, 24);
             splitContainer1.Name = "splitContainer1";
             // 
             // splitContainer1.Panel1
@@ -143,16 +144,17 @@ namespace DJ_X100_memory_writer
             // splitContainer1.Panel2
             // 
             splitContainer1.Panel2.Controls.Add(memoryChDataGridView);
-            splitContainer1.Size = new Size(1272, 608);
-            splitContainer1.SplitterDistance = 166;
+            splitContainer1.Size = new Size(1284, 637);
+            splitContainer1.SplitterDistance = 167;
             splitContainer1.TabIndex = 2;
             // 
             // treeView1
             // 
+            treeView1.Dock = DockStyle.Fill;
             treeView1.Font = new Font("Yu Gothic UI", 9F, FontStyle.Regular, GraphicsUnit.Point);
             treeView1.ImageIndex = 0;
             treeView1.ImageList = imageList1;
-            treeView1.Location = new Point(3, 3);
+            treeView1.Location = new Point(0, 0);
             treeView1.Name = "treeView1";
             treeNode1.ImageKey = "kkrn_icon_folder_1.png";
             treeNode1.Name = "メモリーチャンネル";
@@ -165,7 +167,7 @@ namespace DJ_X100_memory_writer
             treeNode3.Text = "DJ-X100";
             treeView1.Nodes.AddRange(new TreeNode[] { treeNode3 });
             treeView1.SelectedImageIndex = 0;
-            treeView1.Size = new Size(209, 602);
+            treeView1.Size = new Size(167, 637);
             treeView1.TabIndex = 0;
             // 
             // imageList1
@@ -183,7 +185,7 @@ namespace DJ_X100_memory_writer
             memoryChDataGridView.Location = new Point(0, 0);
             memoryChDataGridView.Name = "memoryChDataGridView";
             memoryChDataGridView.RowTemplate.Height = 25;
-            memoryChDataGridView.Size = new Size(1102, 608);
+            memoryChDataGridView.Size = new Size(1113, 637);
             memoryChDataGridView.TabIndex = 0;
             // 
             // statusStrip1
