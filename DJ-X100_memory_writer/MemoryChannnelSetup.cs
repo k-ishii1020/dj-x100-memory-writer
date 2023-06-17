@@ -1,4 +1,6 @@
-﻿namespace DJ_X100_memory_writer
+﻿using static DJ_X100_memory_writer.MemoryChannnelConfig;
+
+namespace DJ_X100_memory_writer
 {
     internal class MemoryChannnelSetup
     {
@@ -26,6 +28,7 @@
             memoryChDataGridView.CellClick += handler.MemoryChDataGridView_CellClick;
 
             memoryChDataGridView.CellValueChanged += handler.MemoryChDataGridView_CellValueChanged;
+            memoryChDataGridView.EditMode = DataGridViewEditMode.EditOnEnter;
 
 
 
@@ -34,26 +37,57 @@
             memoryChDataGridView.RowTemplate.Height = 20;
             memoryChDataGridView.AllowUserToResizeRows = false;
             memoryChDataGridView.AlternatingRowsDefaultCellStyle.BackColor = Color.AliceBlue;
+            memoryChDataGridView.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.None;
             memoryChDataGridView.Dock = DockStyle.Fill;
 
 
             foreach (var columnSetup in config.GetColumnsAsset())
             {
-                var viewColumn = new DataGridViewTextBoxColumn
+                DataGridViewColumn viewColumn;
+
+                switch (columnSetup.Type)
                 {
-                    Name = columnSetup.Name,
-                    HeaderText = columnSetup.HeaderText,
-                    ReadOnly = columnSetup.ReadOnly,
-                    Width = columnSetup.Width
-                };
+                    case ColumnType.Dropdown:
+                        viewColumn = new DataGridViewComboBoxColumn
+                        {
+                            DataSource = columnSetup.Options
+                        };
+                        break;
+
+                    case ColumnType.Checkbox:
+                        viewColumn = new DataGridViewCheckBoxColumn
+                        {
+                            ThreeState = false
+                        };
+                        break;
+
+                    case ColumnType.Text:
+                    default:
+                        viewColumn = new DataGridViewTextBoxColumn();
+                        break;
+                }
+
+                viewColumn.Name = columnSetup.Id;
+                viewColumn.HeaderText = columnSetup.HeaderText;
+                viewColumn.ReadOnly = columnSetup.ReadOnly;
+                viewColumn.Width = columnSetup.Width;
 
                 memoryChDataGridView.Columns.Add(viewColumn);
             }
+
+
+
 
             for (int i = 1; i <= 999; i++)
             {
                 int index = memoryChDataGridView.Rows.Add();
                 memoryChDataGridView.Rows[index].Cells["memoryNo"].Value = i.ToString("D3");
+
+            }
+
+            foreach (DataGridViewColumn column in memoryChDataGridView.Columns)
+            {
+                column.SortMode = DataGridViewColumnSortMode.NotSortable;
             }
         }
     }

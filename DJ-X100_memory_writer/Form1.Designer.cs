@@ -132,7 +132,7 @@ namespace DJ_X100_memory_writer
             // 
             // splitContainer1
             // 
-            splitContainer1.Dock = DockStyle.Fill;
+            splitContainer1.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
             splitContainer1.Location = new Point(0, 24);
             splitContainer1.Name = "splitContainer1";
             // 
@@ -144,8 +144,8 @@ namespace DJ_X100_memory_writer
             // splitContainer1.Panel2
             // 
             splitContainer1.Panel2.Controls.Add(memoryChDataGridView);
-            splitContainer1.Size = new Size(1284, 637);
-            splitContainer1.SplitterDistance = 167;
+            splitContainer1.Size = new Size(1284, 662);
+            splitContainer1.SplitterDistance = 196;
             splitContainer1.TabIndex = 2;
             // 
             // treeView1
@@ -167,7 +167,7 @@ namespace DJ_X100_memory_writer
             treeNode3.Text = "DJ-X100";
             treeView1.Nodes.AddRange(new TreeNode[] { treeNode3 });
             treeView1.SelectedImageIndex = 0;
-            treeView1.Size = new Size(167, 637);
+            treeView1.Size = new Size(196, 662);
             treeView1.TabIndex = 0;
             // 
             // imageList1
@@ -180,18 +180,20 @@ namespace DJ_X100_memory_writer
             // 
             // memoryChDataGridView
             // 
+            memoryChDataGridView.AllowUserToAddRows = false;
+            memoryChDataGridView.AllowUserToDeleteRows = false;
             memoryChDataGridView.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             memoryChDataGridView.Dock = DockStyle.Fill;
             memoryChDataGridView.Location = new Point(0, 0);
             memoryChDataGridView.Name = "memoryChDataGridView";
             memoryChDataGridView.RowTemplate.Height = 25;
-            memoryChDataGridView.Size = new Size(1113, 637);
+            memoryChDataGridView.Size = new Size(1084, 662);
             memoryChDataGridView.TabIndex = 0;
             // 
             // statusStrip1
             // 
             statusStrip1.Items.AddRange(new ToolStripItem[] { toolStripProgressBar1 });
-            statusStrip1.Location = new Point(0, 639);
+            statusStrip1.Location = new Point(0, 689);
             statusStrip1.Name = "statusStrip1";
             statusStrip1.Size = new Size(1284, 22);
             statusStrip1.TabIndex = 3;
@@ -206,7 +208,7 @@ namespace DJ_X100_memory_writer
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
-            ClientSize = new Size(1284, 661);
+            ClientSize = new Size(1284, 711);
             Controls.Add(statusStrip1);
             Controls.Add(splitContainer1);
             Controls.Add(menuStrip1);
@@ -239,10 +241,10 @@ namespace DJ_X100_memory_writer
         private ToolStripMenuItem オプションOToolStripMenuItem;
         private ToolStripMenuItem ヘルプHToolStripMenuItem;
         private SplitContainer splitContainer1;
-        private StatusStrip statusStrip1;
-        private ToolStripProgressBar toolStripProgressBar1;
         private TreeView treeView1;
         private ImageList imageList1;
         private DataGridView memoryChDataGridView;
+        private StatusStrip statusStrip1;
+        private ToolStripProgressBar toolStripProgressBar1;
     }
 }

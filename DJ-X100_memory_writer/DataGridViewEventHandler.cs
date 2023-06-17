@@ -1,4 +1,5 @@
 ﻿using System.Text;
+using static DJ_X100_memory_writer.MemoryChannnelConfig;
 
 namespace DJ_X100_memory_writer
 {
@@ -15,32 +16,33 @@ namespace DJ_X100_memory_writer
         DataGridViewUtils dataGridViewUtils = new DataGridViewUtils();
 
 
-
         public void MemoryChDataGridView_EditingControlShowing(object sender, DataGridViewEditingControlShowingEventArgs e)
         {
+            var comboBox = e.Control as DataGridViewComboBoxEditingControl;
             var tb = e.Control as TextBox;
-            if (tb == null)
+
+            if (comboBox != null)
             {
-                return;
-            }
+                comboBox.DropDownStyle = ComboBoxStyle.DropDown;
+                // 既存のイベントハンドラをクリアします（2回以上追加されないように）
+                comboBox.SelectedIndexChanged -= new EventHandler(ComboBox_SelectedIndexChanged);
 
-            var columnName = memoryChDataGridView.Columns[memoryChDataGridView.CurrentCell.ColumnIndex].Name;
-
-            switch (columnName)
-            {
-                case "mode":
-                    tb.AutoCompleteMode = AutoCompleteMode.SuggestAppend;
-                    tb.AutoCompleteSource = AutoCompleteSource.CustomSource;
-                    tb.AutoCompleteCustomSource = new AutoCompleteStringCollection();
-                    tb.AutoCompleteCustomSource.AddRange(config.GetModeOptions());
-                    break;
-
-                default:
-                    tb.AutoCompleteMode = AutoCompleteMode.None;
-                    break;
+                // 新しいイベントハンドラを追加します。
+                comboBox.SelectedIndexChanged += new EventHandler(ComboBox_SelectedIndexChanged);
             }
         }
 
+        private void ComboBox_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            var comboBox = sender as DataGridViewComboBoxEditingControl;
+            if (comboBox != null)
+            {
+                memoryChDataGridView.CurrentCell.Value = comboBox.Text;
+            }
+        }
+
+
+        // セル入力開始時に全文選択
         public void MemoryChDataGridView_CellEnter(object sender, DataGridViewCellEventArgs e)
         {
             var tb = memoryChDataGridView.EditingControl as TextBox;
@@ -60,15 +62,19 @@ namespace DJ_X100_memory_writer
             {
                 foreach (DataGridViewCell cell in memoryChDataGridView.SelectedCells)
                 {
-                    cell.Value = null;
+                    if (cell.OwningColumn.Name != "memoryNo") // If the cell is not in the "No." column
+                    {
+                        cell.Value = null;
+                    }
                 }
                 e.Handled = true;
             }
         }
 
+
         public void MemoryChDataGridView_CellValidating(object sender, DataGridViewCellValidatingEventArgs e)
         {
-            if (memoryChDataGridView.Columns[e.ColumnIndex].Name == "memoryName")
+            if (memoryChDataGridView.Columns[e.ColumnIndex].Name == Columns.MEMORY_NAME.Id)
             {
                 string input = e.FormattedValue.ToString();
                 int inputLength = dataGridViewUtils.GetDisplayLength(input);
@@ -113,7 +119,7 @@ namespace DJ_X100_memory_writer
 
         public void MemoryChDataGridView_CellValidated(object sender, DataGridViewCellEventArgs e)
         {
-            if (memoryChDataGridView.Columns[e.ColumnIndex].Name == "memoryName" && memoryChDataGridView.Rows[e.RowIndex].Cells[e.ColumnIndex].Tag != null)
+            if (memoryChDataGridView.Columns[e.ColumnIndex].Name == Columns.MEMORY_NAME.Id && memoryChDataGridView.Rows[e.RowIndex].Cells[e.ColumnIndex].Tag != null)
             {
                 memoryChDataGridView.Rows[e.RowIndex].Cells[e.ColumnIndex].Value = memoryChDataGridView.Rows[e.RowIndex].Cells[e.ColumnIndex].Tag;
                 memoryChDataGridView.Rows[e.RowIndex].Cells[e.ColumnIndex].Tag = null;
@@ -123,9 +129,12 @@ namespace DJ_X100_memory_writer
 
         public void MemoryChDataGridView_CellClick(object sender, DataGridViewCellEventArgs e)
         {
-            if (!(this.memoryChDataGridView.Columns[e.ColumnIndex] is DataGridViewButtonColumn))
+            if (e.ColumnIndex >= 0 && e.RowIndex >= 0)
             {
-                this.memoryChDataGridView.BeginEdit(true);
+                if (!(this.memoryChDataGridView.Columns[e.ColumnIndex] is DataGridViewButtonColumn))
+                {
+                    this.memoryChDataGridView.BeginEdit(true);
+                }
             }
         }
 
@@ -144,43 +153,115 @@ namespace DJ_X100_memory_writer
         {
             var dataGridView = (DataGridView)sender;
 
-            if (dataGridView.Columns[e.ColumnIndex].Name == "mode")
+            if (dataGridView.Columns[e.ColumnIndex].Name == Columns.MODE.Id)
             {
-                var mode = dataGridView.Rows[e.RowIndex].Cells[e.ColumnIndex].Value.ToString();
-                UpdateCellStatusBasedOnMode(dataGridView, e.RowIndex, mode);
+                var cellValue = dataGridView.Rows[e.RowIndex].Cells[e.ColumnIndex].Value;
+                if (cellValue != null)
+                {
+                    var mode = cellValue.ToString();
+                    UpdateCellStatusBasedOnMode(dataGridView, e.RowIndex, mode);
+                }
             }
+
         }
 
         private void UpdateCellStatusBasedOnMode(DataGridView dataGridView, int rowIndex, string mode)
         {
-            string[] cellNames = { "uc", "gc", "ec", "wc", "t61_lon", "t61_lat" };
-            bool isReadOnly;
-            string value;
-
             switch (mode)
             {
                 case "FM":
-                    isReadOnly = true;
-                    value = "-";
+                case "NFM":
+                    var disableCells = new string[]
+                    {
+                        Columns.UC.Id,
+                        Columns.GC.Id,
+                        Columns.EC.Id,
+                        Columns.WC.Id,
+                        Columns.T61_LON.Id,
+                        Columns.T61_LAT.Id
+                    };
+                    ResetCells(dataGridView, rowIndex);
+                    UpdateDisableCells(dataGridView, rowIndex, disableCells, true, "*", Color.LightGray);
                     break;
+                case "AM":
+                case "NAM":
+
+
+                case "T98":
+                case "T102_B54":
+                case "DMR":
+                case "T61_typ1":
+                case "T61_typ2":
+                case "T61_typ3":
+                case "T61_typ4":
+                case "T61_typx":
+                case "ICDU":
+                case "dPMR":
+                case "DSTAR":
+                case "C4FM":
+                case "AIS":
+                case "ACARS":
+                case "POCSAG":
+                case "12KIF_W":
+                case "12KIF_N":
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
                 default:
-                    isReadOnly = false;
-                    value = null;
+                    // デフォルトの設定が必要であれば、ここに記述します。
+                    // 今回の場合、特に何もしないのであれば、この部分は不要かもしれません。
                     break;
             }
+        }
+
+        private void UpdateDisableCells(DataGridView dataGridView, int rowIndex, string[] cellNames, bool isReadOnly, string value, Color cellColor)
+        {
 
             foreach (var cellName in cellNames)
             {
-                dataGridView.Rows[rowIndex].Cells[cellName].ReadOnly = isReadOnly;
-
-                if (value != null)
+                if (dataGridView.Rows[rowIndex].Cells[cellName] != null)
                 {
-                    dataGridView.Rows[rowIndex].Cells[cellName].Value = value;
+                    dataGridView.Rows[rowIndex].Cells[cellName].ReadOnly = isReadOnly;
+
+                    if (value != null)
+                    {
+                        dataGridView.Rows[rowIndex].Cells[cellName].Value = value;
+                    }
+
+                    // セルの色を設定
+                    dataGridView.Rows[rowIndex].Cells[cellName].Style.BackColor = cellColor;
                 }
             }
         }
 
+        private void ResetCells(DataGridView dataGridView, int rowIndex)
+        {
+            foreach (DataGridViewCell cell in dataGridView.Rows[rowIndex].Cells)
+            {
+                cell.ReadOnly = false;
+                cell.Style.BackColor = dataGridView.DefaultCellStyle.BackColor; // デフォルトの背景色に戻す
+                cell.Value = null; // 必要に応じて値をクリアする
+            }
+        }
 
 
     }
