@@ -17,30 +17,38 @@ namespace DJ_X100_memory_writer
 
 
 
+        // フィールドまたはプロパティとしてComboBoxを保持します
+        private ComboBox currentComboBox = null;
+
         public void MemoryChDataGridView_EditingControlShowing(object sender, DataGridViewEditingControlShowingEventArgs e)
         {
-            var comboBox = e.Control as DataGridViewComboBoxEditingControl;
-            var tb = e.Control as TextBox;
+            var comboBox = e.Control as ComboBox;
 
             if (comboBox != null)
             {
                 comboBox.DropDownStyle = ComboBoxStyle.DropDown;
-                // 既存のイベントハンドラをクリアします（2回以上追加されないように）
-                comboBox.SelectedIndexChanged -= new EventHandler(ComboBox_SelectedIndexChanged);
-
-                // 新しいイベントハンドラを追加します。
-                comboBox.SelectedIndexChanged += new EventHandler(ComboBox_SelectedIndexChanged);
+                // comboBox.SelectedIndexChanged イベントを削除
+                currentComboBox = comboBox;  // 現在のComboBoxを保持します
             }
-        }
-
-        private void ComboBox_SelectedIndexChanged(object sender, EventArgs e)
-        {
-            var comboBox = sender as DataGridViewComboBoxEditingControl;
-            if (comboBox != null)
+            else
             {
-                memoryChDataGridView.CurrentCell.Value = comboBox.Text;
+                currentComboBox = null;  // ComboBox以外のコントロールが表示されている場合、現在のComboBoxをnullにします
             }
         }
+
+        public void MemoryChDataGridView_CellEndEdit(object sender, DataGridViewCellEventArgs e)
+        {
+            var comboBoxCell = memoryChDataGridView[e.ColumnIndex, e.RowIndex] as DataGridViewComboBoxCell;
+
+            if (comboBoxCell != null && currentComboBox != null)
+            {
+                // currentComboBox.Textを使用してセルの値を更新します
+                comboBoxCell.Value = currentComboBox.Text;
+            }
+        }
+
+
+
 
 
         // セル入力開始時に全文選択
@@ -139,19 +147,13 @@ namespace DJ_X100_memory_writer
             }
         }
 
-        public void MemoryChDataGridView_CellEndEdit(object sender, DataGridViewCellEventArgs e)
-        {
-            // エラーが発生した場合にセルの値をクリアします。
-            if (memoryChDataGridView.Rows[e.RowIndex].Cells[e.ColumnIndex].IsInEditMode)
-            {
-                memoryChDataGridView.Rows[e.RowIndex].Cells[e.ColumnIndex].Value = null;
-            }
-        }
+
 
 
 
         public void MemoryChDataGridView_CellValueChanged(object sender, DataGridViewCellEventArgs e)
         {
+            return;
             var dataGridView = (DataGridView)sender;
 
             if (dataGridView.Columns[e.ColumnIndex].Name == Columns.MODE.Id)
@@ -380,16 +382,19 @@ namespace DJ_X100_memory_writer
         {
             foreach (DataGridViewCell cell in dataGridView.Rows[rowIndex].Cells)
             {
-                // If the cell is not from the "memoryNo" column
-                if (cell.OwningColumn.Name != "memoryNo")
+                if (cell.OwningColumn.Name != Columns.MEMORY_NO.Id)
                 {
                     cell.ReadOnly = false;
-                    cell.Style.BackColor = Color.White; // Or the appropriate color to reset to.
+                    if (rowIndex % 2 == 0)
+                    {
+                        cell.Style.BackColor = dataGridView.DefaultCellStyle.BackColor;
+                    }
+                    else
+                    {
+                        cell.Style.BackColor = dataGridView.AlternatingRowsDefaultCellStyle.BackColor;
+                    }
                 }
             }
         }
-
-
-
     }
 }

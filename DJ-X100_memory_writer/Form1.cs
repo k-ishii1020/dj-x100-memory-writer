@@ -62,13 +62,8 @@ namespace DJ_X100_memory_writer
             if (result == DialogResult.OK)
             {
 
-                string fileName = openFileDialog.FileName;
+                ImportCsvToDataGridView(openFileDialog.FileName);
             }
-            else if (result == DialogResult.Cancel)
-            {
-                return;
-            }
-
         }
 
         private void 終了NToolStripMenuItem_Click(object sender, EventArgs e)
@@ -89,9 +84,9 @@ namespace DJ_X100_memory_writer
             saveFileDialog.Filter = "CSVファイル(*.csv)|*csv|すべてのファイル(*.*)|*.*";
             saveFileDialog.FilterIndex = 0;
             saveFileDialog.OverwritePrompt = true;
+            saveFileDialog.InitialDirectory = Environment.GetFolderPath(Environment.SpecialFolder.Desktop);
+            saveFileDialog.AddExtension = true;
             DialogResult result = saveFileDialog.ShowDialog();
-
-            saveFileDialog.ShowDialog();
 
             if (result == DialogResult.OK)
             {
@@ -101,38 +96,94 @@ namespace DJ_X100_memory_writer
             }
 
         }
-
         private void ExportDataGridViewToCsv(string filename)
         {
-            // 出力ストリームを開き、UTF-8エンコーディングで書き込む
-            using (StreamWriter writer = new StreamWriter(filename, false, Encoding.UTF8))
+            try
             {
-                IEnumerable<string> headerValues = memoryChDataGridView.Columns
-                    .OfType<DataGridViewColumn>()
-                    .OrderBy(column => column.DisplayIndex)
-                    .Select(column => column.HeaderText);
-
-                string headerLine = string.Join(",", headerValues);
-                writer.WriteLine(headerLine);
-
-                foreach (DataGridViewRow row in memoryChDataGridView.Rows)
+                // 出力ストリームを開き、UTF-8エンコーディングで書き込む
+                using (StreamWriter writer = new StreamWriter(filename, false, Encoding.UTF8))
                 {
-                    IEnumerable<string> cellValues = row.Cells
-                        .OfType<DataGridViewCell>()
-                        .OrderBy(cell => cell.OwningColumn.DisplayIndex)
-                        .Select(cell => cell.Value == null ? "" : cell.Value.ToString());
+                    IEnumerable<string> headerValues = memoryChDataGridView.Columns
+                        .OfType<DataGridViewColumn>()
+                        .OrderBy(column => column.DisplayIndex)
+                        .Select(column => column.HeaderText);
 
-                    string line = string.Join(",", cellValues);
-                    writer.WriteLine(line);
+                    string headerLine = string.Join(",", headerValues);
+                    writer.WriteLine(headerLine);
+
+                    foreach (DataGridViewRow row in memoryChDataGridView.Rows)
+                    {
+                        IEnumerable<string> cellValues = row.Cells
+                            .OfType<DataGridViewCell>()
+                            .OrderBy(cell => cell.OwningColumn.DisplayIndex)
+                            .Select(cell =>
+                            {
+                                if (cell.Value == null)
+                                {
+                                    return "";
+                                }
+                                else if (cell.Value is bool)
+                                {
+                                    return ((bool)cell.Value) ? "1" : "0";
+                                }
+                                else
+                                {
+                                    return cell.Value.ToString();
+                                }
+                            });
+
+                        string line = string.Join(",", cellValues);
+                        writer.WriteLine(line);
+                    }
                 }
+            }
+            catch (IOException ex)
+            {
+                MessageBox.Show("他のプロセスによってファイルが開かれています" + ex.Message);
             }
         }
 
 
-        private string QuoteValue(string value)
+
+
+        private void ImportCsvToDataGridView(string filename)
         {
-            return string.Concat("\"", value.Replace("\"", "\"\""), "\"");
+            // Clear the DataGridView rows
+            memoryChDataGridView.Rows.Clear();
+
+            // Read the contents of the CSV file into a list of lines
+            List<string> lines = File.ReadAllLines(filename).Skip(1).ToList(); // Skip the first line
+
+            // Add the rest of the lines to the DataGridView rows
+            for (int i = 0; i < lines.Count; i++)
+            {
+                string[] cells = lines[i].Split(',');
+
+                // Create a new DataGridView row
+                DataGridViewRow row = new DataGridViewRow();
+                row.Height = memoryChDataGridView.RowTemplate.Height;
+                row.CreateCells(memoryChDataGridView);
+
+                for (int j = 0; j < cells.Length; j++)
+                {
+                    // Process the data for the checkbox columns
+                    if (memoryChDataGridView.Columns[j] is DataGridViewCheckBoxColumn)
+                    {
+                        row.Cells[j].Value = cells[j] == "1" ? true : false;
+                    }
+                    else
+                    {
+                        row.Cells[j].Value = cells[j];
+                    }
+                }
+
+                // Add the row to the DataGridView
+                memoryChDataGridView.Rows.Add(row);
+            }
         }
+
+
+
 
     }
 }
