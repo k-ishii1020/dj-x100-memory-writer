@@ -16,6 +16,7 @@ namespace DJ_X100_memory_writer
         DataGridViewUtils dataGridViewUtils = new DataGridViewUtils();
 
 
+
         public void MemoryChDataGridView_EditingControlShowing(object sender, DataGridViewEditingControlShowingEventArgs e)
         {
             var comboBox = e.Control as DataGridViewComboBoxEditingControl;
@@ -167,73 +168,201 @@ namespace DJ_X100_memory_writer
 
         private void UpdateCellStatusBasedOnMode(DataGridView dataGridView, int rowIndex, string mode)
         {
+            ResetCells(dataGridView, rowIndex);
+            string[] disableCells = new string[0];
+
             switch (mode)
             {
                 case "FM":
                 case "NFM":
-                    var disableCells = new string[]
+                    disableCells = new string[]
                     {
                         Columns.UC.Id,
                         Columns.GC.Id,
                         Columns.EC.Id,
                         Columns.WC.Id,
                         Columns.T61_LON.Id,
-                        Columns.T61_LAT.Id
+                        Columns.T61_LAT.Id,
+                        Columns.DMR_DLOT.Id,
+                        Columns.DMR_CC.Id,
+                        Columns.DMR_GC.Id
                     };
-                    ResetCells(dataGridView, rowIndex);
-                    UpdateDisableCells(dataGridView, rowIndex, disableCells, true, "*", Color.LightGray);
                     break;
                 case "AM":
                 case "NAM":
-
-
+                    disableCells = new string[]
+                    {
+                        Columns.SQL_MODE.Id,
+                        Columns.CTCSS.Id,
+                        Columns.DCS.Id,
+                        Columns.UC.Id,
+                        Columns.GC.Id,
+                        Columns.EC.Id,
+                        Columns.WC.Id,
+                        Columns.T61_LON.Id,
+                        Columns.T61_LAT.Id,
+                        Columns.DMR_DLOT.Id,
+                        Columns.DMR_CC.Id,
+                        Columns.DMR_GC.Id
+                    };
+                    break;
                 case "T98":
                 case "T102_B54":
+                    disableCells = new string[]
+                    {
+                        Columns.SQL_MODE.Id,
+                        Columns.CTCSS.Id,
+                        Columns.DCS.Id,
+                        Columns.REV_EC.Id,
+                        Columns.REV_EC_FREQ.Id,
+                        Columns.T61_LON.Id,
+                        Columns.T61_LAT.Id,
+                        Columns.DMR_DLOT.Id,
+                        Columns.DMR_CC.Id,
+                        Columns.DMR_GC.Id
+                    };
+                    break;
                 case "DMR":
+                    disableCells = new string[]
+                    {
+                        Columns.SQL_MODE.Id,
+                        Columns.CTCSS.Id,
+                        Columns.DCS.Id,
+                        Columns.REV_EC.Id,
+                        Columns.REV_EC_FREQ.Id,
+                        Columns.UC.Id,
+                        Columns.GC.Id,
+                        Columns.EC.Id,
+                        Columns.WC.Id,
+                        Columns.T61_LON.Id,
+                        Columns.T61_LAT.Id,
+                    };
+                    break;
                 case "T61_typ1":
                 case "T61_typ2":
+                    disableCells = new string[]
+                    {
+                        Columns.SQL_MODE.Id,
+                        Columns.CTCSS.Id,
+                        Columns.DCS.Id,
+                        Columns.REV_EC.Id,
+                        Columns.REV_EC_FREQ.Id,
+                        Columns.UC.Id,
+                        Columns.GC.Id,
+                        Columns.EC.Id,
+                        Columns.DMR_DLOT.Id,
+                        Columns.DMR_CC.Id,
+                        Columns.DMR_GC.Id
+                    };
+                    break;
                 case "T61_typ3":
                 case "T61_typ4":
                 case "T61_typx":
                 case "ICDU":
+                    disableCells = new string[]
+                    {
+                        Columns.SQL_MODE.Id,
+                        Columns.CTCSS.Id,
+                        Columns.DCS.Id,
+                        Columns.REV_EC.Id,
+                        Columns.REV_EC_FREQ.Id,
+                        Columns.UC.Id,
+                        Columns.GC.Id,
+                        Columns.EC.Id,
+                        Columns.T61_LON.Id,
+                        Columns.T61_LAT.Id,
+                        Columns.DMR_DLOT.Id,
+                        Columns.DMR_CC.Id,
+                        Columns.DMR_GC.Id
+                    };
+                    break;
                 case "dPMR":
+                    disableCells = new string[]
+                    {
+                        Columns.SQL_MODE.Id,
+                        Columns.CTCSS.Id,
+                        Columns.DCS.Id,
+                        Columns.REV_EC.Id,
+                        Columns.REV_EC_FREQ.Id,
+                        Columns.UC.Id,
+                        Columns.GC.Id,
+                        Columns.EC.Id,
+                        Columns.T61_LON.Id,
+                        Columns.T61_LAT.Id,
+                        Columns.DMR_DLOT.Id,
+                        Columns.DMR_CC.Id,
+                        Columns.DMR_GC.Id
+                    };
+                    break;
                 case "DSTAR":
+                    disableCells = new string[]
+                    {
+                        Columns.SQL_MODE.Id,
+                        Columns.CTCSS.Id,
+                        Columns.DCS.Id,
+                        Columns.REV_EC.Id,
+                        Columns.REV_EC_FREQ.Id,
+                        Columns.UC.Id,
+                        Columns.GC.Id,
+                        Columns.EC.Id,
+                        Columns.WC.Id,
+                        Columns.T61_LON.Id,
+                        Columns.T61_LAT.Id,
+                        Columns.DMR_DLOT.Id,
+                        Columns.DMR_CC.Id,
+                        Columns.DMR_GC.Id
+                    };
+                    break;
                 case "C4FM":
+                    disableCells = new string[]
+                    {
+                        Columns.SQL_MODE.Id,
+                        Columns.CTCSS.Id,
+                        Columns.DCS.Id,
+                        Columns.REV_EC.Id,
+                        Columns.REV_EC_FREQ.Id,
+                        Columns.UC.Id,
+                        Columns.GC.Id,
+                        Columns.EC.Id,
+                        Columns.WC.Id,
+                        Columns.T61_LON.Id,
+                        Columns.T61_LAT.Id,
+                        Columns.DMR_DLOT.Id,
+                        Columns.DMR_CC.Id,
+                        Columns.DMR_GC.Id
+                    };
+                    break;
                 case "AIS":
                 case "ACARS":
                 case "POCSAG":
                 case "12KIF_W":
                 case "12KIF_N":
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-                default:
-                    // デフォルトの設定が必要であれば、ここに記述します。
-                    // 今回の場合、特に何もしないのであれば、この部分は不要かもしれません。
+                    disableCells = new string[]
+                    {
+                        Columns.SQL_MODE.Id,
+                        Columns.CTCSS.Id,
+                        Columns.DCS.Id,
+                        Columns.REV_EC.Id,
+                        Columns.REV_EC_FREQ.Id,
+                        Columns.UC.Id,
+                        Columns.GC.Id,
+                        Columns.EC.Id,
+                        Columns.WC.Id,
+                        Columns.T61_LON.Id,
+                        Columns.T61_LAT.Id,
+                        Columns.DMR_DLOT.Id,
+                        Columns.DMR_CC.Id,
+                        Columns.DMR_GC.Id
+                    };
                     break;
+            }
+            if (disableCells != null)
+            {
+                UpdateDisableCells(dataGridView, rowIndex, disableCells, true, Color.LightGray);
             }
         }
 
-        private void UpdateDisableCells(DataGridView dataGridView, int rowIndex, string[] cellNames, bool isReadOnly, string value, Color cellColor)
+        private void UpdateDisableCells(DataGridView dataGridView, int rowIndex, string[] cellNames, bool isReadOnly, Color cellColor)
         {
 
             foreach (var cellName in cellNames)
@@ -242,26 +371,24 @@ namespace DJ_X100_memory_writer
                 {
                     dataGridView.Rows[rowIndex].Cells[cellName].ReadOnly = isReadOnly;
 
-                    if (value != null)
-                    {
-                        dataGridView.Rows[rowIndex].Cells[cellName].Value = value;
-                    }
-
                     // セルの色を設定
                     dataGridView.Rows[rowIndex].Cells[cellName].Style.BackColor = cellColor;
                 }
             }
         }
-
         private void ResetCells(DataGridView dataGridView, int rowIndex)
         {
             foreach (DataGridViewCell cell in dataGridView.Rows[rowIndex].Cells)
             {
-                cell.ReadOnly = false;
-                cell.Style.BackColor = dataGridView.DefaultCellStyle.BackColor; // デフォルトの背景色に戻す
-                cell.Value = null; // 必要に応じて値をクリアする
+                // If the cell is not from the "memoryNo" column
+                if (cell.OwningColumn.Name != "memoryNo")
+                {
+                    cell.ReadOnly = false;
+                    cell.Style.BackColor = Color.White; // Or the appropriate color to reset to.
+                }
             }
         }
+
 
 
     }

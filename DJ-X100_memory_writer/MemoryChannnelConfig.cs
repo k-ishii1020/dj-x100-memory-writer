@@ -51,6 +51,19 @@ namespace DJ_X100_memory_writer
             "OFF", "10db", "20db"
         };
 
+        private static string[] stepOptions = new string[]
+        {
+            "1", "5", "6.25", "8.33", "10", "12.5", "15", "20", "25", "30", "50", "100", "125", "200"
+        };
+
+        private static string[] revFrequencyOptions = new string[]
+        {
+            "2500", "2600", "2700", "2800", "2900",
+            "3000", "3100", "3200", "3300", "3400", "3500"
+        };
+
+
+
 
 
 
@@ -66,21 +79,21 @@ namespace DJ_X100_memory_writer
             public static readonly ColumnInfo MEMORY_NO = new ColumnInfo("memoryNo", "No.");
 
             public static readonly ColumnInfo FREQ = new ColumnInfo("freq", "FREQ");
-            public static readonly ColumnInfo MEMORY_NAME = new ColumnInfo("memoryName", "Name");
+            public static readonly ColumnInfo MEMORY_NAME = new ColumnInfo("memoryName", "NAME");
             public static readonly ColumnInfo MODE = new ColumnInfo("mode", "MODE");
 
             public static readonly ColumnInfo BANK = new ColumnInfo("bank", "BANK");
             public static readonly ColumnInfo SKIP = new ColumnInfo("skip", "SKIP");
             public static readonly ColumnInfo STEP = new ColumnInfo("step", "STEP");
             public static readonly ColumnInfo OFFSET = new ColumnInfo("offset", "OFFSET");
-            public static readonly ColumnInfo OFFSET_FREQ = new ColumnInfo("offsetFreq", "シフト\nFREQ");
+            public static readonly ColumnInfo OFFSET_FREQ = new ColumnInfo("offsetFreq", "FREQ");
             public static readonly ColumnInfo ATT = new ColumnInfo("att", "ATT");
 
-            public static readonly ColumnInfo SQL_MODE = new ColumnInfo("sqlMode", "スケルチ\nモード");
+            public static readonly ColumnInfo SQL_MODE = new ColumnInfo("sqlType", "SQ_TYPE");
             public static readonly ColumnInfo CTCSS = new ColumnInfo("ctcss", "CTCSS");
             public static readonly ColumnInfo DCS = new ColumnInfo("dcs", "DCS");
-            public static readonly ColumnInfo REV_EC = new ColumnInfo("revEc", "反転秘話");
-            public static readonly ColumnInfo REV_EC_FREQ = new ColumnInfo("revEcFreq", "反転秘話\nFREQ");
+            public static readonly ColumnInfo REV_EC = new ColumnInfo("revEc", "REV_EC");
+            public static readonly ColumnInfo REV_EC_FREQ = new ColumnInfo("revEcFreq", "FREQ");
 
             public static readonly ColumnInfo UC = new ColumnInfo("uc", "UC");
             public static readonly ColumnInfo GC = new ColumnInfo("gc", "GC");
@@ -112,7 +125,7 @@ namespace DJ_X100_memory_writer
             {
                 Id = Columns.FREQ.Id,
                 HeaderText = Columns.FREQ.Name,
-                Width = 60,
+                Width = 65,
                 Type = ColumnType.Text
             },
             new ColumnSetup
@@ -126,6 +139,7 @@ namespace DJ_X100_memory_writer
             {
                 Id = Columns.MODE.Id,
                 HeaderText = Columns.MODE.Name,
+                Width = 80,
                 Type = ColumnType.Dropdown,
                 Options = modeOptions
             },
@@ -133,8 +147,8 @@ namespace DJ_X100_memory_writer
             {
                 Id = Columns.BANK.Id,
                 HeaderText = Columns.BANK.Name,
-                Type = ColumnType.Dropdown,
-                Options = bankOptions
+                Width = 45,
+                Type = ColumnType.Text,
             },
             new ColumnSetup
             {
@@ -147,7 +161,9 @@ namespace DJ_X100_memory_writer
             {
                 Id = Columns.STEP.Id,
                 HeaderText = Columns.STEP.Name,
-                Type = ColumnType.Dropdown
+                Width = 70,
+                Type = ColumnType.Dropdown,
+                Options = stepOptions
             },
             new ColumnSetup
             {
@@ -160,12 +176,14 @@ namespace DJ_X100_memory_writer
             {
                 Id = Columns.OFFSET_FREQ.Id,
                 HeaderText = Columns.OFFSET_FREQ.Name,
+                Width = 50,
                 Type = ColumnType.Text
             },
             new ColumnSetup
             {
                 Id = Columns.ATT.Id,
                 HeaderText = Columns.ATT.Name,
+                Width = 45,
                 Type = ColumnType.Dropdown,
                 Options = attOptions
             },
@@ -173,6 +191,7 @@ namespace DJ_X100_memory_writer
             {
                 Id = Columns.SQL_MODE.Id,
                 HeaderText = Columns.SQL_MODE.Name,
+                Width = 80,
                 Type = ColumnType.Dropdown,
                 Options = squelchOptions
             },
@@ -180,7 +199,7 @@ namespace DJ_X100_memory_writer
             {
                 Id = Columns.CTCSS.Id,
                 HeaderText = Columns.CTCSS.Name,
-                Width = 45,
+                Width = 60,
                 Type = ColumnType.Dropdown,
                 Options = ctcssOptions
             },
@@ -188,7 +207,7 @@ namespace DJ_X100_memory_writer
             {
                 Id = Columns.DCS.Id,
                 HeaderText = Columns.DCS.Name,
-                Width = 45,
+                Width = 60,
                 Type = ColumnType.Dropdown,
                 Options = dcsOptions
             },
@@ -196,7 +215,7 @@ namespace DJ_X100_memory_writer
             {
                 Id = Columns.REV_EC.Id,
                 HeaderText = Columns.REV_EC.Name,
-                Width = 70,
+                Width = 50,
                 Type = ColumnType.Checkbox
             },
             new ColumnSetup
@@ -204,7 +223,8 @@ namespace DJ_X100_memory_writer
                 Id = Columns.REV_EC_FREQ.Id,
                 HeaderText = Columns.REV_EC_FREQ.Name,
                 Width = 70,
-                Type = ColumnType.Dropdown
+                Type = ColumnType.Dropdown,
+                Options = revFrequencyOptions
             },
             new ColumnSetup
             {
