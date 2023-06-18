@@ -1,3 +1,4 @@
+using DJ_X100_memory_writer.Util;
 using System;
 using System.IO.Ports;
 using System.Text;
@@ -7,6 +8,10 @@ namespace DJ_X100_memory_writer
 {
     public partial class Form1 : Form
     {
+        CsvUtils csvUtils = new CsvUtils();
+        WriteMemory writeMemory = new WriteMemory();
+
+
         public Form1()
         {
             InitializeComponent();
@@ -45,7 +50,42 @@ namespace DJ_X100_memory_writer
 
         private void 新規作成NToolStripMenuItem_Click(object sender, EventArgs e)
         {
+            bool isEmpty = true;
+
+            // Check each row in the DataGridView
+            foreach (DataGridViewRow row in memoryChDataGridView.Rows)
+            {
+                // Skip the first column (index 0)
+                for (int i = 1; i < row.Cells.Count; i++)
+                {
+                    if (row.Cells[i].Value != null && !string.IsNullOrWhiteSpace(row.Cells[i].Value.ToString()))
+                    {
+                        // There's data in this cell, so the DataGridView isn't empty
+                        isEmpty = false;
+                        break;
+                    }
+                }
+
+                if (!isEmpty)
+                {
+                    break;
+                }
+            }
+
+            // If the DataGridView isn't empty, ask the user to confirm they want to clear it
+            if (!isEmpty)
+            {
+                var confirmResult = MessageBox.Show("Are you sure you want to clear all data?", "Confirm Clear Data", MessageBoxButtons.YesNo);
+                if (confirmResult == DialogResult.Yes)
+                {
+                    // If the user clicked 'Yes', clear the DataGridView
+                    memoryChDataGridView.Rows.Clear();
+                    var configurer = new MemoryChannnelSetup(memoryChDataGridView);
+                    configurer.SetupDataGridView();
+                }
+            }
         }
+
 
 
         private void 開くNToolStripMenuItem_Click(object sender, EventArgs e)
@@ -62,7 +102,7 @@ namespace DJ_X100_memory_writer
             if (result == DialogResult.OK)
             {
 
-                ImportCsvToDataGridView(openFileDialog.FileName);
+                csvUtils.ImportCsvToDataGridView(memoryChDataGridView, openFileDialog.FileName);
             }
         }
 
@@ -90,100 +130,31 @@ namespace DJ_X100_memory_writer
 
             if (result == DialogResult.OK)
             {
-                ExportDataGridViewToCsv(saveFileDialog.FileName);
-
-
+                csvUtils.ExportDataGridViewToCsv(memoryChDataGridView, saveFileDialog.FileName);
             }
-
         }
-        private void ExportDataGridViewToCsv(string filename)
+
+        private void 書き込みToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            try
-            {
-                // 出力ストリームを開き、UTF-8エンコーディングで書き込む
-                using (StreamWriter writer = new StreamWriter(filename, false, Encoding.UTF8))
-                {
-                    IEnumerable<string> headerValues = memoryChDataGridView.Columns
-                        .OfType<DataGridViewColumn>()
-                        .OrderBy(column => column.DisplayIndex)
-                        .Select(column => column.HeaderText);
-
-                    string headerLine = string.Join(",", headerValues);
-                    writer.WriteLine(headerLine);
-
-                    foreach (DataGridViewRow row in memoryChDataGridView.Rows)
-                    {
-                        IEnumerable<string> cellValues = row.Cells
-                            .OfType<DataGridViewCell>()
-                            .OrderBy(cell => cell.OwningColumn.DisplayIndex)
-                            .Select(cell =>
-                            {
-                                if (cell.Value == null)
-                                {
-                                    return "";
-                                }
-                                else if (cell.Value is bool)
-                                {
-                                    return ((bool)cell.Value) ? "1" : "0";
-                                }
-                                else
-                                {
-                                    return cell.Value.ToString();
-                                }
-                            });
-
-                        string line = string.Join(",", cellValues);
-                        writer.WriteLine(line);
-                    }
-                }
-            }
-            catch (IOException ex)
-            {
-                MessageBox.Show("他のプロセスによってファイルが開かれています" + ex.Message);
-            }
+            writeMemory.Write(memoryChDataGridView);
         }
 
-
-
-
-        private void ImportCsvToDataGridView(string filename)
+        private void x100cmdexe用CSVToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            // Clear the DataGridView rows
-            memoryChDataGridView.Rows.Clear();
+            SaveFileDialog saveFileDialog = new SaveFileDialog();
+            saveFileDialog.Title = "名前をつけてx100cmd用CSVファイルを保存";
+            saveFileDialog.InitialDirectory = @"C:\";
+            saveFileDialog.Filter = "CSVファイル(*.csv)|*csv|すべてのファイル(*.*)|*.*";
+            saveFileDialog.FilterIndex = 0;
+            saveFileDialog.OverwritePrompt = true;
+            saveFileDialog.InitialDirectory = Environment.GetFolderPath(Environment.SpecialFolder.Desktop);
+            saveFileDialog.AddExtension = true;
+            DialogResult result = saveFileDialog.ShowDialog();
 
-            // Read the contents of the CSV file into a list of lines
-            List<string> lines = File.ReadAllLines(filename).Skip(1).ToList(); // Skip the first line
-
-            // Add the rest of the lines to the DataGridView rows
-            for (int i = 0; i < lines.Count; i++)
+            if (result == DialogResult.OK)
             {
-                string[] cells = lines[i].Split(',');
-
-                // Create a new DataGridView row
-                DataGridViewRow row = new DataGridViewRow();
-                row.Height = memoryChDataGridView.RowTemplate.Height;
-                row.CreateCells(memoryChDataGridView);
-
-                for (int j = 0; j < cells.Length; j++)
-                {
-                    // Process the data for the checkbox columns
-                    if (memoryChDataGridView.Columns[j] is DataGridViewCheckBoxColumn)
-                    {
-                        row.Cells[j].Value = cells[j] == "1" ? true : false;
-                    }
-                    else
-                    {
-                        row.Cells[j].Value = cells[j];
-                    }
-                }
-
-                // Add the row to the DataGridView
-                memoryChDataGridView.Rows.Add(row);
+                csvUtils.ExportDataGridViewToX100CmdCsv(memoryChDataGridView, saveFileDialog.FileName);
             }
         }
-
-
-
-
     }
 }

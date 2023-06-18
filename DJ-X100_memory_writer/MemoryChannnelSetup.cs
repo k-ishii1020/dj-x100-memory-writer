@@ -1,4 +1,5 @@
-﻿using static DJ_X100_memory_writer.MemoryChannnelConfig;
+﻿using DJ_X100_memory_writer.domain;
+using static DJ_X100_memory_writer.domain.MemoryChannnelConfig;
 
 namespace DJ_X100_memory_writer
 {
@@ -84,7 +85,7 @@ namespace DJ_X100_memory_writer
             for (int i = 1; i <= 999; i++)
             {
                 int index = memoryChDataGridView.Rows.Add();
-                memoryChDataGridView.Rows[index].Cells["memoryNo"].Value = i.ToString("D3");
+                memoryChDataGridView.Rows[index].Cells[Columns.MEMORY_NO.Id].Value = i.ToString("D3");
 
             }
 

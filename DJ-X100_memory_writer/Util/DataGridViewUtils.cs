@@ -1,6 +1,6 @@
 ﻿using System.Text;
 
-namespace DJ_X100_memory_writer
+namespace DJ_X100_memory_writer.Util
 {
     internal class DataGridViewUtils
     {

@@ -1,19 +1,21 @@
 ﻿using System.Text;
-using static DJ_X100_memory_writer.MemoryChannnelConfig;
+using DJ_X100_memory_writer.domain;
+using DJ_X100_memory_writer.Util;
+using static DJ_X100_memory_writer.domain.MemoryChannnelConfig;
 
 namespace DJ_X100_memory_writer
 {
     internal class DataGridViewEventHandler
     {
         private DataGridView memoryChDataGridView;
+        DataGridViewUtils dataGridViewUtils = new DataGridViewUtils();
 
         public DataGridViewEventHandler(DataGridView _memoryChDataGridView)
         {
             memoryChDataGridView = _memoryChDataGridView;
         }
 
-        MemoryChannnelConfig config = new MemoryChannnelConfig();
-        DataGridViewUtils dataGridViewUtils = new DataGridViewUtils();
+
 
 
 
@@ -56,12 +58,8 @@ namespace DJ_X100_memory_writer
         {
             var tb = memoryChDataGridView.EditingControl as TextBox;
             var columnName = memoryChDataGridView.Columns[e.ColumnIndex].Name;
-
-            if (tb != null && columnName == "mode")
-            {
                 tb.SelectionStart = 0;
                 tb.SelectionLength = tb.Text.Length;
-            }
         }
 
 
@@ -71,7 +69,7 @@ namespace DJ_X100_memory_writer
             {
                 foreach (DataGridViewCell cell in memoryChDataGridView.SelectedCells)
                 {
-                    if (cell.OwningColumn.Name != "memoryNo") // If the cell is not in the "No." column
+                    if (cell.OwningColumn.Name != Columns.MEMORY_NO.Id) // If the cell is not in the "No." column
                     {
                         cell.Value = null;
                     }
@@ -112,12 +110,6 @@ namespace DJ_X100_memory_writer
                     memoryChDataGridView.Rows[e.RowIndex].Cells[e.ColumnIndex].Tag = cutInput;
                 }
             }
-
-
-
-
-
-
         }
 
 

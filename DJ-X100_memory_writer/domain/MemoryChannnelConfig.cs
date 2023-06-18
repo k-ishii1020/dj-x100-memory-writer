@@ -1,7 +1,7 @@
 ﻿using System.Text;
 using System.Collections.Generic;
 
-namespace DJ_X100_memory_writer
+namespace DJ_X100_memory_writer.domain
 {
     internal class MemoryChannnelConfig
     {
@@ -12,6 +12,11 @@ namespace DJ_X100_memory_writer
             "AIS", "ACARS", "POCSAG", "12KIF_W", "12KIF_N"
         };
 
+        private static string[] stepOptions = new string[]
+        {
+            "1k", "5k", "6k25", "8k33", "10k", "12k5","15k", "20k", "25k", "30k", "50k", "100k", "125k", "200k"
+        };
+
         private static string[] bankOptions = new string[]
         {
             "A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M",
@@ -20,18 +25,18 @@ namespace DJ_X100_memory_writer
 
         private static string[] ctcssOptions = new string[]
         {
-            "67.0", "69.3", "71.9", "74.4", "77.0", "79.7", "82.5", "85.4", "88.5",
-            "91.5", "94.8", "97.4", "100.0", "103.5", "107.2", "110.9", "114.8", "118.8",
-            "123.0", "127.3", "131.8", "136.5", "141.3", "146.2", "151.4", "156.7", "159.8",
-            "162.2", "165.5", "167.9", "171.3", "173.8", "177.3", "179.9", "183.5", "186.2",
-            "189.9", "192.8", "196.6", "199.5", "203.5", "206.5", "210.7", "218.1", "225.7",
-            "229.1", "233.6", "241.8", "250.3", "254.1"
+            "670", "693", "719", "744", "770", "797", "825", "854", "885",
+            "915", "948", "974", "1000", "1035", "1072", "1109", "1148", "1188",
+            "1230", "1273", "1318", "1365", "1413", "1462", "1514", "1567", "1598",
+            "1622", "1655", "1679", "1713", "1738", "1773", "1799", "1835", "1862",
+            "1899", "1928", "1966", "1995", "2035", "2065", "2107", "2181", "2257",
+            "2291", "2336", "2418", "2503", "2541"
         };
 
         private static string[] dcsOptions = new string[]
         {
-            "17", "23", "25", "26", "31", "32", "36", "43", "47", "50", "51", "53", "54",
-            "65", "71", "72", "73", "74", "114", "115", "116", "122", "125", "131", "132",
+            "017", "023", "025", "026", "031", "032", "036", "043", "047", "050", "051", "053", "054",
+            "065", "071", "072", "073", "074", "114", "115", "116", "122", "125", "131", "132",
             "134", "143", "145", "152", "155", "156", "162", "165", "172", "174", "205", "212",
             "223", "225", "226", "243", "244", "245", "246", "251", "252", "255", "261", "263",
             "265", "266", "271", "274", "306", "311", "315", "325", "331", "332", "343", "346",
@@ -40,6 +45,7 @@ namespace DJ_X100_memory_writer
             "526", "532", "546", "565", "606", "612", "624", "627", "631", "632", "654", "662",
             "664", "703", "712", "723", "731", "732", "734", "743", "754"
         };
+
 
         private static string[] squelchOptions = new string[]
         {
@@ -51,15 +57,15 @@ namespace DJ_X100_memory_writer
             "OFF", "10db", "20db"
         };
 
-        private static string[] stepOptions = new string[]
-        {
-            "1", "5", "6.25", "8.33", "10", "12.5", "15", "20", "25", "30", "50", "100", "125", "200"
-        };
-
         private static string[] revFrequencyOptions = new string[]
         {
             "2500", "2600", "2700", "2800", "2900",
             "3000", "3100", "3200", "3300", "3400", "3500"
+        };
+
+        private static string[] onOffOptions = new string[]
+        {
+            "OFF", "ON"
         };
 
 
@@ -76,21 +82,21 @@ namespace DJ_X100_memory_writer
 
         public static class Columns
         {
-            public static readonly ColumnInfo MEMORY_NO = new ColumnInfo("memoryNo", "No.");
+            public static readonly ColumnInfo MEMORY_NO = new ColumnInfo("Channel", "No.");
 
-            public static readonly ColumnInfo FREQ = new ColumnInfo("freq", "FREQ");
-            public static readonly ColumnInfo MEMORY_NAME = new ColumnInfo("memoryName", "NAME");
-            public static readonly ColumnInfo MODE = new ColumnInfo("mode", "MODE");
+            public static readonly ColumnInfo FREQ = new ColumnInfo("Freq", "FREQ");
+            public static readonly ColumnInfo MEMORY_NAME = new ColumnInfo("Name", "NAME");
+            public static readonly ColumnInfo MODE = new ColumnInfo("Mode", "MODE");
 
             public static readonly ColumnInfo BANK = new ColumnInfo("bank", "BANK");
             public static readonly ColumnInfo SKIP = new ColumnInfo("skip", "SKIP");
-            public static readonly ColumnInfo STEP = new ColumnInfo("step", "STEP");
+            public static readonly ColumnInfo STEP = new ColumnInfo("Step", "STEP");
             public static readonly ColumnInfo OFFSET = new ColumnInfo("offset", "OFFSET");
-            public static readonly ColumnInfo OFFSET_FREQ = new ColumnInfo("offsetFreq", "FREQ");
+            public static readonly ColumnInfo OFFSET_FREQ = new ColumnInfo("shift_freq", "FREQ");
             public static readonly ColumnInfo ATT = new ColumnInfo("att", "ATT");
 
-            public static readonly ColumnInfo SQL_MODE = new ColumnInfo("sqlType", "SQ_TYPE");
-            public static readonly ColumnInfo CTCSS = new ColumnInfo("ctcss", "CTCSS");
+            public static readonly ColumnInfo SQL_MODE = new ColumnInfo("sq", "SQ_TYPE");
+            public static readonly ColumnInfo CTCSS = new ColumnInfo("tone", "CTCSS");
             public static readonly ColumnInfo DCS = new ColumnInfo("dcs", "DCS");
             public static readonly ColumnInfo REV_EC = new ColumnInfo("revEc", "REV_EC");
             public static readonly ColumnInfo REV_EC_FREQ = new ColumnInfo("revEcFreq", "FREQ");
@@ -154,8 +160,9 @@ namespace DJ_X100_memory_writer
             {
                 Id = Columns.SKIP.Id,
                 HeaderText = Columns.SKIP.Name,
-                Width = 35,
-                Type = ColumnType.Checkbox
+                Width = 55,
+                Type = ColumnType.Dropdown,
+                Options = onOffOptions
             },
             new ColumnSetup
             {
@@ -170,7 +177,8 @@ namespace DJ_X100_memory_writer
                 Id = Columns.OFFSET.Id,
                 HeaderText = Columns.OFFSET.Name,
                 Width = 50,
-                Type = ColumnType.Checkbox
+                Type = ColumnType.Dropdown,
+                Options = onOffOptions
             },
             new ColumnSetup
             {
@@ -183,7 +191,7 @@ namespace DJ_X100_memory_writer
             {
                 Id = Columns.ATT.Id,
                 HeaderText = Columns.ATT.Name,
-                Width = 45,
+                Width = 55,
                 Type = ColumnType.Dropdown,
                 Options = attOptions
             },
@@ -215,8 +223,9 @@ namespace DJ_X100_memory_writer
             {
                 Id = Columns.REV_EC.Id,
                 HeaderText = Columns.REV_EC.Name,
-                Width = 50,
-                Type = ColumnType.Checkbox
+                Width = 55,
+                Type = ColumnType.Dropdown,
+                Options = onOffOptions
             },
             new ColumnSetup
             {
@@ -306,8 +315,8 @@ namespace DJ_X100_memory_writer
 
             public ColumnInfo(string id, string name)
             {
-                this.Id = id;
-                this.Name = name;
+                Id = id;
+                Name = name;
             }
         }
 
