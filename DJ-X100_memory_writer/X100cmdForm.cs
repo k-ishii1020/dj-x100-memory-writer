@@ -22,13 +22,13 @@ namespace DJ_X100_memory_writer
         }
 
 
-        public void WriteX100(string arg)
+        public void WriteX100()
         {
             var process = new Process();
             var startInfo = new ProcessStartInfo
             {
                 FileName = "cmd.exe",
-                Arguments = $"/k .\\x100cmd.exe {arg} & pause",
+                Arguments = $"/k .\\x100cmd.exe import x100cmd_temp.csv & pause",
                 UseShellExecute = true, // ShellExecute を true にする
                 CreateNoWindow = false  // 新しいウィンドウを作成する
             };

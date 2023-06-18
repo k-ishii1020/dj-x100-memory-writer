@@ -4,11 +4,13 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using static DJ_X100_memory_writer.domain.MemoryChannnelConfig;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace DJ_X100_memory_writer.Util
 {
     internal class CsvUtils
     {
+        HexUtils hexUtils = new HexUtils();
         public void ExportDataGridViewToCsv(DataGridView memoryChDataGridView, string filename)
         {
             try
@@ -122,8 +124,6 @@ namespace DJ_X100_memory_writer.Util
 
         public void ExportDataGridViewToX100CmdCsv(DataGridView memoryChDataGridView, string filename)
         {
-            string hoge = "aaa";
-
             try
             {
                 using (StreamWriter writer = new StreamWriter(filename, false, Encoding.UTF8))
@@ -135,13 +135,16 @@ namespace DJ_X100_memory_writer.Util
                     };
 
                     IEnumerable<string> headerValues = columnOrder
-                        .Select(columnName => columnName == "ext" ? columnName : memoryChDataGridView.Columns[columnName].HeaderText);
+                        .Select(columnName => columnName == "ext" ? columnName : memoryChDataGridView.Columns[columnName].Name);
 
                     string headerLine = string.Join(",", headerValues);
                     writer.WriteLine(headerLine);
 
                     foreach (DataGridViewRow row in memoryChDataGridView.Rows)
                     {
+                        if (row.Cells[Columns.FREQ.Id].Value == null) continue;
+
+
                         IEnumerable<string> cellValues = columnOrder
                             .Select(columnName =>
                             {
@@ -169,15 +172,150 @@ namespace DJ_X100_memory_writer.Util
 
         private string ExternalData(DataGridViewRow row)
         {
-            string externalStr = "aaaaaaaaaaaaaa";
-            string targetColumnName = "ColumnName"; // replace "ColumnName" with the actual column name
+            string externalStr = "0000e4000000e480000000000000000000000180018001800180010000800100008001000080000080008000807b1700";
+
+            // REV_ECの処理
+            string revEcValue = row.Cells[Columns.REV_EC.Id].Value?.ToString();
+            externalStr = (revEcValue == "ON" ? "01" : "00") + externalStr.Substring(2);
+
+            // REV_EC_FREQの処理
+            Dictionary<string, string> revEcFreqValues = new Dictionary<string, string>
+            {
+                {"2500", "00"},
+                {"2600", "01"},
+                {"2700", "02"},
+                {"2800", "03"},
+                {"2900", "04"},
+                {"3000", "05"},
+                {"3100", "06"},
+                {"3200", "07"},
+                {"3300", "08"},
+                {"3400", "09"},
+                {"3500", "0A"},
+            };
+
+            string revEcFreqValue = row.Cells[Columns.REV_EC_FREQ.Id].Value?.ToString() ?? "2500";
+
+            // revEcFreqValueがDictionaryに存在しない場合は"00"を使います
+            string replacementValue = revEcFreqValues.ContainsKey(revEcFreqValue) ? revEcFreqValues[revEcFreqValue] : "00";
+
+            externalStr = externalStr.Substring(0, 2) + replacementValue + externalStr.Substring(4);
 
 
 
+
+
+
+
+
+            // T98_WCの処理
+            externalStr = ReplaceCellValueWithModeAndWC(externalStr, row, "T98", 4);
+            // T102_B54_WCの処理
+            externalStr = ReplaceCellValueWithModeAndWC(externalStr, row, "T102_B54", 12);
+
+
+
+
+            // T61_WCの処理
+            // T61_WCの処理
+            Dictionary<string, int> modeToIndexMap = new Dictionary<string, int>
+            {
+                { "T61_typ1", 16 },
+                { "T61_typ2", 20 },
+                { "T61_typ3", 24 },
+                { "T61_typ4", 28 },
+                { "T61_typx", 32 }
+            };
+            // モード値を取得
+            string modeValue = row.Cells[Columns.MODE.Id].Value != null ? row.Cells[Columns.MODE.Id].Value.ToString() : null;
+            // wc値を取得
+            string wcValue = row.Cells[Columns.WC.Id].Value != null ? row.Cells[Columns.WC.Id].Value.ToString() : "0000";
+
+            if (modeValue != null && modeToIndexMap.ContainsKey(modeValue))
+            {
+                string replaceValue = hexUtils.SwapEndianHex(wcValue);
+                int index = modeToIndexMap[modeValue];
+                externalStr = externalStr.Remove(index, 4);
+                externalStr = externalStr.Insert(index, replaceValue);
+            }
+
+
+
+
+
+
+
+
+            // T98_UCの処理
+            if (row.Cells[Columns.MODE.Id].Value != null && row.Cells[Columns.MODE.Id].Value.ToString() == "T98")
+            {
+                string ucValue = row.Cells[Columns.UC.Id].Value != null ? row.Cells[Columns.UC.Id].Value.ToString() : null;
+                if (ucValue != null)
+                {
+                    string replaceValue = (ucValue == "0") ? "0180" : hexUtils.SwapEndianHex(ucValue);
+                    externalStr = externalStr.Remove(36, 4);
+                    externalStr = externalStr.Insert(36, replaceValue);
+                }
+                else
+                {
+                    externalStr = externalStr.Remove(36, 4);
+                    externalStr = externalStr.Insert(36, "0180");
+                }
+            }
+
+            // T102_B54_UCの処理
+            if (row.Cells[Columns.MODE.Id].Value != null && row.Cells[Columns.MODE.Id].Value.ToString() == "T102_B54")
+            {
+                string ucValue = row.Cells[Columns.UC.Id].Value != null ? row.Cells[Columns.UC.Id].Value.ToString() : null;
+                if (ucValue != null)
+                {
+                    string replaceValue = (ucValue == "0") ? "0180" : hexUtils.SwapEndianHex(ucValue);
+                    externalStr = externalStr.Remove(40, 4);
+                    externalStr = externalStr.Insert(40, replaceValue);
+                }
+                else
+                {
+                    externalStr = externalStr.Remove(40, 4);
+                    externalStr = externalStr.Insert(40, "0180");
+                }
+            }
+
+
+            // T98_ECの処理
+            if (row.Cells[Columns.MODE.Id].Value != null && row.Cells[Columns.MODE.Id].Value.ToString() == "T98")
+            {
+                string ecValue = row.Cells[Columns.EC.Id].Value != null ? row.Cells[Columns.EC.Id].Value.ToString() : null;
+                if (ecValue != null)
+                {
+                    string replaceValue = (ecValue == "0") ? "0180" : hexUtils.SwapEndianHex(ecValue);
+                    externalStr = externalStr.Remove(44, 4);
+                    externalStr = externalStr.Insert(44, replaceValue);
+                }
+                else
+                {
+                    externalStr = externalStr.Remove(44, 4);
+                    externalStr = externalStr.Insert(44, "0180");
+                }
+            }
             return externalStr;
         }
 
+        private string ReplaceCellValueWithModeAndWC(string externalStr, DataGridViewRow row, string mode, int position)
+        {
+            if (row.Cells[Columns.MODE.Id].Value != null && row.Cells[Columns.MODE.Id].Value.ToString() == mode)
+            {
+                // WCの値が存在しない場合は "0000" にします
+                string wcValue = row.Cells[Columns.WC.Id].Value != null ? row.Cells[Columns.WC.Id].Value.ToString() : "0000";
 
+                // AUTOだった場合は "0180" に、それ以外は16進数として解釈してエンディアンを反転します
+                string replaceValue = (wcValue == "AUTO") ? "0180" : hexUtils.SwapEndianHex(wcValue);
 
+                // 指定した位置の値を置換します
+                externalStr = externalStr.Remove(position, 4);
+                externalStr = externalStr.Insert(position, replaceValue);
+            }
+
+            return externalStr;
+        }
     }
 }

@@ -13,7 +13,7 @@ namespace DJ_X100_memory_writer.Util
             int value;
             if(strValue == null || strValue.Equals(""))
             {
-                return "";
+                return "0180";
             }
             if (strValue.Equals("AUTO"))
             {

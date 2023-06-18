@@ -14,12 +14,9 @@ namespace DJ_X100_memory_writer
         {
 
             var csvUtils = new CsvUtils();
-            csvUtils.ExportDataGridViewToX100CmdCsv(dataGridView, "x100cmd.csv");
-
-
-
-
-
+            csvUtils.ExportDataGridViewToX100CmdCsv(dataGridView, ".\\x100cmd_temp.csv");
+            var x100cmdForm = new X100cmdForm();
+            x100cmdForm.WriteX100();
         }
 
 
@@ -76,7 +73,7 @@ namespace DJ_X100_memory_writer
                     
 
                 var x100cmdForm = new X100cmdForm();
-                x100cmdForm.WriteX100(cmd);
+                //x100cmdForm.WriteX100(cmd);
             }
         }
 
