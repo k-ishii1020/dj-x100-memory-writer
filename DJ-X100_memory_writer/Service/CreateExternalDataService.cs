@@ -82,7 +82,7 @@ namespace DJ_X100_memory_writer.Service
 
             if (initialLength != finalLength)
             {
-                throw new InvalidOperationException($"拡張文字列に誤りがありますので操作を中止します。正: {initialLength} 実際: {finalLength}.");
+                throw new InvalidOperationException($"拡張文字列長に誤りがありますので操作を中止します。正: {initialLength} 実際: {finalLength}.");
             }
 
 
@@ -107,7 +107,7 @@ namespace DJ_X100_memory_writer.Service
 
             if (modeValue != null && modeToIndexMap.ContainsKey(modeValue))
             {
-                string replaceValue = hexUtils.SwapEndianForFourHex(wcValue);
+                string replaceValue = hexUtils.SwapEndianHexForFourHex(wcValue);
                 int index = modeToIndexMap[modeValue];
                 externalStr = externalStr.Remove(index, 4);
                 externalStr = externalStr.Insert(index, replaceValue);
@@ -157,7 +157,7 @@ namespace DJ_X100_memory_writer.Service
                 string value = row.Cells[Columns.WC.Id].Value != null ? row.Cells[Columns.WC.Id].Value.ToString() : "0000";
 
                 // AUTOだった場合は "0180" に、それ以外は16進数として解釈してエンディアンを反転します
-                string replaceValue = (value == "AUTO") ? "0180" : hexUtils.SwapEndianForFourHex(value);
+                string replaceValue = (value == "AUTO") ? "0180" : hexUtils.SwapEndianHexForFourHex(value);
 
                 // 指定した位置の値を置換します
                 externalStr = externalStr.Remove(position, 4);
@@ -176,7 +176,7 @@ namespace DJ_X100_memory_writer.Service
 
                 if (value != null)
                 {
-                    replaceValue = (value == "0") ? "0180" : hexUtils.SwapEndianForFourHex(value);
+                    replaceValue = (value == "0") ? "0180" : hexUtils.SwapEndianHexForFourHex(value);
                 }
 
                 externalStr = externalStr.Remove(index, 4);
@@ -195,7 +195,7 @@ namespace DJ_X100_memory_writer.Service
 
                 if (value != null)
                 {
-                    replaceValue = (value == "0") ? "0180" : hexUtils.SwapEndianForFourHex(value);
+                    replaceValue = (value == "0") ? "0180" : hexUtils.SwapEndianHexForFourHex(value);
                 }
 
                 externalStr = externalStr.Remove(index, 4);
@@ -270,7 +270,7 @@ namespace DJ_X100_memory_writer.Service
                 string replaceValue;
                 if (value != null)
                 {
-                    replaceValue = (value == "OFF") ? "0080" : hexUtils.SwapEndianForFourHex(value);
+                    replaceValue = (value == "OFF") ? "0080" : hexUtils.SwapEndianHexForFourHex(value);
                 }
                 else
                 {
@@ -292,7 +292,7 @@ namespace DJ_X100_memory_writer.Service
                 string replaceValue;
                 if (value != null)
                 {
-                    replaceValue = (value == "OFF") ? "0080" : hexUtils.SwapEndianForFourHex(value);
+                    replaceValue = (value == "OFF") ? "0080" : hexUtils.SwapEndianHexForFourHex(value);
                 }
                 else
                 {
@@ -314,7 +314,7 @@ namespace DJ_X100_memory_writer.Service
                 string replaceValue;
                 if (value != null)
                 {
-                    replaceValue = (value == "OFF") ? "0080" : hexUtils.SwapEndianForFourHex(value);
+                    replaceValue = (value == "OFF") ? "0080" : hexUtils.SwapEndianHexForFourHex(value);
                 }
                 else
                 {
@@ -364,7 +364,5 @@ namespace DJ_X100_memory_writer.Service
             }
             return externalStr;
         }
-
-
     }
 }

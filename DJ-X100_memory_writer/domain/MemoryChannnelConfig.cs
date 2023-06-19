@@ -1,7 +1,4 @@
-﻿using System.Text;
-using System.Collections.Generic;
-
-namespace DJ_X100_memory_writer.domain
+﻿namespace DJ_X100_memory_writer.domain
 {
     internal class MemoryChannnelConfig
     {
@@ -223,7 +220,7 @@ namespace DJ_X100_memory_writer.domain
             {
                 Id = Columns.BANK.Id,
                 HeaderText = Columns.BANK.Name,
-                Width = 45,
+                Width = 120,
                 Type = ColumnType.Text,
             },
             new ColumnSetup

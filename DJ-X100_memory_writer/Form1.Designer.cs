@@ -41,6 +41,8 @@ namespace DJ_X100_memory_writer
             開くNToolStripMenuItem = new ToolStripMenuItem();
             上書き保存NToolStripMenuItem = new ToolStripMenuItem();
             名前を付けて保存NToolStrpMenuItem = new ToolStripMenuItem();
+            エクスポートEToolStripMenuItem = new ToolStripMenuItem();
+            x100cmdexe用CSVToolStripMenuItem = new ToolStripMenuItem();
             終了NToolStripMenuItem = new ToolStripMenuItem();
             表示VToolStripMenuItem = new ToolStripMenuItem();
             オプションOToolStripMenuItem = new ToolStripMenuItem();
@@ -55,8 +57,6 @@ namespace DJ_X100_memory_writer
             toolStripProgressBar1 = new ToolStripProgressBar();
             statusLabel1 = new ToolStripStatusLabel();
             selectedComportLabel = new ToolStripStatusLabel();
-            エクスポートEToolStripMenuItem = new ToolStripMenuItem();
-            x100cmdexe用CSVToolStripMenuItem = new ToolStripMenuItem();
             menuStrip1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)splitContainer1).BeginInit();
             splitContainer1.Panel1.SuspendLayout();
@@ -113,6 +113,20 @@ namespace DJ_X100_memory_writer
             名前を付けて保存NToolStrpMenuItem.Text = "名前を付けて保存(&A)...";
             名前を付けて保存NToolStrpMenuItem.Click += 名前を付けて保存NToolStrpMenuItem_Click;
             // 
+            // エクスポートEToolStripMenuItem
+            // 
+            エクスポートEToolStripMenuItem.DropDownItems.AddRange(new ToolStripItem[] { x100cmdexe用CSVToolStripMenuItem });
+            エクスポートEToolStripMenuItem.Name = "エクスポートEToolStripMenuItem";
+            エクスポートEToolStripMenuItem.Size = new Size(257, 22);
+            エクスポートEToolStripMenuItem.Text = "エクスポート(&E)";
+            // 
+            // x100cmdexe用CSVToolStripMenuItem
+            // 
+            x100cmdexe用CSVToolStripMenuItem.Name = "x100cmdexe用CSVToolStripMenuItem";
+            x100cmdexe用CSVToolStripMenuItem.Size = new Size(174, 22);
+            x100cmdexe用CSVToolStripMenuItem.Text = "x100cmd.exe用CSV";
+            x100cmdexe用CSVToolStripMenuItem.Click += x100cmdexe用CSVToolStripMenuItem_Click;
+            // 
             // 終了NToolStripMenuItem
             // 
             終了NToolStripMenuItem.Name = "終了NToolStripMenuItem";
@@ -136,13 +150,13 @@ namespace DJ_X100_memory_writer
             // cOMポートCToolStripMenuItem
             // 
             cOMポートCToolStripMenuItem.Name = "cOMポートCToolStripMenuItem";
-            cOMポートCToolStripMenuItem.Size = new Size(142, 22);
+            cOMポートCToolStripMenuItem.Size = new Size(180, 22);
             cOMポートCToolStripMenuItem.Text = "COMポート(&C)";
             // 
             // 書き込みToolStripMenuItem
             // 
             書き込みToolStripMenuItem.Name = "書き込みToolStripMenuItem";
-            書き込みToolStripMenuItem.Size = new Size(142, 22);
+            書き込みToolStripMenuItem.Size = new Size(180, 22);
             書き込みToolStripMenuItem.Text = "書き込み";
             書き込みToolStripMenuItem.Click += 書き込みToolStripMenuItem_Click;
             // 
@@ -236,20 +250,6 @@ namespace DJ_X100_memory_writer
             selectedComportLabel.Name = "selectedComportLabel";
             selectedComportLabel.Size = new Size(148, 17);
             selectedComportLabel.Text = "選択中のCOMポート: 未選択";
-            // 
-            // エクスポートEToolStripMenuItem
-            // 
-            エクスポートEToolStripMenuItem.DropDownItems.AddRange(new ToolStripItem[] { x100cmdexe用CSVToolStripMenuItem });
-            エクスポートEToolStripMenuItem.Name = "エクスポートEToolStripMenuItem";
-            エクスポートEToolStripMenuItem.Size = new Size(257, 22);
-            エクスポートEToolStripMenuItem.Text = "エクスポート(&E)";
-            // 
-            // x100cmdexe用CSVToolStripMenuItem
-            // 
-            x100cmdexe用CSVToolStripMenuItem.Name = "x100cmdexe用CSVToolStripMenuItem";
-            x100cmdexe用CSVToolStripMenuItem.Size = new Size(180, 22);
-            x100cmdexe用CSVToolStripMenuItem.Text = "x100cmd.exe用CSV";
-            x100cmdexe用CSVToolStripMenuItem.Click += x100cmdexe用CSVToolStripMenuItem_Click;
             // 
             // Form1
             // 

@@ -11,6 +11,8 @@ namespace DJ_X100_memory_writer
         CreateCsvFileService csvUtils = new CreateCsvFileService();
         WriteMemoryService writeMemory = new WriteMemoryService();
 
+        private string selectedPort;
+        private List<ToolStripMenuItem> portMenuItems;
 
         public Form1()
         {
@@ -22,20 +24,44 @@ namespace DJ_X100_memory_writer
 
         private void InitComPort()
         {
+            portMenuItems = new List<ToolStripMenuItem>();
+
+            ToolStripMenuItem autoSelectItem = new ToolStripMenuItem("自動選択");
+            autoSelectItem.Click += MenuItem_Click;
+            autoSelectItem.CheckOnClick = true;
+            cOMポートCToolStripMenuItem.DropDownItems.Add(autoSelectItem);
+            portMenuItems.Add(autoSelectItem);
+
             foreach (String portName in GetPortLists())
             {
                 ToolStripMenuItem menuItem = new ToolStripMenuItem(portName);
-                menuItem.Click += (s, e) =>
-                {
-                    var clickedItem = s as ToolStripMenuItem;
-                    string selectedPort = clickedItem.Text;
-
-                    selectedComportLabel.Text = "選択中のCOMポート: " + selectedPort;
-                };
-
+                menuItem.Click += MenuItem_Click;
+                menuItem.CheckOnClick = true;
                 cOMポートCToolStripMenuItem.DropDownItems.Add(menuItem);
+                portMenuItems.Add(menuItem);
+            }
+
+            autoSelectItem.PerformClick();
+        }
+
+        private void MenuItem_Click(object sender, EventArgs e)
+        {
+            // 選択された項目を保存します
+            ToolStripMenuItem clickedItem = sender as ToolStripMenuItem;
+            selectedPort = clickedItem.Text;
+
+            selectedComportLabel.Text = "選択中のCOMポート: " + selectedPort;
+
+            // 他のすべての項目のチェックを解除します
+            foreach (var item in portMenuItems)
+            {
+                if (item != clickedItem)
+                {
+                    item.Checked = false;
+                }
             }
         }
+
         private static String[] GetPortLists()
         {
             String[] portList = SerialPort.GetPortNames();
@@ -47,20 +73,15 @@ namespace DJ_X100_memory_writer
 
 
 
-
         private void 新規作成NToolStripMenuItem_Click(object sender, EventArgs e)
         {
             bool isEmpty = true;
-
-            // Check each row in the DataGridView
             foreach (DataGridViewRow row in memoryChDataGridView.Rows)
             {
-                // Skip the first column (index 0)
                 for (int i = 1; i < row.Cells.Count; i++)
                 {
                     if (row.Cells[i].Value != null && !string.IsNullOrWhiteSpace(row.Cells[i].Value.ToString()))
                     {
-                        // There's data in this cell, so the DataGridView isn't empty
                         isEmpty = false;
                         break;
                     }
@@ -72,19 +93,19 @@ namespace DJ_X100_memory_writer
                 }
             }
 
-            // If the DataGridView isn't empty, ask the user to confirm they want to clear it
             if (!isEmpty)
             {
-                var confirmResult = MessageBox.Show("Are you sure you want to clear all data?", "Confirm Clear Data", MessageBoxButtons.YesNo);
+                var confirmResult = MessageBox.Show("作成中のデータは破棄されます", "よろしいですか？", MessageBoxButtons.YesNo, MessageBoxIcon.Warning);
                 if (confirmResult == DialogResult.Yes)
                 {
-                    // If the user clicked 'Yes', clear the DataGridView
                     memoryChDataGridView.Rows.Clear();
+                    memoryChDataGridView.Columns.Clear();  // ここで既存の列を削除します。
                     var configurer = new MemoryChannnelSetupService(memoryChDataGridView);
                     configurer.SetupDataGridView();
                 }
             }
         }
+
 
 
 
@@ -136,7 +157,7 @@ namespace DJ_X100_memory_writer
 
         private void 書き込みToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            writeMemory.Write(memoryChDataGridView);
+            writeMemory.Write(memoryChDataGridView, selectedPort);
         }
 
         private void x100cmdexe用CSVToolStripMenuItem_Click(object sender, EventArgs e)
