@@ -18,6 +18,7 @@ namespace DJ_X100_memory_writer
         {
             InitializeComponent();
             InitComPort();
+            treeViewSetup();
             var configurer = new MemoryChannnelSetupService(memoryChDataGridView);
             configurer.SetupDataGridView();
         }
@@ -27,7 +28,7 @@ namespace DJ_X100_memory_writer
             portMenuItems = new List<ToolStripMenuItem>();
 
             ToolStripMenuItem autoSelectItem = new ToolStripMenuItem("自動選択");
-            autoSelectItem.Click += MenuItem_Click;
+            autoSelectItem.Click += PortSelectClick;
             autoSelectItem.CheckOnClick = true;
             cOMポートCToolStripMenuItem.DropDownItems.Add(autoSelectItem);
             portMenuItems.Add(autoSelectItem);
@@ -35,7 +36,7 @@ namespace DJ_X100_memory_writer
             foreach (String portName in GetPortLists())
             {
                 ToolStripMenuItem menuItem = new ToolStripMenuItem(portName);
-                menuItem.Click += MenuItem_Click;
+                menuItem.Click += PortSelectClick;
                 menuItem.CheckOnClick = true;
                 cOMポートCToolStripMenuItem.DropDownItems.Add(menuItem);
                 portMenuItems.Add(menuItem);
@@ -44,7 +45,7 @@ namespace DJ_X100_memory_writer
             autoSelectItem.PerformClick();
         }
 
-        private void MenuItem_Click(object sender, EventArgs e)
+        private void PortSelectClick(object sender, EventArgs e)
         {
             // 選択された項目を保存します
             ToolStripMenuItem clickedItem = sender as ToolStripMenuItem;
@@ -67,6 +68,48 @@ namespace DJ_X100_memory_writer
             String[] portList = SerialPort.GetPortNames();
             Array.Sort(portList);
             return portList;
+        }
+
+        private void treeViewSetup()
+        {
+            treeView1.ExpandAll();
+            string searchText = "メモリーチャンネル";
+            SelectNodeByText(treeView1, searchText);
+        }
+
+        public void SelectNodeByText(TreeView treeView, string searchText)
+        {
+            // TreeView内のすべてのノードを検索
+            foreach (TreeNode node in treeView.Nodes)
+            {
+                if (FindNode(node, searchText))
+                {
+                    break;
+                }
+            }
+        }
+
+        private bool FindNode(TreeNode treeNode, string searchText)
+        {
+            // 現在のノードのテキストを確認
+            if (treeNode.Text == searchText)
+            {
+                // ノードを選択状態に設定
+                treeNode.TreeView.SelectedNode = treeNode;
+                // 選択したノードが見えるようにスクロール
+                treeNode.EnsureVisible();
+                return true;
+            }
+            // 子ノードが存在する場合は、それらのノードを走査
+            foreach (TreeNode node in treeNode.Nodes)
+            {
+                if (FindNode(node, searchText))
+                {
+                    return true;
+                }
+            }
+            // マッチするノードが見つからない場合はfalseを返す
+            return false;
         }
 
 

@@ -32,7 +32,7 @@ namespace DJ_X100_memory_writer
         {
             components = new System.ComponentModel.Container();
             TreeNode treeNode1 = new TreeNode("メモリーチャンネル");
-            TreeNode treeNode2 = new TreeNode("バンクメモリ");
+            TreeNode treeNode2 = new TreeNode("バンクメモリ(工事中)");
             TreeNode treeNode3 = new TreeNode("DJ-X100", new TreeNode[] { treeNode1, treeNode2 });
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Form1));
             menuStrip1 = new MenuStrip();
@@ -150,13 +150,13 @@ namespace DJ_X100_memory_writer
             // cOMポートCToolStripMenuItem
             // 
             cOMポートCToolStripMenuItem.Name = "cOMポートCToolStripMenuItem";
-            cOMポートCToolStripMenuItem.Size = new Size(180, 22);
+            cOMポートCToolStripMenuItem.Size = new Size(142, 22);
             cOMポートCToolStripMenuItem.Text = "COMポート(&C)";
             // 
             // 書き込みToolStripMenuItem
             // 
             書き込みToolStripMenuItem.Name = "書き込みToolStripMenuItem";
-            書き込みToolStripMenuItem.Size = new Size(180, 22);
+            書き込みToolStripMenuItem.Size = new Size(142, 22);
             書き込みToolStripMenuItem.Text = "書き込み";
             書き込みToolStripMenuItem.Click += 書き込みToolStripMenuItem_Click;
             // 
@@ -197,7 +197,7 @@ namespace DJ_X100_memory_writer
             treeNode1.Text = "メモリーチャンネル";
             treeNode2.ImageKey = "kkrn_icon_folder_1.png";
             treeNode2.Name = "バンクメモリ";
-            treeNode2.Text = "バンクメモリ";
+            treeNode2.Text = "バンクメモリ(工事中)";
             treeNode3.ImageIndex = 0;
             treeNode3.Name = "ノード0";
             treeNode3.Text = "DJ-X100";
