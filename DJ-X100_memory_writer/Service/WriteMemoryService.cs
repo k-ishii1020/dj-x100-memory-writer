@@ -1,20 +1,17 @@
 ﻿using DJ_X100_memory_writer.domain;
 using DJ_X100_memory_writer.Util;
 
-namespace DJ_X100_memory_writer
+namespace DJ_X100_memory_writer.Service
 {
-    internal class WriteMemory
+    internal class WriteMemoryService
     {
         DataGridView dataGridView = new DataGridView();
-        HexUtils utils = new HexUtils();
-
+        CreateCsvFileService createCsvFileService = new CreateCsvFileService();
 
 
         public void Write(DataGridView dataGridView)
         {
-
-            var csvUtils = new CsvUtils();
-            csvUtils.ExportDataGridViewToX100CmdCsv(dataGridView, ".\\x100cmd_temp.csv");
+            createCsvFileService.ExportDataGridViewToX100CmdCsv(dataGridView, ".\\x100cmd_temp.csv");
             var x100cmdForm = new X100cmdForm();
             x100cmdForm.WriteX100();
         }
@@ -70,7 +67,7 @@ namespace DJ_X100_memory_writer
                 cmd += output.getDcs() + " ";
                 cmd += output.getLon() + " ";
                 cmd += output.getLat() + " ";
-                    
+
 
                 var x100cmdForm = new X100cmdForm();
                 //x100cmdForm.WriteX100(cmd);

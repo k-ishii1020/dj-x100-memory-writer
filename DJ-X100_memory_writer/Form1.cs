@@ -1,4 +1,4 @@
-using DJ_X100_memory_writer.Util;
+using DJ_X100_memory_writer.Service;
 using System;
 using System.IO.Ports;
 using System.Text;
@@ -8,15 +8,15 @@ namespace DJ_X100_memory_writer
 {
     public partial class Form1 : Form
     {
-        CsvUtils csvUtils = new CsvUtils();
-        WriteMemory writeMemory = new WriteMemory();
+        CreateCsvFileService csvUtils = new CreateCsvFileService();
+        WriteMemoryService writeMemory = new WriteMemoryService();
 
 
         public Form1()
         {
             InitializeComponent();
             InitComPort();
-            var configurer = new MemoryChannnelSetup(memoryChDataGridView);
+            var configurer = new MemoryChannnelSetupService(memoryChDataGridView);
             configurer.SetupDataGridView();
         }
 
@@ -80,7 +80,7 @@ namespace DJ_X100_memory_writer
                 {
                     // If the user clicked 'Yes', clear the DataGridView
                     memoryChDataGridView.Rows.Clear();
-                    var configurer = new MemoryChannnelSetup(memoryChDataGridView);
+                    var configurer = new MemoryChannnelSetupService(memoryChDataGridView);
                     configurer.SetupDataGridView();
                 }
             }

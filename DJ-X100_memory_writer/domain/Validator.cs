@@ -1,6 +1,6 @@
 ﻿using DJ_X100_memory_writer.Util;
 
-namespace DJ_X100_memory_writer
+namespace DJ_X100_memory_writer.domain
 {
     internal class Validator
     {

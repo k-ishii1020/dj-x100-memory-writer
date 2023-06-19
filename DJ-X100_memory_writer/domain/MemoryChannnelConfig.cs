@@ -57,6 +57,69 @@ namespace DJ_X100_memory_writer.domain
             "OFF", "10db", "20db"
         };
 
+
+
+        private static string[] t61LonOptions = new string[]
+        {
+                                 "123", "124", "125", "126", "127", "128", "129",
+            "130", "131", "132", "133", "134", "135", "136", "137", "138", "139",
+            "140", "141", "142", "143", "144", "145", "146", "147", "148", "149",
+            "150", "151", "152", "153", "154", "155"
+        };
+
+
+        private static string[] t61LatOptions = new string[]
+        {
+                              "23", "24", "25", "26", "27", "28", "29",
+            "30", "31", "32", "33", "34", "35", "36", "37", "38", "39",
+            "40", "41", "42", "43", "44", "45", "46", "47", "48", "49",
+            "50", "51", "52", "53", "54", "55"
+        };
+
+
+        private static string[] dmrSlotOptions = new string[]
+        {
+            "AUTO", "1", "2"
+        };
+        private static string[] dmrCcOptions = new string[]
+        {
+            "OFF", "00", "01", "02", "03", "04", "05", "06", "07", "08", "09", "10",
+            "11", "12", "13", "14", "15"
+        };
+
+
+        private static string[] dstarCsOptions = new string[]
+        {
+            "OFF",
+            "00", "01", "02", "03", "04", "05", "06", "07", "08", "09",
+            "10", "11", "12", "13", "14", "15", "16", "17", "18", "19",
+            "20", "21", "22", "23", "24", "25", "26", "27", "28", "29",
+            "30", "31", "32", "33", "34", "35", "36", "37", "38", "39",
+            "40", "41", "42", "43", "44", "45", "46", "47", "48", "49",
+            "50", "51", "52", "53", "54", "55", "56", "57", "58", "59",
+            "60", "61", "62", "63", "64", "65", "66", "67", "68", "69",
+            "70", "71", "72", "73", "74", "75", "76", "77", "78", "79",
+            "80", "81", "82", "83", "84", "85", "86", "87", "88", "89",
+            "90", "91", "92", "93", "94", "95", "96", "97", "98", "99"
+        };
+
+        private static string[] c4fmDgOptions = new string[]
+        {
+            "OFF",
+            "00", "01", "02", "03", "04", "05", "06", "07", "08", "09",
+            "10", "11", "12", "13", "14", "15", "16", "17", "18", "19",
+            "20", "21", "22", "23", "24", "25", "26", "27", "28", "29",
+            "30", "31", "32", "33", "34", "35", "36", "37", "38", "39",
+            "40", "41", "42", "43", "44", "45", "46", "47", "48", "49",
+            "50", "51", "52", "53", "54", "55", "56", "57", "58", "59",
+            "60", "61", "62", "63", "64", "65", "66", "67", "68", "69",
+            "70", "71", "72", "73", "74", "75", "76", "77", "78", "79",
+            "80", "81", "82", "83", "84", "85", "86", "87", "88", "89",
+            "90", "91", "92", "93", "94", "95", "96", "97", "98", "99"
+        };
+
+
+
         private static string[] revFrequencyOptions = new string[]
         {
             "2500", "2600", "2700", "2800", "2900",
@@ -73,10 +136,12 @@ namespace DJ_X100_memory_writer.domain
 
 
 
+
+
+
         public enum ColumnType
         {
             Text,
-            Checkbox,
             Dropdown
         }
 
@@ -106,15 +171,20 @@ namespace DJ_X100_memory_writer.domain
             public static readonly ColumnInfo EC = new ColumnInfo("ec", "EC");
             public static readonly ColumnInfo WC = new ColumnInfo("wc", "WC");
 
-            public static readonly ColumnInfo T61_LON = new ColumnInfo("t61_lon", "T61基準経度");
-            public static readonly ColumnInfo T61_LAT = new ColumnInfo("t61_lat", "T61基準緯度");
+            public static readonly ColumnInfo T61_LON = new ColumnInfo("t61_lon", "T61_LON");
+            public static readonly ColumnInfo T61_LAT = new ColumnInfo("t61_lat", "T61_LAT");
 
-            public static readonly ColumnInfo DMR_DLOT = new ColumnInfo("dmr_dlot", "DMR_SLOT");
+            public static readonly ColumnInfo DMR_SLOT = new ColumnInfo("dmr_slot", "DMR_SLOT");
             public static readonly ColumnInfo DMR_CC = new ColumnInfo("dmr_cc", "DMR_CC");
             public static readonly ColumnInfo DMR_GC = new ColumnInfo("dmr_gc", "DMR_GC");
 
-            public static readonly ColumnInfo LON = new ColumnInfo("lon", "経度");
-            public static readonly ColumnInfo LAT = new ColumnInfo("lat", "緯度");
+            public static readonly ColumnInfo DSTAR_CS = new ColumnInfo("dstar_cs", "DSTAR_CS");
+            public static readonly ColumnInfo C4FM_DG = new ColumnInfo("c4fm_dg", "C4FM_DG");
+
+
+
+            public static readonly ColumnInfo LON = new ColumnInfo("lon", "LON");
+            public static readonly ColumnInfo LAT = new ColumnInfo("lat", "LAT");
         }
 
         private List<ColumnSetup> columnsAsset = new List<ColumnSetup>
@@ -246,7 +316,7 @@ namespace DJ_X100_memory_writer.domain
             {
                 Id = Columns.GC.Id,
                 HeaderText = Columns.GC.Name,
-                Width = 40,
+                Width = 65,
                 Type = ColumnType.Text
             },
             new ColumnSetup
@@ -267,42 +337,67 @@ namespace DJ_X100_memory_writer.domain
             {
                 Id = Columns.T61_LON.Id,
                 HeaderText = Columns.T61_LON.Name,
-                Type = ColumnType.Text
+                Type = ColumnType.Dropdown,
+                Options = t61LonOptions
             },
             new ColumnSetup
             {
                 Id = Columns.T61_LAT.Id,
                 HeaderText = Columns.T61_LAT.Name,
-                Type = ColumnType.Text
+                Type = ColumnType.Dropdown,
+                Options = t61LatOptions
             },
             new ColumnSetup
             {
-                Id = Columns.DMR_DLOT.Id,
-                HeaderText = Columns.DMR_DLOT.Name,
-                Type = ColumnType.Text
+                Id = Columns.DMR_SLOT.Id,
+                HeaderText = Columns.DMR_SLOT.Name,
+                Width = 80,
+                Type = ColumnType.Dropdown,
+                Options = dmrSlotOptions
             },
             new ColumnSetup
             {
                 Id = Columns.DMR_CC.Id,
                 HeaderText = Columns.DMR_CC.Name,
-                Type = ColumnType.Text
+                Width = 80,
+                Type = ColumnType.Dropdown,
+                Options = dmrCcOptions
             },
             new ColumnSetup
             {
                 Id = Columns.DMR_GC.Id,
                 HeaderText = Columns.DMR_GC.Name,
+                Width = 80,
                 Type = ColumnType.Text
+            },
+             new ColumnSetup
+            {
+                Id = Columns.DSTAR_CS.Id,
+                HeaderText = Columns.DSTAR_CS.Name,
+                Width = 80,
+                Type = ColumnType.Dropdown,
+                Options = dstarCsOptions
+            },
+            new ColumnSetup
+            {
+                Id = Columns.C4FM_DG.Id,
+                HeaderText = Columns.C4FM_DG.Name,
+                Width = 80,
+                Type = ColumnType.Dropdown,
+                Options = c4fmDgOptions
             },
             new ColumnSetup
             {
                 Id = Columns.LON.Id,
                 HeaderText = Columns.LON.Name,
+                Width = 40,
                 Type = ColumnType.Text
             },
             new ColumnSetup
             {
                 Id = Columns.LAT.Id,
                 HeaderText = Columns.LAT.Name,
+                Width = 40,
                 Type = ColumnType.Text
             },
         };

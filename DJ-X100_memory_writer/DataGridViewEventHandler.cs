@@ -177,7 +177,7 @@ namespace DJ_X100_memory_writer
                         Columns.WC.Id,
                         Columns.T61_LON.Id,
                         Columns.T61_LAT.Id,
-                        Columns.DMR_DLOT.Id,
+                        Columns.DMR_SLOT.Id,
                         Columns.DMR_CC.Id,
                         Columns.DMR_GC.Id
                     };
@@ -195,7 +195,7 @@ namespace DJ_X100_memory_writer
                         Columns.WC.Id,
                         Columns.T61_LON.Id,
                         Columns.T61_LAT.Id,
-                        Columns.DMR_DLOT.Id,
+                        Columns.DMR_SLOT.Id,
                         Columns.DMR_CC.Id,
                         Columns.DMR_GC.Id
                     };
@@ -211,7 +211,7 @@ namespace DJ_X100_memory_writer
                         Columns.REV_EC_FREQ.Id,
                         Columns.T61_LON.Id,
                         Columns.T61_LAT.Id,
-                        Columns.DMR_DLOT.Id,
+                        Columns.DMR_SLOT.Id,
                         Columns.DMR_CC.Id,
                         Columns.DMR_GC.Id
                     };
@@ -244,7 +244,7 @@ namespace DJ_X100_memory_writer
                         Columns.UC.Id,
                         Columns.GC.Id,
                         Columns.EC.Id,
-                        Columns.DMR_DLOT.Id,
+                        Columns.DMR_SLOT.Id,
                         Columns.DMR_CC.Id,
                         Columns.DMR_GC.Id
                     };
@@ -265,7 +265,7 @@ namespace DJ_X100_memory_writer
                         Columns.EC.Id,
                         Columns.T61_LON.Id,
                         Columns.T61_LAT.Id,
-                        Columns.DMR_DLOT.Id,
+                        Columns.DMR_SLOT.Id,
                         Columns.DMR_CC.Id,
                         Columns.DMR_GC.Id
                     };
@@ -283,7 +283,7 @@ namespace DJ_X100_memory_writer
                         Columns.EC.Id,
                         Columns.T61_LON.Id,
                         Columns.T61_LAT.Id,
-                        Columns.DMR_DLOT.Id,
+                        Columns.DMR_SLOT.Id,
                         Columns.DMR_CC.Id,
                         Columns.DMR_GC.Id
                     };
@@ -302,7 +302,7 @@ namespace DJ_X100_memory_writer
                         Columns.WC.Id,
                         Columns.T61_LON.Id,
                         Columns.T61_LAT.Id,
-                        Columns.DMR_DLOT.Id,
+                        Columns.DMR_SLOT.Id,
                         Columns.DMR_CC.Id,
                         Columns.DMR_GC.Id
                     };
@@ -321,7 +321,7 @@ namespace DJ_X100_memory_writer
                         Columns.WC.Id,
                         Columns.T61_LON.Id,
                         Columns.T61_LAT.Id,
-                        Columns.DMR_DLOT.Id,
+                        Columns.DMR_SLOT.Id,
                         Columns.DMR_CC.Id,
                         Columns.DMR_GC.Id
                     };
@@ -344,7 +344,7 @@ namespace DJ_X100_memory_writer
                         Columns.WC.Id,
                         Columns.T61_LON.Id,
                         Columns.T61_LAT.Id,
-                        Columns.DMR_DLOT.Id,
+                        Columns.DMR_SLOT.Id,
                         Columns.DMR_CC.Id,
                         Columns.DMR_GC.Id
                     };

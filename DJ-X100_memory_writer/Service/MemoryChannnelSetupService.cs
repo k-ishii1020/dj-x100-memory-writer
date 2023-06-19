@@ -1,15 +1,15 @@
 ﻿using DJ_X100_memory_writer.domain;
 using static DJ_X100_memory_writer.domain.MemoryChannnelConfig;
 
-namespace DJ_X100_memory_writer
+namespace DJ_X100_memory_writer.Service
 {
-    internal class MemoryChannnelSetup
+    internal class MemoryChannnelSetupService
     {
         private DataGridView memoryChDataGridView;
         MemoryChannnelConfig config = new MemoryChannnelConfig();
 
 
-        public MemoryChannnelSetup(DataGridView _memoryChDataGridView)
+        public MemoryChannnelSetupService(DataGridView _memoryChDataGridView)
         {
             memoryChDataGridView = _memoryChDataGridView;
         }
@@ -57,14 +57,6 @@ namespace DJ_X100_memory_writer
                             FlatStyle = FlatStyle.Flat,
                         };
                         break;
-
-                    case ColumnType.Checkbox:
-                        viewColumn = new DataGridViewCheckBoxColumn
-                        {
-                            ThreeState = false
-                        };
-                        break;
-
                     case ColumnType.Text:
                     default:
                         viewColumn = new DataGridViewTextBoxColumn();
