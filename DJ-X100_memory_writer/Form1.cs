@@ -133,61 +133,36 @@ namespace DJ_X100_memory_writer
             return false;
         }
 
-
-
-
-
         private void 新規作成NToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            bool isEmpty = true;
-            foreach (DataGridViewRow row in memoryChDataGridView.Rows)
+            if (!IsDataGridViewEmpty() &&
+                MessageBox.Show("作成中のデータは破棄されます。よろしいですか？", "警告", MessageBoxButtons.YesNo, MessageBoxIcon.Warning) == DialogResult.Yes)
             {
-                for (int i = 1; i < row.Cells.Count; i++)
-                {
-                    if (row.Cells[i].Value != null && !string.IsNullOrWhiteSpace(row.Cells[i].Value.ToString()))
-                    {
-                        isEmpty = false;
-                        break;
-                    }
-                }
-
-                if (!isEmpty)
-                {
-                    break;
-                }
-            }
-
-            if (!isEmpty)
-            {
-                var confirmResult = MessageBox.Show("作成中のデータは破棄されます", "よろしいですか？", MessageBoxButtons.YesNo, MessageBoxIcon.Warning);
-                if (confirmResult == DialogResult.Yes)
-                {
-                    memoryChDataGridView.Rows.Clear();
-                    memoryChDataGridView.Columns.Clear();  // ここで既存の列を削除します。
-                    var configurer = new MemoryChannnelSetupService(memoryChDataGridView);
-                    configurer.SetupDataGridView();
-                }
+                memoryChDataGridView.Rows.Clear();
+                memoryChDataGridView.Columns.Clear();
+                var configurer = new MemoryChannnelSetupService(memoryChDataGridView);
+                configurer.SetupDataGridView();
             }
         }
 
-
-
-
         private void 開くNToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            OpenFileDialog openFileDialog = new OpenFileDialog();
-            openFileDialog.Title = "CSVファイルを開く";
-            openFileDialog.InitialDirectory = @"C:\";
-            openFileDialog.Filter = "CSVファイル(*.csv)|*csv|すべてのファイル(*.*)|*.*";
-            openFileDialog.FilterIndex = 0;
-            openFileDialog.Multiselect = false;
-
-            DialogResult result = openFileDialog.ShowDialog();
-
-            if (result == DialogResult.OK)
+            if (!IsDataGridViewEmpty() &&
+                MessageBox.Show("作成中のデータは破棄されます。よろしいですか？", "警告", MessageBoxButtons.YesNo, MessageBoxIcon.Warning) == DialogResult.Yes)
             {
+                OpenFileDialog openFileDialog = new OpenFileDialog
+                {
+                    Title = "CSVファイルを開く",
+                    InitialDirectory = Environment.GetFolderPath(Environment.SpecialFolder.Desktop),
+                    Filter = "CSVファイル(*.csv)|*csv|すべてのファイル(*.*)|*.*",
+                    FilterIndex = 0,
+                    Multiselect = false
+                };
 
-                csvUtils.ImportCsvToDataGridView(memoryChDataGridView, openFileDialog.FileName);
+                if (openFileDialog.ShowDialog() == DialogResult.OK)
+                {
+                    csvUtils.ImportCsvToDataGridView(memoryChDataGridView, openFileDialog.FileName);
+                }
             }
         }
 
@@ -255,6 +230,21 @@ namespace DJ_X100_memory_writer
             {
                 csvUtils.ExportDataGridViewToX100CmdCsv(memoryChDataGridView, saveFileDialog.FileName);
             }
+        }
+
+        private bool IsDataGridViewEmpty()
+        {
+            foreach (DataGridViewRow row in memoryChDataGridView.Rows)
+            {
+                for (int i = 1; i < row.Cells.Count; i++)
+                {
+                    if (row.Cells[i].Value != null && !string.IsNullOrWhiteSpace(row.Cells[i].Value.ToString()))
+                    {
+                        return false;
+                    }
+                }
+            }
+            return true;
         }
     }
 }

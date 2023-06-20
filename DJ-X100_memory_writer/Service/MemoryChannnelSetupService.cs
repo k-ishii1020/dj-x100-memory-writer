@@ -1,4 +1,5 @@
 ﻿using DJ_X100_memory_writer.domain;
+using System.Windows.Forms;
 using static DJ_X100_memory_writer.domain.MemoryChannnelConfig;
 
 namespace DJ_X100_memory_writer.Service
@@ -22,11 +23,10 @@ namespace DJ_X100_memory_writer.Service
             memoryChDataGridView.AllowUserToDeleteRows = false;
             memoryChDataGridView.EditMode = DataGridViewEditMode.EditOnKeystrokeOrF2;
             memoryChDataGridView.KeyDown += handler.MemoryChDataGridView_KeyDown;
-            memoryChDataGridView.CellValidating += handler.MemoryChDataGridView_CellValidating;
-            memoryChDataGridView.CellValidated += handler.MemoryChDataGridView_CellValidated;
             memoryChDataGridView.EditingControlShowing += handler.MemoryChDataGridView_EditingControlShowing;
             memoryChDataGridView.CellEndEdit += handler.MemoryChDataGridView_CellEndEdit;
             memoryChDataGridView.CellClick += handler.MemoryChDataGridView_CellClick;
+            memoryChDataGridView.DataError += handler.memoryChDataGridView_DataError;
 
             memoryChDataGridView.CellValueChanged += handler.MemoryChDataGridView_CellValueChanged;
             memoryChDataGridView.EditMode = DataGridViewEditMode.EditOnEnter;

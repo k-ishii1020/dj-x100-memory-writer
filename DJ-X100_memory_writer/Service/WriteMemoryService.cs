@@ -8,7 +8,6 @@ namespace DJ_X100_memory_writer.Service
         DataGridView dataGridView = new DataGridView();
         CreateCsvFileService createCsvFileService = new CreateCsvFileService();
 
-
         public void Write(DataGridView dataGridView, string selectedPort)
         {
             createCsvFileService.ExportDataGridViewToX100CmdCsv(dataGridView, ".\\x100cmd_temp.csv");

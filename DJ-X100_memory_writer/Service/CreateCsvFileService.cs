@@ -1,4 +1,5 @@
-﻿using System.Text;
+﻿using System.Globalization;
+using System.Text;
 using static DJ_X100_memory_writer.domain.MemoryChannnelConfig;
 
 namespace DJ_X100_memory_writer.Service
@@ -80,35 +81,52 @@ namespace DJ_X100_memory_writer.Service
                     {
                         continue;
                     }
-                    else
-                    {
-                        // "No" 列および12列目を3桁0埋めで設定
-                        if ((j == 0 || j == 12) && int.TryParse(cells[j], out int no))
-                        {
-                            cells[j] = String.Format("{0:D3}", no);
-                        }
 
-                        // コンボボックス列のデータを処理
-                        if (memoryChDataGridView.Columns[j] is DataGridViewComboBoxColumn)
+                    // j=1の列の入力チェック
+                    if (j == 1)
+                    {
+                        string result = ValidateAndFormatDecimalCell(cells[j], i, memoryChDataGridView.Columns[j].HeaderText);
+
+                        if (result.Contains("は範囲外です。") || result.Contains("は無効な値です。"))
                         {
-                            DataGridViewComboBoxColumn comboBoxColumn = (DataGridViewComboBoxColumn)memoryChDataGridView.Columns[j];
-                            if (comboBoxColumn.Items.Contains(cells[j]))
-                            {
-                                // セルの値がComboBoxの項目に含まれている場合のみ設定
-                                row.Cells[j].Value = cells[j];
-                            }
-                            else
-                            {
-                                // もし値がComboBoxの項目に存在しない場合、エラーメッセージを追加し、セルの値をnullに設定
-                                errors.Add($"行{i + 1}, 列{memoryChDataGridView.Columns[j].HeaderText}: '{cells[j]}' は選択項目に存在しません。");
-                                row.Cells[j].Value = null;
-                            }
+                            errors.Add(result);
+                            row.Cells[j].Value = null;
+                            continue;
                         }
                         else
                         {
-                            row.Cells[j].Value = cells[j];
+                            row.Cells[j].Value = result;
                         }
                     }
+
+
+                    // "No" 列および12列目を3桁0埋めで設定
+                    if ((j == 0 || j == 12) && int.TryParse(cells[j], out int no))
+                    {
+                        cells[j] = String.Format("{0:D3}", no);
+                    }
+
+                    // コンボボックス列のデータを処理
+                    if (memoryChDataGridView.Columns[j] is DataGridViewComboBoxColumn)
+                    {
+                        DataGridViewComboBoxColumn comboBoxColumn = (DataGridViewComboBoxColumn)memoryChDataGridView.Columns[j];
+                        if (comboBoxColumn.Items.Contains(cells[j]))
+                        {
+                            // セルの値がComboBoxの項目に含まれている場合のみ設定
+                            row.Cells[j].Value = cells[j];
+                        }
+                        else
+                        {
+                            // もし値がComboBoxの項目に存在しない場合、エラーメッセージを追加し、セルの値をnullに設定
+                            errors.Add($"行{i + 1}, 列{memoryChDataGridView.Columns[j].HeaderText}: '{cells[j]}' は選択項目に存在しません。");
+                            row.Cells[j].Value = null;
+                        }
+                    }
+                    else
+                    {
+                        row.Cells[j].Value = cells[j];
+                    }
+
                 }
 
                 // 行をDataGridViewに追加
@@ -131,12 +149,34 @@ namespace DJ_X100_memory_writer.Service
                 memoryChDataGridView.Rows.Add(row);
             }
 
-            // もしエラーがあった場合、ユーザーにメッセージを表示
+            // エラーがあった場合、ユーザーにメッセージを表示
             if (errors.Count > 0)
             {
                 string errorMessage = "以下のエラーが発生しました:\r\n" + string.Join("\r\n", errors);
                 ErrorForm errorForm = new ErrorForm(errorMessage);
                 errorForm.ShowDialog();
+            }
+        }
+
+
+        private string ValidateAndFormatDecimalCell(string cellValue, int rowNumber, string columnName)
+        {
+            if (decimal.TryParse(cellValue, NumberStyles.Any, CultureInfo.InvariantCulture, out decimal value))
+            {
+                string decimalPart = cellValue.Contains(".") ? cellValue.Split('.')[1] : "";
+
+                if (value < 20m || value > 470m || decimalPart.Length > 6)
+                {
+                    return $"行{rowNumber + 1}, 列{columnName}: '{cellValue}' は範囲外です。";
+                }
+                else
+                {
+                    return value.ToString("F6", CultureInfo.InvariantCulture); // 少数を第6位まで表示
+                }
+            }
+            else
+            {
+                return $"行{rowNumber + 1}, 列{columnName}: '{cellValue}' は無効な値です。";
             }
         }
 
@@ -153,7 +193,7 @@ namespace DJ_X100_memory_writer.Service
                 {
                     string[] columnOrder = new string[]
                     { Columns.MEMORY_NO.Id, Columns.FREQ.Id, Columns.MODE.Id, Columns.STEP.Id, Columns.MEMORY_NAME.Id,
-                      Columns.OFFSET.Id, Columns.OFFSET_FREQ.Id, Columns.ATT.Id, Columns.SQL_MODE.Id, Columns.CTCSS.Id,
+                      Columns.OFFSET.Id, Columns.SHIFT_FREQ.Id, Columns.ATT.Id, Columns.SQL_MODE.Id, Columns.CTCSS.Id,
                       Columns.DCS.Id, Columns.BANK.Id, Columns.LAT.Id, Columns.LON.Id, Columns.SKIP.Id, "ext"
                     };
 

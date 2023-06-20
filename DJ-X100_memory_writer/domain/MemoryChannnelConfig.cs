@@ -54,6 +54,18 @@
             "OFF", "10db", "20db"
         };
 
+        private static string[] wcOptions = GenerateWcOptions();
+
+        private static string[] GenerateWcOptions()
+        {
+            string[] options = new string[511];
+            options[0] = "AUTO";
+            for (int i = 1; i < 511; i++)
+            {
+                options[i] = i.ToString("D3");
+            }
+            return options;
+        }
 
 
         private static string[] t61LonOptions = new string[]
@@ -154,14 +166,14 @@
             public static readonly ColumnInfo SKIP = new ColumnInfo("skip", "SKIP");
             public static readonly ColumnInfo STEP = new ColumnInfo("Step", "STEP");
             public static readonly ColumnInfo OFFSET = new ColumnInfo("offset", "OFFSET");
-            public static readonly ColumnInfo OFFSET_FREQ = new ColumnInfo("shift_freq", "FREQ");
+            public static readonly ColumnInfo SHIFT_FREQ = new ColumnInfo("shift_freq", "SHIFT_FREQ");
             public static readonly ColumnInfo ATT = new ColumnInfo("att", "ATT");
 
             public static readonly ColumnInfo SQL_MODE = new ColumnInfo("sq", "SQ_TYPE");
             public static readonly ColumnInfo CTCSS = new ColumnInfo("tone", "CTCSS");
             public static readonly ColumnInfo DCS = new ColumnInfo("dcs", "DCS");
             public static readonly ColumnInfo REV_EC = new ColumnInfo("revEc", "REV_EC");
-            public static readonly ColumnInfo REV_EC_FREQ = new ColumnInfo("revEcFreq", "FREQ");
+            public static readonly ColumnInfo REV_EC_FREQ = new ColumnInfo("revEcFreq", "REV_FREQ");
 
             public static readonly ColumnInfo UC = new ColumnInfo("uc", "UC");
             public static readonly ColumnInfo GC = new ColumnInfo("gc", "GC");
@@ -249,9 +261,9 @@
             },
             new ColumnSetup
             {
-                Id = Columns.OFFSET_FREQ.Id,
-                HeaderText = Columns.OFFSET_FREQ.Name,
-                Width = 50,
+                Id = Columns.SHIFT_FREQ.Id,
+                HeaderText = Columns.SHIFT_FREQ.Name,
+                Width = 80,
                 Type = ColumnType.Text
             },
             new ColumnSetup
@@ -327,8 +339,9 @@
             {
                 Id = Columns.WC.Id,
                 HeaderText = Columns.WC.Name,
-                Width = 40,
-                Type = ColumnType.Text
+                Width = 65,
+                Type = ColumnType.Dropdown,
+                Options = wcOptions
             },
             new ColumnSetup
             {

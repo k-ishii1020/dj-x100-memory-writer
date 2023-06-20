@@ -1,67 +1,43 @@
-﻿using System.Text;
+﻿using Microsoft.VisualBasic;
+using System.Text;
 
 namespace DJ_X100_memory_writer.Util
 {
     internal class DataGridViewUtils
     {
-        /// <summary>
-        /// 文字列の表示長を計算します。
-        /// ASCII文字は長さ1、非ASCII文字（全角文字を含む）は長さ2として計算します。
-        /// </summary>
-        /// <param name="str">長さを計算する文字列。</param>
-        /// <returns>文字列の表示長。</returns>
-        public int GetDisplayLength(string str)
+        public int GetAdjustedLength(string s)
         {
-            int len = 0;
-            foreach (char c in str)
+            Encoding sjisEnc = Encoding.GetEncoding("Shift_JIS");
+
+            int count = 0;
+
+            foreach (char c in s)
             {
-                if (c > '\u007f')
+                if (sjisEnc.GetByteCount(c.ToString()) > 1)
                 {
-                    len += 2;
+                    // 全角文字の場合
+                    count += 2;
                 }
                 else
                 {
-                    len += 1;
+                    // 半角文字の場合
+                    count += 1;
                 }
             }
-            return len;
+
+            return count;
         }
 
-        /// <summary>
-        /// 入力文字列を半角に変換します。
-        /// このメソッドでは、全角記号・英数字・かな・カナと全角スペースを半角に変換します。
-        /// それ以外の文字はそのままにします。
-        /// </summary>
-        /// <param name="input">半角に変換する文字列。</param>
-        /// <returns>半角に変換された文字列。</returns>
-        public string ConvertToHalfWidth(string input)
+        public string GetConvertedByteCountShiftJis(string s, ref int length)
         {
-            StringBuilder sb = new StringBuilder();
-            foreach (char c in input)
-            {
-                if ('\uFF01' <= c && c <= '\uFF5E') // 全角記号・英数字・かな・カナ
-                {
-                    sb.Append((char)(c - 0xFEE0));
-                }
-                else if (c == '\u3000') // 全角スペース
-                {
-                    sb.Append('\u0020');
-                }
-                else
-                {
-                    sb.Append(c);
-                }
-            }
-            return sb.ToString();
+            string converted = Strings.StrConv(s, VbStrConv.Narrow, 0x0411);
+            converted = converted.Replace("　", " ");  // 全角スペースを半角スペースに置換
+
+            length = Encoding.GetEncoding("Shift_JIS").GetByteCount(converted);
+
+            return converted;
         }
 
-        /// <summary>
-        /// 文字列を指定された最大長までカットします。
-        /// ASCII文字は長さ1、非ASCII文字（全角文字を含む）は長さ2として計算します。
-        /// </summary>
-        /// <param name="input">カットする文字列。</param>
-        /// <param name="maxLength">最大長。</param>
-        /// <returns>指定された最大長までカットされた文字列。</returns>
         public string CutToLength(string input, int maxLength)
         {
             StringBuilder output = new StringBuilder();

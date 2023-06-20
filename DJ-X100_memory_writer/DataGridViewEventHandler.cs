@@ -1,4 +1,7 @@
-﻿using System.Text;
+﻿using System.Globalization;
+using System.Text;
+using System.Text.RegularExpressions;
+using System.Windows.Forms;
 using DJ_X100_memory_writer.domain;
 using DJ_X100_memory_writer.Util;
 using static DJ_X100_memory_writer.domain.MemoryChannnelConfig;
@@ -15,16 +18,13 @@ namespace DJ_X100_memory_writer
             memoryChDataGridView = _memoryChDataGridView;
         }
 
-
-
-
-
-        // フィールドまたはプロパティとしてComboBoxを保持します
-        private ComboBox currentComboBox = null;
-
         public void MemoryChDataGridView_EditingControlShowing(object sender, DataGridViewEditingControlShowingEventArgs e)
         {
+
             var comboBox = e.Control as ComboBox;
+
+            // フィールドまたはプロパティとしてComboBoxを保持します
+            ComboBox currentComboBox = null;
 
             if (comboBox != null)
             {
@@ -51,41 +51,14 @@ namespace DJ_X100_memory_writer
             }
         }
 
-
-
-
-        public void MemoryChDataGridView_CellEndEdit(object sender, DataGridViewCellEventArgs e)
-        {
-            var comboBoxCell = memoryChDataGridView[e.ColumnIndex, e.RowIndex] as DataGridViewComboBoxCell;
-
-            if (comboBoxCell != null && currentComboBox != null)
-            {
-                // currentComboBox.Textを使用してセルの値を更新します
-                comboBoxCell.Value = currentComboBox.Text;
-            }
-        }
-
-
-
-
-
-        // セル入力開始時に全文選択
-        public void MemoryChDataGridView_CellEnter(object sender, DataGridViewCellEventArgs e)
-        {
-            var tb = memoryChDataGridView.EditingControl as TextBox;
-            var columnName = memoryChDataGridView.Columns[e.ColumnIndex].Name;
-                tb.SelectionStart = 0;
-                tb.SelectionLength = tb.Text.Length;
-        }
-
-
+        // DeleteキーでNo列消させない
         public void MemoryChDataGridView_KeyDown(object sender, KeyEventArgs e)
         {
             if (e.KeyCode == Keys.Delete)
             {
                 foreach (DataGridViewCell cell in memoryChDataGridView.SelectedCells)
                 {
-                    if (cell.OwningColumn.Name != Columns.MEMORY_NO.Id) // If the cell is not in the "No." column
+                    if (cell.OwningColumn.Name != Columns.MEMORY_NO.Id)
                     {
                         cell.Value = null;
                     }
@@ -95,53 +68,137 @@ namespace DJ_X100_memory_writer
         }
 
 
-        public void MemoryChDataGridView_CellValidating(object sender, DataGridViewCellValidatingEventArgs e)
+
+
+        public void MemoryChDataGridView_CellEndEdit(object sender, DataGridViewCellEventArgs e)
         {
-            if (memoryChDataGridView.Columns[e.ColumnIndex].Name == Columns.MEMORY_NAME.Id)
+            string columnName = memoryChDataGridView.Columns[e.ColumnIndex].Name;
+            string input = memoryChDataGridView.Rows[e.RowIndex].Cells[e.ColumnIndex].Value?.ToString();
+
+            if (input == null) return;
+
+            switch (columnName)
             {
-                string input = e.FormattedValue.ToString();
-                int inputLength = dataGridViewUtils.GetDisplayLength(input);
+                // メモリネームの文字数チェック
+                case var name when name == Columns.MEMORY_NAME.Id:
 
-                if (inputLength > 28)
-                {
-                    string convertedInput = dataGridViewUtils.ConvertToHalfWidth(input);
-                    int convertedInputLength = dataGridViewUtils.GetDisplayLength(convertedInput);
+                    int inputLength = dataGridViewUtils.GetAdjustedLength(input);
 
-                    if (convertedInputLength <= 28)
+                    if (inputLength > 28)
                     {
-                        DialogResult result = MessageBox.Show($"行 {e.RowIndex + 1} の 'ネーム' 列は半角28文字、全角14文字以内にしてください。\n半角に変換すると規定文字数に収まります。\n変換しますか？",
-                                                              "確認", MessageBoxButtons.OKCancel, MessageBoxIcon.Question);
+                        int convertedLength = 0;
 
-                        if (result == DialogResult.OK)
+                        string convertedInput = dataGridViewUtils.GetConvertedByteCountShiftJis(input, ref convertedLength);
+
+                        if (convertedLength <= 28)
                         {
-                            memoryChDataGridView.Rows[e.RowIndex].Cells[e.ColumnIndex].Tag = convertedInput;
+                            DialogResult result = MessageBox.Show($"行 {e.RowIndex + 1} の 'ネーム' 列は半角28文字、全角14文字以内にしてください。\n半角に変換すると規定文字数に収まります。\n変換しますか？",
+                                                                  "確認", MessageBoxButtons.OKCancel, MessageBoxIcon.Question);
+
+                            if (result == DialogResult.OK)
+                            {
+                                memoryChDataGridView.Rows[e.RowIndex].Cells[e.ColumnIndex].Value = convertedInput;
+                                return;
+                            }
+
+                        }
+                        MessageBox.Show($"エラー: 行 {e.RowIndex + 1} の 'ネーム' 列は半角28文字、全角14文字以内にしてください。\n超えた部分は自動的にカットされます。",
+                                        "エラー", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                        string cutInput = dataGridViewUtils.CutToLength(input, 28);
+                        memoryChDataGridView.Rows[e.RowIndex].Cells[e.ColumnIndex].Value = cutInput;
+                    }
+                    break;
+
+                // 周波数のチェック
+                case var freq when freq == Columns.FREQ.Id:
+                    string validationMessage = ValidateAndFormatDecimalCell(input, e.RowIndex, Columns.FREQ.Name);
+
+                    if (!string.IsNullOrWhiteSpace(validationMessage))
+                    {
+                        if (!decimal.TryParse(input, NumberStyles.Any, CultureInfo.InvariantCulture, out decimal _)
+                            || validationMessage.Contains("範囲外です")
+                            || validationMessage.Contains("無効な値です"))
+                        {
+                            MessageBox.Show(validationMessage, "エラー", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                            memoryChDataGridView.Rows[e.RowIndex].Cells[e.ColumnIndex].Value = null;
                             return;
                         }
-                    }
-                    // either we cannot fit the input by converting to half-width, or the user cancelled the operation
-                    MessageBox.Show($"エラー: 行 {e.RowIndex + 1} の 'ネーム' 列は半角28文字、全角14文字以内にしてください。\n超えた部分は自動的にカットされます。",
-                                    "エラー", MessageBoxButtons.OK, MessageBoxIcon.Warning);
 
-                    string cutInput = dataGridViewUtils.CutToLength(input, 28);
-                    memoryChDataGridView.Rows[e.RowIndex].Cells[e.ColumnIndex].Tag = cutInput;
-                }
+                        memoryChDataGridView.Rows[e.RowIndex].Cells[e.ColumnIndex].Value = validationMessage;
+                    }
+                    break;
+                // BANKのチェック
+                case var bank when bank == Columns.BANK.Id:
+                    // 空欄、nullの場合は無視
+                    if (string.IsNullOrWhiteSpace(input)) return;
+
+                    // A-Zまでの大文字アルファベットであること
+                    if (!Regex.IsMatch(input, @"^[A-Z]+$"))
+                    {
+                        MessageBox.Show($"エラー: 行 {e.RowIndex + 1} の 'BANK' 列はA～Zまでの大文字アルファベットでなければなりません。",
+                                        "エラー", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                        memoryChDataGridView.Rows[e.RowIndex].Cells[e.ColumnIndex].Value = null;
+                        return;
+                    }
+
+                    // 同じアルファベットが重複していないこと
+                    if (input.Distinct().Count() != input.Length)
+                    {
+                        MessageBox.Show($"エラー: 行 {e.RowIndex + 1} の 'BANK' 列に同じアルファベットが重複しています。",
+                                        "エラー", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                        memoryChDataGridView.Rows[e.RowIndex].Cells[e.ColumnIndex].Value = null;
+                        return;
+                    }
+                    break;
             }
         }
 
+         // エラー検知
+        public void memoryChDataGridView_DataError(object sender, DataGridViewDataErrorEventArgs e)
+        {
+            string columnName = memoryChDataGridView.Columns[e.ColumnIndex].HeaderText;
 
+            MessageBox.Show($"エラー: 行 {e.RowIndex + 1} の '{columnName}' 列でエラーが発生しました。\n{e.Exception.Message}",
+                            "エラー", MessageBoxButtons.OK, MessageBoxIcon.Warning);
 
+            e.ThrowException = false;
+        }
+        
+        // 周波数チェック
+        private string ValidateAndFormatDecimalCell(string cellValue, int rowNumber, string columnName)
+        {
+            if (string.IsNullOrWhiteSpace(cellValue))
+            {
+                return string.Empty;
+            }
 
+            if (decimal.TryParse(cellValue, NumberStyles.Any, CultureInfo.InvariantCulture, out decimal value))
+            {
+                string decimalPart = cellValue.Contains(".") ? cellValue.Split('.')[1] : "";
 
+                if (value < 20m || value > 470m || decimalPart.Length > 6)
+                {
+                    return $"行{rowNumber + 1}, 列{columnName}: '{cellValue}' は範囲外です。";
+                }
+                else
+                {
+                    return value.ToString("F6", CultureInfo.InvariantCulture); // 少数を第6位まで表示
+                }
+            }
+            else
+            {
+                return $"行{rowNumber + 1}, 列{columnName}: '{cellValue}' は無効な値です。";
+            }
+        }
 
-
-        public void MemoryChDataGridView_CellValidated(object sender, DataGridViewCellEventArgs e)
+/*        public void MemoryChDataGridView_CellValidated(object sender, DataGridViewCellEventArgs e)
         {
             if (memoryChDataGridView.Columns[e.ColumnIndex].Name == Columns.MEMORY_NAME.Id && memoryChDataGridView.Rows[e.RowIndex].Cells[e.ColumnIndex].Tag != null)
             {
                 memoryChDataGridView.Rows[e.RowIndex].Cells[e.ColumnIndex].Value = memoryChDataGridView.Rows[e.RowIndex].Cells[e.ColumnIndex].Tag;
                 memoryChDataGridView.Rows[e.RowIndex].Cells[e.ColumnIndex].Tag = null;
             }
-        }
+        }*/
 
 
         public void MemoryChDataGridView_CellClick(object sender, DataGridViewCellEventArgs e)
@@ -154,10 +211,6 @@ namespace DJ_X100_memory_writer
                 }
             }
         }
-
-
-
-
 
         public void MemoryChDataGridView_CellValueChanged(object sender, DataGridViewCellEventArgs e)
         {
