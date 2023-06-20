@@ -17,11 +17,32 @@ namespace DJ_X100_memory_writer
         public Form1()
         {
             InitializeComponent();
+
+            this.Load += Form1_Load;
+
             InitComPort();
             treeViewSetup();
             var configurer = new MemoryChannnelSetupService(memoryChDataGridView);
             configurer.SetupDataGridView();
         }
+
+        private void Form1_Load(object sender, EventArgs e)
+        {
+            DialogResult dialogResult = MessageBox.Show(
+                "このソフトは公開前のベータ版です。バンクネーム登録は作成中です。\n" +
+                "DJ-X100本体などの不具合発生時の責任について\n" +
+                "作者は一切の責任を負いかねます。\n\n" +
+                "アプリケーションを立ち上げると同意したものと見なしますがよろしいですか？",
+                "警告",
+                MessageBoxButtons.YesNo,
+                MessageBoxIcon.Warning
+            );
+            if (dialogResult != DialogResult.Yes)
+            {
+                Application.Exit();
+            }
+        }
+
 
         private void InitComPort()
         {
@@ -200,8 +221,23 @@ namespace DJ_X100_memory_writer
 
         private void 書き込みToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            writeMemory.Write(memoryChDataGridView, selectedPort);
+            DialogResult dialogResult = MessageBox.Show(
+                "この表に登録していないメモリは全て消えます。\n" +
+                "また、不具合によってメモリが消える、もしくは動作が不安定になる\n" +
+                "恐れがありますので必ず事前にバックアップを取ってください。\n" +
+                "x100cmd.exe export --ext backup.csv\n" +
+                "本当に書き込みを続行してもよろしいですか？",
+                "警告",
+                MessageBoxButtons.OKCancel,
+                MessageBoxIcon.Warning
+            );
+
+            if (dialogResult == DialogResult.OK)
+            {
+                writeMemory.Write(memoryChDataGridView, selectedPort);
+            }
         }
+
 
         private void x100cmdexe用CSVToolStripMenuItem_Click(object sender, EventArgs e)
         {

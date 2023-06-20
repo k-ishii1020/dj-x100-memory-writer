@@ -29,14 +29,30 @@ namespace DJ_X100_memory_writer
             if (comboBox != null)
             {
                 comboBox.DropDownStyle = ComboBoxStyle.DropDown;
-                // comboBox.SelectedIndexChanged イベントを削除
                 currentComboBox = comboBox;  // 現在のComboBoxを保持します
+
+                // 現在編集中のセルを取得
+                var currentCell = memoryChDataGridView.CurrentCell;
+
+                // セルに値が存在する場合、その値を選択項目として設定
+                if (currentCell.Value != null)
+                {
+                    comboBox.Text = currentCell.Value.ToString();
+                }
+                else
+                {
+                    // セルの値が存在しない場合、選択を解除
+                    comboBox.SelectedIndex = -1;
+                }
             }
             else
             {
                 currentComboBox = null;  // ComboBox以外のコントロールが表示されている場合、現在のComboBoxをnullにします
             }
         }
+
+
+
 
         public void MemoryChDataGridView_CellEndEdit(object sender, DataGridViewCellEventArgs e)
         {

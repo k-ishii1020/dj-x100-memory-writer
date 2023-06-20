@@ -144,8 +144,8 @@ namespace DJ_X100_memory_writer
             // 
             オプションOToolStripMenuItem.DropDownItems.AddRange(new ToolStripItem[] { cOMポートCToolStripMenuItem, 書き込みToolStripMenuItem });
             オプションOToolStripMenuItem.Name = "オプションOToolStripMenuItem";
-            オプションOToolStripMenuItem.Size = new Size(80, 20);
-            オプションOToolStripMenuItem.Text = "オプション(&O)";
+            オプションOToolStripMenuItem.Size = new Size(70, 20);
+            オプションOToolStripMenuItem.Text = "無線機(&X)";
             // 
             // cOMポートCToolStripMenuItem
             // 
@@ -157,7 +157,7 @@ namespace DJ_X100_memory_writer
             // 
             書き込みToolStripMenuItem.Name = "書き込みToolStripMenuItem";
             書き込みToolStripMenuItem.Size = new Size(142, 22);
-            書き込みToolStripMenuItem.Text = "書き込み";
+            書き込みToolStripMenuItem.Text = "書き込み(&W)";
             書き込みToolStripMenuItem.Click += 書き込みToolStripMenuItem_Click;
             // 
             // ヘルプHToolStripMenuItem
@@ -211,7 +211,7 @@ namespace DJ_X100_memory_writer
             imageList1.ColorDepth = ColorDepth.Depth8Bit;
             imageList1.ImageStream = (ImageListStreamer)resources.GetObject("imageList1.ImageStream");
             imageList1.TransparentColor = Color.Transparent;
-            imageList1.Images.SetKeyName(0, "2176.png");
+            imageList1.Images.SetKeyName(0, "radio.ico");
             imageList1.Images.SetKeyName(1, "kkrn_icon_folder_1.png");
             // 
             // memoryChDataGridView
@@ -259,6 +259,7 @@ namespace DJ_X100_memory_writer
             Controls.Add(statusStrip1);
             Controls.Add(splitContainer1);
             Controls.Add(menuStrip1);
+            Icon = (Icon)resources.GetObject("$this.Icon");
             MainMenuStrip = menuStrip1;
             Name = "Form1";
             Text = "DJ-X100 Memory Writer(非公式)";

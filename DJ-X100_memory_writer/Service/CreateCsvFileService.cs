@@ -80,31 +80,57 @@ namespace DJ_X100_memory_writer.Service
                     {
                         continue;
                     }
-                    // コンボボックス列のデータを処理
-                    else if (memoryChDataGridView.Columns[j] is DataGridViewComboBoxColumn)
+                    else
                     {
-                        DataGridViewComboBoxColumn comboBoxColumn = (DataGridViewComboBoxColumn)memoryChDataGridView.Columns[j];
-                        if (comboBoxColumn.Items.Contains(cells[j]))
+                        // "No" 列および12列目を3桁0埋めで設定
+                        if ((j == 0 || j == 12) && int.TryParse(cells[j], out int no))
                         {
-                            // セルの値がComboBoxの項目に含まれている場合のみ設定
-                            row.Cells[j].Value = cells[j];
+                            cells[j] = String.Format("{0:D3}", no);
+                        }
+
+                        // コンボボックス列のデータを処理
+                        if (memoryChDataGridView.Columns[j] is DataGridViewComboBoxColumn)
+                        {
+                            DataGridViewComboBoxColumn comboBoxColumn = (DataGridViewComboBoxColumn)memoryChDataGridView.Columns[j];
+                            if (comboBoxColumn.Items.Contains(cells[j]))
+                            {
+                                // セルの値がComboBoxの項目に含まれている場合のみ設定
+                                row.Cells[j].Value = cells[j];
+                            }
+                            else
+                            {
+                                // もし値がComboBoxの項目に存在しない場合、エラーメッセージを追加し、セルの値をnullに設定
+                                errors.Add($"行{i + 1}, 列{memoryChDataGridView.Columns[j].HeaderText}: '{cells[j]}' は選択項目に存在しません。");
+                                row.Cells[j].Value = null;
+                            }
                         }
                         else
                         {
-                            // もし値がComboBoxの項目に存在しない場合、エラーメッセージを追加し、セルの値をnullに設定
-                            errors.Add($"行{i + 1}, 列{memoryChDataGridView.Columns[j].HeaderText}: '{cells[j]}' は選択項目に存在しません。");
-                            row.Cells[j].Value = null;
+                            row.Cells[j].Value = cells[j];
                         }
-                    }
-                    else
-                    {
-                        row.Cells[j].Value = cells[j];
                     }
                 }
 
                 // 行をDataGridViewに追加
                 memoryChDataGridView.Rows.Add(row);
             }
+
+            // 不足分の行を追加
+            int rowsToAdd = 999 - memoryChDataGridView.Rows.Count;
+            for (int i = 0; i < rowsToAdd; i++)
+            {
+                // 新しいDataGridViewの行を作成
+                DataGridViewRow row = new DataGridViewRow();
+                row.Height = memoryChDataGridView.RowTemplate.Height;
+                row.CreateCells(memoryChDataGridView);
+
+                // "No" 列を3桁0埋めで設定
+                row.Cells[0].Value = String.Format("{0:D3}", memoryChDataGridView.Rows.Count + 1);
+
+                // 行をDataGridViewに追加
+                memoryChDataGridView.Rows.Add(row);
+            }
+
             // もしエラーがあった場合、ユーザーにメッセージを表示
             if (errors.Count > 0)
             {
@@ -113,6 +139,8 @@ namespace DJ_X100_memory_writer.Service
                 errorForm.ShowDialog();
             }
         }
+
+
 
 
 
@@ -137,9 +165,6 @@ namespace DJ_X100_memory_writer.Service
 
                     foreach (DataGridViewRow row in memoryChDataGridView.Rows)
                     {
-                        if (row.Cells[Columns.FREQ.Id].Value == null) continue;
-
-
                         IEnumerable<string> cellValues = columnOrder
                             .Select(columnName =>
                             {

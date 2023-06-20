@@ -56,7 +56,7 @@
             // progressBar1
             // 
             progressBar1.Location = new Point(12, 444);
-            progressBar1.MarqueeAnimationSpeed = 20;
+            progressBar1.MarqueeAnimationSpeed = 5;
             progressBar1.Name = "progressBar1";
             progressBar1.Size = new Size(198, 23);
             progressBar1.Style = ProgressBarStyle.Marquee;

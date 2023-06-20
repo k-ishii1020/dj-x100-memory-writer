@@ -153,8 +153,18 @@ namespace DJ_X100_memory_writer.Service
         {
             if (row.Cells[Columns.MODE.Id].Value != null && row.Cells[Columns.MODE.Id].Value.ToString() == mode)
             {
-                // WCの値が存在しない場合は "0000" にします
-                string value = row.Cells[Columns.WC.Id].Value != null ? row.Cells[Columns.WC.Id].Value.ToString() : "0000";
+                string value;
+
+                // T98の場合はWCの値が存在しない場合は "0228" にします
+                if (row.Cells[Columns.MODE.Id].Value.ToString() == "T98")
+                {
+                    value = row.Cells[Columns.WC.Id].Value != null ? row.Cells[Columns.WC.Id].Value.ToString() : "0228";
+                }
+                else
+                {
+                    // WCの値が存在しない場合は "0000" にします
+                    value = row.Cells[Columns.WC.Id].Value != null ? row.Cells[Columns.WC.Id].Value.ToString() : "0000";
+                }
 
                 // AUTOだった場合は "0180" に、それ以外は16進数として解釈してエンディアンを反転します
                 string replaceValue = (value == "AUTO") ? "0180" : hexUtils.SwapEndianHexForFourHex(value);
