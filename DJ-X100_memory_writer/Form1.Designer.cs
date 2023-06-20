@@ -32,8 +32,34 @@ namespace DJ_X100_memory_writer
         {
             components = new System.ComponentModel.Container();
             TreeNode treeNode1 = new TreeNode("メモリーチャンネル");
-            TreeNode treeNode2 = new TreeNode("バンクメモリ(工事中)");
-            TreeNode treeNode3 = new TreeNode("DJ-X100", new TreeNode[] { treeNode1, treeNode2 });
+            TreeNode treeNode2 = new TreeNode("A:");
+            TreeNode treeNode3 = new TreeNode("B:");
+            TreeNode treeNode4 = new TreeNode("C:");
+            TreeNode treeNode5 = new TreeNode("D:");
+            TreeNode treeNode6 = new TreeNode("E:");
+            TreeNode treeNode7 = new TreeNode("F:");
+            TreeNode treeNode8 = new TreeNode("G:");
+            TreeNode treeNode9 = new TreeNode("H:");
+            TreeNode treeNode10 = new TreeNode("I:");
+            TreeNode treeNode11 = new TreeNode("J:");
+            TreeNode treeNode12 = new TreeNode("K:");
+            TreeNode treeNode13 = new TreeNode("L:");
+            TreeNode treeNode14 = new TreeNode("M:");
+            TreeNode treeNode15 = new TreeNode("N:");
+            TreeNode treeNode16 = new TreeNode("O:");
+            TreeNode treeNode17 = new TreeNode("P:");
+            TreeNode treeNode18 = new TreeNode("Q:");
+            TreeNode treeNode19 = new TreeNode("R:");
+            TreeNode treeNode20 = new TreeNode("S:");
+            TreeNode treeNode21 = new TreeNode("T:");
+            TreeNode treeNode22 = new TreeNode("U:");
+            TreeNode treeNode23 = new TreeNode("V:");
+            TreeNode treeNode24 = new TreeNode("W:");
+            TreeNode treeNode25 = new TreeNode("X:");
+            TreeNode treeNode26 = new TreeNode("Y:");
+            TreeNode treeNode27 = new TreeNode("Z:");
+            TreeNode treeNode28 = new TreeNode("バンクメモリ(工事中)", new TreeNode[] { treeNode2, treeNode3, treeNode4, treeNode5, treeNode6, treeNode7, treeNode8, treeNode9, treeNode10, treeNode11, treeNode12, treeNode13, treeNode14, treeNode15, treeNode16, treeNode17, treeNode18, treeNode19, treeNode20, treeNode21, treeNode22, treeNode23, treeNode24, treeNode25, treeNode26, treeNode27 });
+            TreeNode treeNode29 = new TreeNode("DJ-X100", new TreeNode[] { treeNode1, treeNode28 });
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Form1));
             menuStrip1 = new MenuStrip();
             ファイルFToolStripMenuItem = new ToolStripMenuItem();
@@ -45,6 +71,7 @@ namespace DJ_X100_memory_writer
             x100cmdexe用CSVToolStripMenuItem = new ToolStripMenuItem();
             終了NToolStripMenuItem = new ToolStripMenuItem();
             表示VToolStripMenuItem = new ToolStripMenuItem();
+            バンク設定BToolStripMenuItem = new ToolStripMenuItem();
             オプションOToolStripMenuItem = new ToolStripMenuItem();
             cOMポートCToolStripMenuItem = new ToolStripMenuItem();
             書き込みToolStripMenuItem = new ToolStripMenuItem();
@@ -136,9 +163,17 @@ namespace DJ_X100_memory_writer
             // 
             // 表示VToolStripMenuItem
             // 
+            表示VToolStripMenuItem.DropDownItems.AddRange(new ToolStripItem[] { バンク設定BToolStripMenuItem });
             表示VToolStripMenuItem.Name = "表示VToolStripMenuItem";
-            表示VToolStripMenuItem.Size = new Size(58, 20);
-            表示VToolStripMenuItem.Text = "表示(&V)";
+            表示VToolStripMenuItem.Size = new Size(62, 20);
+            表示VToolStripMenuItem.Text = "バンク(&B)";
+            // 
+            // バンク設定BToolStripMenuItem
+            // 
+            バンク設定BToolStripMenuItem.Name = "バンク設定BToolStripMenuItem";
+            バンク設定BToolStripMenuItem.Size = new Size(141, 22);
+            バンク設定BToolStripMenuItem.Text = "バンク設定(&B)";
+            バンク設定BToolStripMenuItem.Click += バンク設定BToolStripMenuItem_Click;
             // 
             // オプションOToolStripMenuItem
             // 
@@ -181,7 +216,7 @@ namespace DJ_X100_memory_writer
             // 
             splitContainer1.Panel2.Controls.Add(memoryChDataGridView);
             splitContainer1.Size = new Size(1284, 662);
-            splitContainer1.SplitterDistance = 196;
+            splitContainer1.SplitterDistance = 228;
             splitContainer1.TabIndex = 2;
             // 
             // treeView1
@@ -195,15 +230,95 @@ namespace DJ_X100_memory_writer
             treeNode1.ImageKey = "kkrn_icon_folder_1.png";
             treeNode1.Name = "メモリーチャンネル";
             treeNode1.Text = "メモリーチャンネル";
-            treeNode2.ImageKey = "kkrn_icon_folder_1.png";
-            treeNode2.Name = "バンクメモリ";
-            treeNode2.Text = "バンクメモリ(工事中)";
-            treeNode3.ImageIndex = 0;
-            treeNode3.Name = "ノード0";
-            treeNode3.Text = "DJ-X100";
-            treeView1.Nodes.AddRange(new TreeNode[] { treeNode3 });
+            treeNode2.ImageIndex = 1;
+            treeNode2.Name = "bankA";
+            treeNode2.Tag = "bankA";
+            treeNode2.Text = "A:";
+            treeNode3.ImageKey = "kkrn_icon_folder_1.png";
+            treeNode3.Name = "bankB";
+            treeNode3.Tag = "bankB";
+            treeNode3.Text = "B:";
+            treeNode4.ImageKey = "kkrn_icon_folder_1.png";
+            treeNode4.Name = "bankC";
+            treeNode4.Text = "C:";
+            treeNode5.ImageKey = "kkrn_icon_folder_1.png";
+            treeNode5.Name = "bankD";
+            treeNode5.Text = "D:";
+            treeNode6.ImageKey = "kkrn_icon_folder_1.png";
+            treeNode6.Name = "bankE";
+            treeNode6.Text = "E:";
+            treeNode7.ImageKey = "kkrn_icon_folder_1.png";
+            treeNode7.Name = "bankF";
+            treeNode7.Text = "F:";
+            treeNode8.ImageKey = "kkrn_icon_folder_1.png";
+            treeNode8.Name = "bankG";
+            treeNode8.Text = "G:";
+            treeNode9.ImageKey = "kkrn_icon_folder_1.png";
+            treeNode9.Name = "bankH";
+            treeNode9.Text = "H:";
+            treeNode10.ImageKey = "kkrn_icon_folder_1.png";
+            treeNode10.Name = "bankI";
+            treeNode10.Text = "I:";
+            treeNode11.ImageKey = "kkrn_icon_folder_1.png";
+            treeNode11.Name = "bankJ";
+            treeNode11.Text = "J:";
+            treeNode12.ImageKey = "kkrn_icon_folder_1.png";
+            treeNode12.Name = "bankK";
+            treeNode12.Text = "K:";
+            treeNode13.ImageKey = "kkrn_icon_folder_1.png";
+            treeNode13.Name = "bankL";
+            treeNode13.Text = "L:";
+            treeNode14.ImageKey = "kkrn_icon_folder_1.png";
+            treeNode14.Name = "bankM";
+            treeNode14.Text = "M:";
+            treeNode15.ImageKey = "kkrn_icon_folder_1.png";
+            treeNode15.Name = "bankN";
+            treeNode15.Text = "N:";
+            treeNode16.ImageKey = "kkrn_icon_folder_1.png";
+            treeNode16.Name = "bankO";
+            treeNode16.Text = "O:";
+            treeNode17.ImageKey = "kkrn_icon_folder_1.png";
+            treeNode17.Name = "bankP";
+            treeNode17.Text = "P:";
+            treeNode18.ImageKey = "kkrn_icon_folder_1.png";
+            treeNode18.Name = "bankQ";
+            treeNode18.Text = "Q:";
+            treeNode19.ImageKey = "kkrn_icon_folder_1.png";
+            treeNode19.Name = "bankR";
+            treeNode19.Text = "R:";
+            treeNode20.ImageKey = "kkrn_icon_folder_1.png";
+            treeNode20.Name = "bankS";
+            treeNode20.Text = "S:";
+            treeNode21.ImageKey = "kkrn_icon_folder_1.png";
+            treeNode21.Name = "bankT";
+            treeNode21.Text = "T:";
+            treeNode22.ImageKey = "kkrn_icon_folder_1.png";
+            treeNode22.Name = "bankU";
+            treeNode22.Text = "U:";
+            treeNode23.ImageKey = "kkrn_icon_folder_1.png";
+            treeNode23.Name = "bankV";
+            treeNode23.Text = "V:";
+            treeNode24.ImageKey = "kkrn_icon_folder_1.png";
+            treeNode24.Name = "bankW";
+            treeNode24.Text = "W:";
+            treeNode25.ImageKey = "kkrn_icon_folder_1.png";
+            treeNode25.Name = "bankX";
+            treeNode25.Text = "X:";
+            treeNode26.ImageKey = "kkrn_icon_folder_1.png";
+            treeNode26.Name = "bankY:";
+            treeNode26.Text = "Y:";
+            treeNode27.ImageKey = "kkrn_icon_folder_1.png";
+            treeNode27.Name = "bankZ";
+            treeNode27.Text = "Z:";
+            treeNode28.ImageKey = "kkrn_icon_folder_1.png";
+            treeNode28.Name = "bankMemoryNode";
+            treeNode28.Text = "バンクメモリ(工事中)";
+            treeNode29.ImageIndex = 0;
+            treeNode29.Name = "djx100Node";
+            treeNode29.Text = "DJ-X100";
+            treeView1.Nodes.AddRange(new TreeNode[] { treeNode29 });
             treeView1.SelectedImageIndex = 0;
-            treeView1.Size = new Size(196, 662);
+            treeView1.Size = new Size(228, 662);
             treeView1.TabIndex = 0;
             // 
             // imageList1
@@ -223,7 +338,7 @@ namespace DJ_X100_memory_writer
             memoryChDataGridView.Location = new Point(0, 0);
             memoryChDataGridView.Name = "memoryChDataGridView";
             memoryChDataGridView.RowTemplate.Height = 25;
-            memoryChDataGridView.Size = new Size(1084, 662);
+            memoryChDataGridView.Size = new Size(1052, 662);
             memoryChDataGridView.TabIndex = 0;
             // 
             // statusStrip1
@@ -300,5 +415,6 @@ namespace DJ_X100_memory_writer
         private ToolStripMenuItem 書き込みToolStripMenuItem;
         private ToolStripMenuItem エクスポートEToolStripMenuItem;
         private ToolStripMenuItem x100cmdexe用CSVToolStripMenuItem;
+        private ToolStripMenuItem バンク設定BToolStripMenuItem;
     }
 }

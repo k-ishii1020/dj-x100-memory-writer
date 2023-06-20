@@ -32,8 +32,9 @@ namespace DJ_X100_memory_writer
                 "このソフトは公開前のベータ版です。バンクネーム登録は作成中です。\n" +
                 "DJ-X100本体などの不具合発生時の責任について\n" +
                 "作者は一切の責任を負いかねます。\n\n" +
-                "アプリケーションを立ち上げると同意したものと見なしますがよろしいですか？",
-                "警告",
+                "アプリケーションを立ち上げると同意したものとします。\n" +
+                "よろしいですか？",
+                "DJ-X100 Memory Writer(非公式)",
                 MessageBoxButtons.YesNo,
                 MessageBoxIcon.Warning
             );
@@ -246,5 +247,74 @@ namespace DJ_X100_memory_writer
             }
             return true;
         }
+
+        private void バンク設定BToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            Form2 form2 = new Form2(this);
+            form2.Show();
+        }
+
+        public void UpdateTreeView(List<string> bankNames)
+        {
+            TreeNode parentNode = treeView1.Nodes
+                .OfType<TreeNode>()
+                .FirstOrDefault(n => n.Name == "djx100Node");
+
+            if (parentNode != null)
+            {
+                TreeNode bankMemoryNode = parentNode.Nodes
+                    .OfType<TreeNode>()
+                    .FirstOrDefault(n => n.Name == "bankMemoryNode");
+
+                if (bankMemoryNode != null)
+                {
+                    bankMemoryNode.Nodes.Clear();
+
+                    // 新しい子ノードを追加
+                    for (int i = 0; i < bankNames.Count; i++)
+                    {
+                        // アルファベットをAから順に取得し、それを名前の先頭に追加
+                        string bankName = ((char)('A' + i)).ToString() + ": " + bankNames[i];
+
+                        // imageKeyを指定してノードを作成
+                        TreeNode node = new TreeNode(bankName)
+                        {
+                            ImageKey = "kkrn_icon_folder_1.png",
+                            SelectedImageKey = "kkrn_icon_folder_1.png"
+                        };
+                        bankMemoryNode.Nodes.Add(node);
+                    }
+                }
+            }
+        }
+
+        public TreeNode GetBankNode(string bankLabel)
+        {
+            TreeNode parentNode = treeView1.Nodes
+                .OfType<TreeNode>()
+                .FirstOrDefault(n => n.Name == "djx100Node");
+
+            if (parentNode != null)
+            {
+                TreeNode bankMemoryNode = parentNode.Nodes
+                    .OfType<TreeNode>()
+                    .FirstOrDefault(n => n.Name == "bankMemoryNode");
+
+                if (bankMemoryNode != null)
+                {
+                    TreeNode bankNode = bankMemoryNode.Nodes
+                        .OfType<TreeNode>()
+                        .FirstOrDefault(n => n.Text.StartsWith(bankLabel + ":"));
+
+                    return bankNode;
+                }
+            }
+
+            return null;
+        }
+
+
+
+
     }
 }

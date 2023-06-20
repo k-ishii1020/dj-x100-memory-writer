@@ -34,7 +34,7 @@ namespace DJ_X100_memory_writer.Service
 
 
             // 表示部
-            memoryChDataGridView.DefaultCellStyle.BackColor = Color.White;
+            memoryChDataGridView.RowHeadersVisible = false;
             memoryChDataGridView.RowTemplate.Height = 20;
             memoryChDataGridView.AutoSizeRowsMode = DataGridViewAutoSizeRowsMode.None;
 

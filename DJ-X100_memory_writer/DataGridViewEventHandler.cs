@@ -1,8 +1,5 @@
 ﻿using System.Globalization;
-using System.Text;
 using System.Text.RegularExpressions;
-using System.Windows.Forms;
-using DJ_X100_memory_writer.domain;
 using DJ_X100_memory_writer.Util;
 using static DJ_X100_memory_writer.domain.MemoryChannnelConfig;
 
