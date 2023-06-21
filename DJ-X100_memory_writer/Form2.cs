@@ -81,70 +81,41 @@ namespace DJ_X100_memory_writer
 
 
 
-        private string ExecuteCommand(string command)
-        {
-            string output;
-
-            var processStartInfo = new ProcessStartInfo
-            {
-                FileName = "cmd.exe",
-                Arguments = $"/c chcp 65001 && {command}",
-                UseShellExecute = false,
-                RedirectStandardOutput = true,
-                CreateNoWindow = true,
-                StandardOutputEncoding = Encoding.UTF8,
-            };
-
-            using (var process = new Process { StartInfo = processStartInfo })
-            {
-                process.Start();
-
-                output = process.StandardOutput.ReadToEnd();
-
-                process.WaitForExit();
-            }
-
-            return output;
-
-        }
-
-        // コマンドを実行してデータを取得し、DataGridViewを更新する
-        public async Task UpdateDataFromCommandAsync()
-        {
-            for (char c = 'A'; c <= 'Z'; c++)
-            {
-                string command = $".\\x100cmd.exe bank read {c}";
-                string output = ExecuteCommand(command);
-
-                // コマンドの出力からバンク名を抽出する
-                var match = Regex.Match(output, $"\"{c}\",\"(.+)\"");
-                string bankName = match.Success ? match.Groups[1].Value.Trim() : "";
-
-                // 適切な行を探し、そのバンク名を更新
-                foreach (DataGridViewRow row in dgv.Rows)
-                {
-                    if (row.Cells[0].Value.ToString() == c.ToString())
-                    {
-                        row.Cells[1].Value = bankName;
-                        break;  // バンク名を更新したら、次の文字に進む
-                    }
-                }
-
-                // 100ミリ秒の遅延
-                await Task.Delay(100);
-            }
-        }
-
-
-
-
-
         private async void バンク設定読込RToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            await UpdateDataFromCommandAsync();
+            var x100cmdForm = new X100cmdForm();
+            x100cmdForm.Show();
+            await x100cmdForm.UpdateDataFromCommandAsync(UpdateBankName);
         }
 
+        private void UpdateBankName(char bankChar, string bankName)
+        {
+            // 適切な行を探し、そのバンク名を更新
+            foreach (DataGridViewRow row in dgv.Rows)
+            {
+                if (row.Cells[0].Value.ToString() == bankChar.ToString())
+                {
+                    row.Cells[1].Value = bankName;
+                    break;  // バンク名を更新したら、次の文字に進む
+                }
+            }
+        }
 
+        private async void バンク設定書込WToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            var x100cmdForm = new X100cmdForm();
+            x100cmdForm.Show();
 
+            // Create a dictionary for bank names
+            var bankNames = new Dictionary<char, string>();
+            foreach (DataGridViewRow row in dgv.Rows)
+            {
+                char bankChar = row.Cells[0].Value.ToString()[0];  // Assuming the bank character is in the first cell
+                string bankName = row.Cells[1].Value?.ToString() ?? "";  // Assuming the bank name is in the second cell
+
+                bankNames[bankChar] = bankName;
+            }
+            await x100cmdForm.WriteDataToCommandAsync(form1.selectedPort, bankNames);
+        }
     }
 }

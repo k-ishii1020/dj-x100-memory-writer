@@ -71,6 +71,7 @@
             // 
             バンク設定書込WToolStripMenuItem.Name = "バンク設定書込WToolStripMenuItem";
             resources.ApplyResources(バンク設定書込WToolStripMenuItem, "バンク設定書込WToolStripMenuItem");
+            バンク設定書込WToolStripMenuItem.Click += バンク設定書込WToolStripMenuItem_Click;
             // 
             // Form2
             // 

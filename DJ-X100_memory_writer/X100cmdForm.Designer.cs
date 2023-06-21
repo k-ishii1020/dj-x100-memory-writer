@@ -28,6 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(X100cmdForm));
             textBox1 = new TextBox();
             okButton = new Button();
             progressBar1 = new ProgressBar();
@@ -67,12 +68,12 @@
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
             ClientSize = new Size(800, 476);
-            ControlBox = false;
             Controls.Add(progressBar1);
             Controls.Add(okButton);
             Controls.Add(textBox1);
+            Icon = (Icon)resources.GetObject("$this.Icon");
             Name = "X100cmdForm";
-            Text = "書き込み中…";
+            Text = "通信中…";
             ResumeLayout(false);
             PerformLayout();
         }

@@ -11,7 +11,7 @@ namespace DJ_X100_memory_writer
         CreateCsvFileService csvUtils = new CreateCsvFileService();
         WriteMemoryService writeMemory = new WriteMemoryService();
 
-        private string selectedPort;
+        public string selectedPort;
         private List<ToolStripMenuItem> portMenuItems;
 
         public Form1()
