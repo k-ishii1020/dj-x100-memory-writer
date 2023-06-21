@@ -145,11 +145,6 @@ namespace DJ_X100_memory_writer
             }
         }
 
-
-
-
-
-
         private async Task<string> ExecuteCommandAsync(string command)
         {
             var output = new StringBuilder();
@@ -190,12 +185,6 @@ namespace DJ_X100_memory_writer
 
             return output.ToString();
         }
-
-
-
-
-
-
         public async Task WriteDataToCommandAsync(string selectedPort, Dictionary<char, string> bankNames)
         {
             if (!CheckX100cmdVersion()) return;

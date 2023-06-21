@@ -50,9 +50,6 @@ namespace DJ_X100_memory_writer.Service
             }
         }
 
-
-
-
         public void ImportCsvToDataGridView(DataGridView memoryChDataGridView, string filename)
         {
             // DataGridViewの行をクリア
@@ -158,7 +155,6 @@ namespace DJ_X100_memory_writer.Service
             }
         }
 
-
         private string ValidateAndFormatDecimalCell(string cellValue, int rowNumber, string columnName)
         {
             if (decimal.TryParse(cellValue, NumberStyles.Any, CultureInfo.InvariantCulture, out decimal value))
@@ -171,7 +167,7 @@ namespace DJ_X100_memory_writer.Service
                 }
                 else
                 {
-                    return value.ToString("F6", CultureInfo.InvariantCulture); // 少数を第6位まで表示
+                    return value.ToString("F6", CultureInfo.InvariantCulture);
                 }
             }
             else
@@ -179,11 +175,6 @@ namespace DJ_X100_memory_writer.Service
                 return $"行{rowNumber + 1}, 列{columnName}: '{cellValue}' は無効な値です。";
             }
         }
-
-
-
-
-
 
         public void ExportDataGridViewToX100CmdCsv(DataGridView memoryChDataGridView, string filename)
         {

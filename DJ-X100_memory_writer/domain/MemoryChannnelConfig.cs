@@ -140,14 +140,6 @@
             "OFF", "ON"
         };
 
-
-
-
-
-
-
-
-
         public enum ColumnType
         {
             Text,
@@ -189,8 +181,6 @@
 
             public static readonly ColumnInfo DSTAR_CS = new ColumnInfo("dstar_cs", "DSTAR_CS");
             public static readonly ColumnInfo C4FM_DG = new ColumnInfo("c4fm_dg", "C4FM_DG");
-
-
 
             public static readonly ColumnInfo LON = new ColumnInfo("lon", "LON");
             public static readonly ColumnInfo LAT = new ColumnInfo("lat", "LAT");
@@ -411,7 +401,6 @@
                 Type = ColumnType.Text
             },
         };
-
 
         public class ColumnInfo
         {

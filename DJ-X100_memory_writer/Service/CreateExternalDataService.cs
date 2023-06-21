@@ -84,9 +84,6 @@ namespace DJ_X100_memory_writer.Service
             {
                 throw new InvalidOperationException($"拡張文字列長に誤りがありますので操作を中止します。正: {initialLength} 実際: {finalLength}.");
             }
-
-
-
             return externalStr;
         }
 

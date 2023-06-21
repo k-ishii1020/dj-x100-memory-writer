@@ -21,17 +21,14 @@ namespace DJ_X100_memory_writer
 
             InitializeComponent();
 
-            // Create a Panel to hold the DataGridView
             Panel dgvPanel = new Panel
             {
                 Dock = DockStyle.Fill,
-                Padding = new Padding(0, 20, 0, 0),  // Add the padding to the Panel, not the Form
+                Padding = new Padding(0, 20, 0, 0),
             };
 
-            // FormにDataGridViewを追加
             this.Controls.Add(dgvPanel);
 
-            // DataGridViewを作成
             this.dgv = new DataGridView
             {
                 ColumnCount = 2,
@@ -40,10 +37,9 @@ namespace DJ_X100_memory_writer
                 AllowUserToAddRows = false,
                 AutoSizeRowsMode = DataGridViewAutoSizeRowsMode.AllCells,
                 AlternatingRowsDefaultCellStyle = new DataGridViewCellStyle { BackColor = Color.AliceBlue },
-                Dock = DockStyle.Fill,  // The DataGridView fills the entire Panel
+                Dock = DockStyle.Fill,
             };
 
-            // Add the DataGridView to the Panel, not the Form
             dgvPanel.Controls.Add(dgv);
 
             // 列ヘッダーの設定
@@ -75,7 +71,6 @@ namespace DJ_X100_memory_writer
             }
 
             this.FormClosing += (sender, e) => UpdateData();
-            // Add the key down event to handle paste (Ctrl+V)
             dgv.KeyDown += DataGridView1_KeyDown;
             dgv.CellEndEdit += DataGridView1_CellEndEdit;
         }
@@ -143,39 +138,29 @@ namespace DJ_X100_memory_writer
 
         private void PasteClipboardData()
         {
-            // Get the starting cell where the paste should happen
             DataGridViewCell startCell = dgv.SelectedCells[0];
 
-            // Get the clipboard data in text format
             string clipboardText = Clipboard.GetText(TextDataFormat.Text);
 
-            // Split the clipboard text into lines
             var lines = clipboardText.Split(new[] { '\r', '\n' }, StringSplitOptions.RemoveEmptyEntries);
 
-            // Loop over the lines
             for (int i = 0; i < lines.Length; i++)
             {
-                // Split the line into cells
                 var cells = lines[i].Split('\t');
 
-                // Loop over the cells
                 for (int j = 0; j < cells.Length; j++)
                 {
-                    // Calculate the cell to be pasted into
                     int pasteCellRowIndex = startCell.RowIndex + i;
                     int pasteCellColumnIndex = startCell.ColumnIndex + j;
 
-                    // Check if the cell to be pasted into exists
                     if (pasteCellRowIndex < dgv.RowCount && pasteCellColumnIndex < dgv.ColumnCount)
                     {
                         DataGridViewCell cell = dgv[pasteCellColumnIndex, pasteCellRowIndex];
 
-                        // Paste the value
                         cell.Value = cells[j];
                     }
                     else
                     {
-                        // Skip this cell as it does not exist
                         break;
                     }
                 }
@@ -222,16 +207,20 @@ namespace DJ_X100_memory_writer
             var x100cmdForm = new X100cmdForm();
             x100cmdForm.Show();
 
-            // Create a dictionary for bank names
             var bankNames = new Dictionary<char, string>();
             foreach (DataGridViewRow row in dgv.Rows)
             {
-                char bankChar = row.Cells[0].Value.ToString()[0];  // Assuming the bank character is in the first cell
-                string bankName = row.Cells[1].Value?.ToString() ?? "";  // Assuming the bank name is in the second cell
+                char bankChar = row.Cells[0].Value.ToString()[0];
+                string bankName = row.Cells[1].Value?.ToString() ?? "";
 
                 bankNames[bankChar] = bankName;
             }
             await x100cmdForm.WriteDataToCommandAsync(form1.selectedPort, bankNames);
+        }
+
+        private void メイン画面へ戻るToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            this.Close();
         }
     }
 }

@@ -14,6 +14,7 @@ namespace DJ_X100_memory_writer
 
             ApplicationConfiguration.Initialize();
             Application.Run(new Form1());
+
         }
     }
 }

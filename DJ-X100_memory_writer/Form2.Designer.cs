@@ -54,6 +54,7 @@
             // 
             メイン画面へ戻るToolStripMenuItem.Name = "メイン画面へ戻るToolStripMenuItem";
             resources.ApplyResources(メイン画面へ戻るToolStripMenuItem, "メイン画面へ戻るToolStripMenuItem");
+            メイン画面へ戻るToolStripMenuItem.Click += メイン画面へ戻るToolStripMenuItem_Click;
             // 
             // 無線機XToolStripMenuItem
             // 

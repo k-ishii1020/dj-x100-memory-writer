@@ -377,7 +377,7 @@ namespace DJ_X100_memory_writer
             Icon = (Icon)resources.GetObject("$this.Icon");
             MainMenuStrip = menuStrip1;
             Name = "Form1";
-            Text = "DJ-X100 Memory Writer(非公式)";
+            Text = "DJ-X100 Memory Writer (非公式) v0.9.0 (β版)";
             menuStrip1.ResumeLayout(false);
             menuStrip1.PerformLayout();
             splitContainer1.Panel1.ResumeLayout(false);

@@ -1,5 +1,6 @@
 using DJ_X100_memory_writer.Service;
 using System;
+using System.Diagnostics;
 using System.IO.Ports;
 using System.Text;
 using System.Windows.Forms;
@@ -17,6 +18,7 @@ namespace DJ_X100_memory_writer
         public Form1()
         {
             InitializeComponent();
+            Application.ApplicationExit += new EventHandler(Form1_ApplicationExit);
 
             this.Load += Form1_Load;
 
@@ -313,8 +315,21 @@ namespace DJ_X100_memory_writer
             return null;
         }
 
+        private void Form1_ApplicationExit(object sender, EventArgs e)
+        {
+            try
+            {
+                string filePath = ".\\x100cmd_temp.csv";
 
-
+                if (System.IO.File.Exists(filePath))
+                {
+                    System.IO.File.Delete(filePath);
+                }
+            }
+            catch (Exception ex)
+            {
+            }
+        }
 
     }
 }
