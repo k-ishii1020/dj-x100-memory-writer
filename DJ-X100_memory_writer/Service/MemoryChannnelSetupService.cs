@@ -25,11 +25,9 @@ namespace DJ_X100_memory_writer.Service
             memoryChDataGridView.KeyDown += handler.MemoryChDataGridView_KeyDown;
             memoryChDataGridView.EditingControlShowing += handler.MemoryChDataGridView_EditingControlShowing;
             memoryChDataGridView.CellEndEdit += handler.MemoryChDataGridView_CellEndEdit;
-            memoryChDataGridView.CellClick += handler.MemoryChDataGridView_CellClick;
             memoryChDataGridView.DataError += handler.memoryChDataGridView_DataError;
 
             memoryChDataGridView.CellValueChanged += handler.MemoryChDataGridView_CellValueChanged;
-            memoryChDataGridView.EditMode = DataGridViewEditMode.EditOnEnter;
 
 
 

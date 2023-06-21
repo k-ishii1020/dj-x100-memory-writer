@@ -62,10 +62,51 @@ namespace DJ_X100_memory_writer
                 }
                 e.Handled = true;
             }
+            if ((Control.ModifierKeys & Keys.Control) == Keys.Control && e.KeyCode == Keys.V)
+            {
+                PasteClipboardData();
+            }
         }
+        private void PasteClipboardData()
+        {
+            // Get the starting cell where the paste should happen
+            DataGridViewCell startCell = memoryChDataGridView.SelectedCells[0];
 
+            // Get the clipboard data in text format
+            string clipboardText = Clipboard.GetText(TextDataFormat.Text);
 
+            // Split the clipboard text into lines
+            var lines = clipboardText.Split(new[] { '\r', '\n' }, StringSplitOptions.RemoveEmptyEntries);
 
+            // Loop over the lines
+            for (int i = 0; i < lines.Length; i++)
+            {
+                // Split the line into cells
+                var cells = lines[i].Split('\t');
+
+                // Loop over the cells
+                for (int j = 0; j < cells.Length; j++)
+                {
+                    // Calculate the cell to be pasted into
+                    int pasteCellRowIndex = startCell.RowIndex + i;
+                    int pasteCellColumnIndex = startCell.ColumnIndex + j;
+
+                    // Check if the cell to be pasted into exists
+                    if (pasteCellRowIndex < memoryChDataGridView.RowCount && pasteCellColumnIndex < memoryChDataGridView.ColumnCount)
+                    {
+                        DataGridViewCell cell = memoryChDataGridView[pasteCellColumnIndex, pasteCellRowIndex];
+
+                        // Paste the value
+                        cell.Value = cells[j];
+                    }
+                    else
+                    {
+                        // Skip this cell as it does not exist
+                        break;
+                    }
+                }
+            }
+        }
 
         public void MemoryChDataGridView_CellEndEdit(object sender, DataGridViewCellEventArgs e)
         {
@@ -188,26 +229,15 @@ namespace DJ_X100_memory_writer
             }
         }
 
-/*        public void MemoryChDataGridView_CellValidated(object sender, DataGridViewCellEventArgs e)
-        {
-            if (memoryChDataGridView.Columns[e.ColumnIndex].Name == Columns.MEMORY_NAME.Id && memoryChDataGridView.Rows[e.RowIndex].Cells[e.ColumnIndex].Tag != null)
-            {
-                memoryChDataGridView.Rows[e.RowIndex].Cells[e.ColumnIndex].Value = memoryChDataGridView.Rows[e.RowIndex].Cells[e.ColumnIndex].Tag;
-                memoryChDataGridView.Rows[e.RowIndex].Cells[e.ColumnIndex].Tag = null;
-            }
-        }*/
-
-
-        public void MemoryChDataGridView_CellClick(object sender, DataGridViewCellEventArgs e)
-        {
-            if (e.ColumnIndex >= 0 && e.RowIndex >= 0)
-            {
-                if (!(this.memoryChDataGridView.Columns[e.ColumnIndex] is DataGridViewButtonColumn))
+        /*        public void MemoryChDataGridView_CellValidated(object sender, DataGridViewCellEventArgs e)
                 {
-                    this.memoryChDataGridView.BeginEdit(true);
-                }
-            }
-        }
+                    if (memoryChDataGridView.Columns[e.ColumnIndex].Name == Columns.MEMORY_NAME.Id && memoryChDataGridView.Rows[e.RowIndex].Cells[e.ColumnIndex].Tag != null)
+                    {
+                        memoryChDataGridView.Rows[e.RowIndex].Cells[e.ColumnIndex].Value = memoryChDataGridView.Rows[e.RowIndex].Cells[e.ColumnIndex].Tag;
+                        memoryChDataGridView.Rows[e.RowIndex].Cells[e.ColumnIndex].Tag = null;
+                    }
+                }*/
+
 
         public void MemoryChDataGridView_CellValueChanged(object sender, DataGridViewCellEventArgs e)
         {

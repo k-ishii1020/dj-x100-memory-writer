@@ -27,7 +27,6 @@ namespace DJ_X100_memory_writer
                 AllowUserToAddRows = false,
                 AutoSizeRowsMode = DataGridViewAutoSizeRowsMode.AllCells,
                 AlternatingRowsDefaultCellStyle = new DataGridViewCellStyle { BackColor = Color.AliceBlue },
-                EditMode = DataGridViewEditMode.EditOnEnter
 
             };
 
@@ -59,10 +58,59 @@ namespace DJ_X100_memory_writer
             this.FormClosing += (sender, e) => UpdateData();
             // DataGridViewの大きさや位置を設定
             dgv.Dock = DockStyle.Fill;
+            // Add the key down event to handle paste (Ctrl+V)
+            dgv.KeyDown += DataGridView1_KeyDown;
         }
 
+        // Implement the paste functionality
+        private void DataGridView1_KeyDown(object sender, KeyEventArgs e)
+        {
+            if ((Control.ModifierKeys & Keys.Control) == Keys.Control && e.KeyCode == Keys.V)
+            {
+                PasteClipboardData();
+            }
+        }
 
+        private void PasteClipboardData()
+        {
+            // Get the starting cell where the paste should happen
+            DataGridViewCell startCell = dgv.SelectedCells[0];
 
+            // Get the clipboard data in text format
+            string clipboardText = Clipboard.GetText(TextDataFormat.Text);
+
+            // Split the clipboard text into lines
+            var lines = clipboardText.Split(new[] { '\r', '\n' }, StringSplitOptions.RemoveEmptyEntries);
+
+            // Loop over the lines
+            for (int i = 0; i < lines.Length; i++)
+            {
+                // Split the line into cells
+                var cells = lines[i].Split('\t');
+
+                // Loop over the cells
+                for (int j = 0; j < cells.Length; j++)
+                {
+                    // Calculate the cell to be pasted into
+                    int pasteCellRowIndex = startCell.RowIndex + i;
+                    int pasteCellColumnIndex = startCell.ColumnIndex + j;
+
+                    // Check if the cell to be pasted into exists
+                    if (pasteCellRowIndex < dgv.RowCount && pasteCellColumnIndex < dgv.ColumnCount)
+                    {
+                        DataGridViewCell cell = dgv[pasteCellColumnIndex, pasteCellRowIndex];
+
+                        // Paste the value
+                        cell.Value = cells[j];
+                    }
+                    else
+                    {
+                        // Skip this cell as it does not exist
+                        break;
+                    }
+                }
+            }
+        }
 
         public void UpdateData()
         {
@@ -78,8 +126,6 @@ namespace DJ_X100_memory_writer
 
             form1.UpdateTreeView(bankNames);  // Form1のTreeViewを更新
         }
-
-
 
         private async void バンク設定読込RToolStripMenuItem_Click(object sender, EventArgs e)
         {
