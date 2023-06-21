@@ -58,7 +58,7 @@ namespace DJ_X100_memory_writer
             TreeNode treeNode25 = new TreeNode("X:");
             TreeNode treeNode26 = new TreeNode("Y:");
             TreeNode treeNode27 = new TreeNode("Z:");
-            TreeNode treeNode28 = new TreeNode("バンクメモリ(工事中)", new TreeNode[] { treeNode2, treeNode3, treeNode4, treeNode5, treeNode6, treeNode7, treeNode8, treeNode9, treeNode10, treeNode11, treeNode12, treeNode13, treeNode14, treeNode15, treeNode16, treeNode17, treeNode18, treeNode19, treeNode20, treeNode21, treeNode22, treeNode23, treeNode24, treeNode25, treeNode26, treeNode27 });
+            TreeNode treeNode28 = new TreeNode("バンクメモリ", new TreeNode[] { treeNode2, treeNode3, treeNode4, treeNode5, treeNode6, treeNode7, treeNode8, treeNode9, treeNode10, treeNode11, treeNode12, treeNode13, treeNode14, treeNode15, treeNode16, treeNode17, treeNode18, treeNode19, treeNode20, treeNode21, treeNode22, treeNode23, treeNode24, treeNode25, treeNode26, treeNode27 });
             TreeNode treeNode29 = new TreeNode("DJ-X100", new TreeNode[] { treeNode1, treeNode28 });
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Form1));
             menuStrip1 = new MenuStrip();
@@ -312,7 +312,7 @@ namespace DJ_X100_memory_writer
             treeNode27.Text = "Z:";
             treeNode28.ImageKey = "kkrn_icon_folder_1.png";
             treeNode28.Name = "bankMemoryNode";
-            treeNode28.Text = "バンクメモリ(工事中)";
+            treeNode28.Text = "バンクメモリ";
             treeNode29.ImageIndex = 0;
             treeNode29.Name = "djx100Node";
             treeNode29.Text = "DJ-X100";

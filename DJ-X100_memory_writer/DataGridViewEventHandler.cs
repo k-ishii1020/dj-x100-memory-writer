@@ -62,11 +62,18 @@ namespace DJ_X100_memory_writer
                 }
                 e.Handled = true;
             }
-            if ((Control.ModifierKeys & Keys.Control) == Keys.Control && e.KeyCode == Keys.V)
+            else if ((Control.ModifierKeys & Keys.Control) == Keys.Control && e.KeyCode == Keys.V)
             {
                 PasteClipboardData();
             }
+            else if (e.KeyData == Keys.Return && memoryChDataGridView.IsCurrentCellInEditMode)
+            {
+                // If the DataGridView is in edit mode and the user presses Enter, end the edit mode
+                memoryChDataGridView.EndEdit();
+                e.Handled = true;
+            }
         }
+
         private void PasteClipboardData()
         {
             // Get the starting cell where the paste should happen

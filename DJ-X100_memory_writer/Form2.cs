@@ -1,9 +1,11 @@
-﻿using System;
+﻿using DJ_X100_memory_writer.Util;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Windows.Forms;
+using static DJ_X100_memory_writer.domain.MemoryChannnelConfig;
 
 namespace DJ_X100_memory_writer
 {
@@ -11,12 +13,23 @@ namespace DJ_X100_memory_writer
     {
         private Form1 form1;
         private DataGridView dgv;  // dgvをクラスのフィールドとして定義
+        DataGridViewUtils dataGridViewUtils = new DataGridViewUtils();
 
         public Form2(Form1 form1)
         {
             this.form1 = form1;
 
             InitializeComponent();
+
+            // Create a Panel to hold the DataGridView
+            Panel dgvPanel = new Panel
+            {
+                Dock = DockStyle.Fill,
+                Padding = new Padding(0, 20, 0, 0),  // Add the padding to the Panel, not the Form
+            };
+
+            // FormにDataGridViewを追加
+            this.Controls.Add(dgvPanel);
 
             // DataGridViewを作成
             this.dgv = new DataGridView
@@ -27,14 +40,22 @@ namespace DJ_X100_memory_writer
                 AllowUserToAddRows = false,
                 AutoSizeRowsMode = DataGridViewAutoSizeRowsMode.AllCells,
                 AlternatingRowsDefaultCellStyle = new DataGridViewCellStyle { BackColor = Color.AliceBlue },
-
+                Dock = DockStyle.Fill,  // The DataGridView fills the entire Panel
             };
+
+            // Add the DataGridView to the Panel, not the Form
+            dgvPanel.Controls.Add(dgv);
 
             // 列ヘッダーの設定
             dgv.Columns[0].Name = "BANK";
             dgv.Columns[0].ReadOnly = true;
-            dgv.Columns[0].Width = 30;
-            dgv.Columns[1].Name = "BANK_NAME";
+            dgv.Columns[0].Width = 60;
+            dgv.Columns[1].Name = "BANK_NAME(全角14文字/半角7文字以内)";
+
+            foreach (DataGridViewColumn column in dgv.Columns)
+            {
+                column.SortMode = DataGridViewColumnSortMode.NotSortable;
+            }
 
             // データの追加
             for (char c = 'A'; c <= 'Z'; c++)
@@ -53,21 +74,70 @@ namespace DJ_X100_memory_writer
                 dgv.Rows.Add(c.ToString(), bankName);  // 2列目は編集可能
             }
 
-            // FormにDataGridViewを追加
-            this.Controls.Add(dgv);
             this.FormClosing += (sender, e) => UpdateData();
-            // DataGridViewの大きさや位置を設定
-            dgv.Dock = DockStyle.Fill;
             // Add the key down event to handle paste (Ctrl+V)
             dgv.KeyDown += DataGridView1_KeyDown;
+            dgv.CellEndEdit += DataGridView1_CellEndEdit;
         }
 
-        // Implement the paste functionality
+        public void DataGridView1_CellEndEdit(object sender, DataGridViewCellEventArgs e)
+        {
+            string columnName = dgv.Columns[e.ColumnIndex].Name;
+            string input = dgv.Rows[e.RowIndex].Cells[e.ColumnIndex].Value?.ToString();
+
+            if (input == null) return;
+
+            switch (columnName)
+            {
+                // メモリネームの文字数チェック
+                case var name when name == "BANK_NAME(全角14文字/半角7文字以内)":
+
+                    int inputLength = dataGridViewUtils.GetAdjustedLength(input);
+
+                    if (inputLength > 14)
+                    {
+                        int convertedLength = 0;
+
+                        string convertedInput = dataGridViewUtils.GetConvertedByteCountShiftJis(input, ref convertedLength);
+
+                        if (convertedLength <= 14)
+                        {
+                            DialogResult result = MessageBox.Show($"行 {e.RowIndex + 1} の 'ネーム' 列は半角14文字、全角7文字以内にしてください。\n半角に変換すると規定文字数に収まります。\n変換しますか？",
+                                                                  "確認", MessageBoxButtons.OKCancel, MessageBoxIcon.Question);
+
+                            if (result == DialogResult.OK)
+                            {
+                                dgv.Rows[e.RowIndex].Cells[e.ColumnIndex].Value = convertedInput;
+                                return;
+                            }
+
+                        }
+                        MessageBox.Show($"エラー: 行 {e.RowIndex + 1} の 'ネーム' 列は半角14文字、全角7文字以内にしてください。\n超えた部分は自動的にカットされます。",
+                                        "エラー", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                        string cutInput = dataGridViewUtils.CutToLength(input, 14);
+                        dgv.Rows[e.RowIndex].Cells[e.ColumnIndex].Value = cutInput;
+                    }
+                    break;
+            }
+        }
+
+
         private void DataGridView1_KeyDown(object sender, KeyEventArgs e)
         {
             if ((Control.ModifierKeys & Keys.Control) == Keys.Control && e.KeyCode == Keys.V)
             {
                 PasteClipboardData();
+            }
+            if (e.KeyCode == Keys.Delete)
+            {
+                foreach (DataGridViewCell cell in dgv.SelectedCells)
+                {
+                    if (cell.OwningColumn.Name != "BANK")
+                    {
+                        cell.Value = null;
+                    }
+                }
+                e.Handled = true;
             }
         }
 

@@ -159,7 +159,7 @@
             public static readonly ColumnInfo MEMORY_NO = new ColumnInfo("Channel", "No.");
 
             public static readonly ColumnInfo FREQ = new ColumnInfo("Freq", "FREQ");
-            public static readonly ColumnInfo MEMORY_NAME = new ColumnInfo("Name", "NAME");
+            public static readonly ColumnInfo MEMORY_NAME = new ColumnInfo("Name", "NAME(全角28文字/半角14文字以内)");
             public static readonly ColumnInfo MODE = new ColumnInfo("Mode", "MODE");
 
             public static readonly ColumnInfo BANK = new ColumnInfo("bank", "BANK");
@@ -217,7 +217,7 @@
             {
                 Id = Columns.MEMORY_NAME.Id,
                 HeaderText = Columns.MEMORY_NAME.Name,
-                Width = 200,
+                Width = 220,
                 Type = ColumnType.Text
             },
             new ColumnSetup

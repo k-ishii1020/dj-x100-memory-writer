@@ -29,7 +29,7 @@ namespace DJ_X100_memory_writer
         private void Form1_Load(object sender, EventArgs e)
         {
             DialogResult dialogResult = MessageBox.Show(
-                "このソフトは公開前のベータ版です。バンクネーム登録は作成中です。\n" +
+                "このソフトは公開前のベータ版です。\n" +
                 "DJ-X100本体などの不具合発生時の責任について\n" +
                 "作者は一切の責任を負いかねます。\n\n" +
                 "アプリケーションを立ち上げると同意したものとします。\n" +

@@ -61,11 +61,11 @@ namespace DJ_X100_memory_writer
                         else if (!e.Data.Contains("OK"))
                         {
                             textBox1.AppendText("エラー: " + e.Data + Environment.NewLine);
-                            MessageBox.Show("エラーが発生しました。詳細は下記の情報をご確認ください。\n\n" + e.Data, "エラー", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                            this.okButton.Enabled = true;
 
                             progressBar1.Style = ProgressBarStyle.Continuous;
                             progressBar1.Value = progressBar1.Minimum;
+                            MessageBox.Show("エラーが発生しました。詳細は下記の情報をご確認ください。\n\n" + e.Data, "エラー", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                            this.okButton.Enabled = true;
                         }
                     });
                 }
@@ -129,21 +129,17 @@ namespace DJ_X100_memory_writer
 
                 updateBankName(c, bankName);
 
-                await Task.Delay(250);
+                await Task.Delay(350);
 
-                // Add a message when all banks are read
                 if (c == 'Z')
                 {
                     this.Invoke((Action)delegate
                     {
                         textBox1.AppendText("メモリバンクの読込が完了しました。" + Environment.NewLine);
-                        MessageBox.Show("メモリバンクの読込が完了しました。実行結果を確認してください。", "読み込み完了", MessageBoxButtons.OK, MessageBoxIcon.Information);
-
-                        okButton.Enabled = true;  // Enable okButton here
-
-                        // Stop the progress bar here
                         progressBar1.Style = ProgressBarStyle.Continuous;
                         progressBar1.Value = progressBar1.Maximum;
+                        MessageBox.Show("メモリバンクの読込が完了しました。実行結果を確認してください。", "読み込み完了", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                        okButton.Enabled = true;
                     });
                 }
             }
@@ -186,7 +182,6 @@ namespace DJ_X100_memory_writer
             process.BeginOutputReadLine();
             await process.WaitForExitAsync();
 
-            // Add a new line after each command
             this.Invoke((Action)delegate
             {
                 textBox1.AppendText(Environment.NewLine);
@@ -228,33 +223,25 @@ namespace DJ_X100_memory_writer
                         textBox1.AppendText($"メモリバンク {c} ({bankName}) への書き込みに失敗しました。エラー: {output}" + Environment.NewLine);
                         MessageBox.Show($"メモリバンク {c} ({bankName}) への書き込みに失敗しました。\nエラー: {output}", "エラー", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                     });
-                    return;  // Abort the loop on failure
+                    return;
                 }
 
-                await Task.Delay(250);
+                await Task.Delay(350);
 
-                // Add a message when all banks are written to
                 if (c == 'Z')
                 {
                     this.Invoke((Action)delegate
                     {
                         textBox1.AppendText("メモリバンクへの書き込みが完了しました。" + Environment.NewLine);
-                        MessageBox.Show("メモリバンクへの書き込みが完了しました。実行結果を確認してください。", "書き込み完了", MessageBoxButtons.OK, MessageBoxIcon.Information);
-
-                        okButton.Enabled = true;  // Enable okButton here
-
-                        // Stop the progress bar here
                         progressBar1.Style = ProgressBarStyle.Continuous;
                         progressBar1.Value = progressBar1.Maximum;
+                        MessageBox.Show("メモリバンクへの書き込みが完了しました。実行結果を確認してください。", "書き込み完了", MessageBoxButtons.OK, MessageBoxIcon.Information);
+
+                        okButton.Enabled = true;
                     });
                 }
             }
         }
-
-
-
-
-        // フォームが閉じられるときにプロセスを終了させます
         protected override void OnFormClosing(FormClosingEventArgs e)
         {
             base.OnFormClosing(e);
