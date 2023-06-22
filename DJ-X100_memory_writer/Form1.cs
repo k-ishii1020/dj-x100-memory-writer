@@ -150,8 +150,7 @@ namespace DJ_X100_memory_writer
 
         private void 開くNToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            if (!IsDataGridViewEmpty() &&
-                MessageBox.Show("作成中のデータは破棄されます。よろしいですか？", "警告", MessageBoxButtons.YesNo, MessageBoxIcon.Warning) == DialogResult.Yes)
+            if (IsDataGridViewEmpty() || MessageBox.Show("作成中のデータは破棄されます。よろしいですか？", "警告", MessageBoxButtons.YesNo, MessageBoxIcon.Warning) == DialogResult.Yes)
             {
                 OpenFileDialog openFileDialog = new OpenFileDialog
                 {
@@ -167,6 +166,7 @@ namespace DJ_X100_memory_writer
                     csvUtils.ImportCsvToDataGridView(memoryChDataGridView, openFileDialog.FileName);
                 }
             }
+
         }
 
         protected override void OnFormClosing(FormClosingEventArgs e)
