@@ -221,7 +221,7 @@ namespace DJ_X100_memory_writer
                 {
                     this.Invoke((Action)delegate
                     {
-                        textBox1.AppendText("メモリバンクへの書き込みが完了しました。" + Environment.NewLine);
+                        textBox1.AppendText("\n\nメモリバンクへの書き込みが完了しました。" + Environment.NewLine);
                         progressBar1.Style = ProgressBarStyle.Continuous;
                         progressBar1.Value = progressBar1.Maximum;
                         MessageBox.Show("メモリバンクへの書き込みが完了しました。実行結果を確認してください。", "書き込み完了", MessageBoxButtons.OK, MessageBoxIcon.Information);
