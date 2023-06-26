@@ -186,7 +186,7 @@ namespace DJ_X100_memory_writer
         {
             var x100cmdForm = new X100cmdForm();
             x100cmdForm.Show();
-            await x100cmdForm.UpdateDataFromCommandAsync(UpdateBankName);
+            await x100cmdForm.ReadBankName(UpdateBankName);
         }
 
         private void UpdateBankName(char bankChar, string bankName)
@@ -215,7 +215,7 @@ namespace DJ_X100_memory_writer
 
                 bankNames[bankChar] = bankName;
             }
-            await x100cmdForm.WriteDataToCommandAsync(form1.selectedPort, bankNames);
+            await x100cmdForm.WriteBankName(form1.selectedPort, bankNames);
         }
 
         private void メイン画面へ戻るToolStripMenuItem_Click(object sender, EventArgs e)

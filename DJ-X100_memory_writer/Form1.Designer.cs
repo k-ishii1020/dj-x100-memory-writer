@@ -84,6 +84,8 @@ namespace DJ_X100_memory_writer
             toolStripProgressBar1 = new ToolStripProgressBar();
             statusLabel1 = new ToolStripStatusLabel();
             selectedComportLabel = new ToolStripStatusLabel();
+            読み込みRToolStripMenuItem = new ToolStripMenuItem();
+            読み込みRToolStripMenuItem1 = new ToolStripMenuItem();
             menuStrip1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)splitContainer1).BeginInit();
             splitContainer1.Panel1.SuspendLayout();
@@ -177,7 +179,7 @@ namespace DJ_X100_memory_writer
             // 
             // オプションOToolStripMenuItem
             // 
-            オプションOToolStripMenuItem.DropDownItems.AddRange(new ToolStripItem[] { cOMポートCToolStripMenuItem, 書き込みToolStripMenuItem });
+            オプションOToolStripMenuItem.DropDownItems.AddRange(new ToolStripItem[] { cOMポートCToolStripMenuItem, 読み込みRToolStripMenuItem, 書き込みToolStripMenuItem, 読み込みRToolStripMenuItem1 });
             オプションOToolStripMenuItem.Name = "オプションOToolStripMenuItem";
             オプションOToolStripMenuItem.Size = new Size(70, 20);
             オプションOToolStripMenuItem.Text = "無線機(&X)";
@@ -185,13 +187,13 @@ namespace DJ_X100_memory_writer
             // cOMポートCToolStripMenuItem
             // 
             cOMポートCToolStripMenuItem.Name = "cOMポートCToolStripMenuItem";
-            cOMポートCToolStripMenuItem.Size = new Size(142, 22);
+            cOMポートCToolStripMenuItem.Size = new Size(180, 22);
             cOMポートCToolStripMenuItem.Text = "COMポート(&C)";
             // 
             // 書き込みToolStripMenuItem
             // 
             書き込みToolStripMenuItem.Name = "書き込みToolStripMenuItem";
-            書き込みToolStripMenuItem.Size = new Size(142, 22);
+            書き込みToolStripMenuItem.Size = new Size(180, 22);
             書き込みToolStripMenuItem.Text = "書き込み(&W)";
             書き込みToolStripMenuItem.Click += 書き込みToolStripMenuItem_Click;
             // 
@@ -366,6 +368,19 @@ namespace DJ_X100_memory_writer
             selectedComportLabel.Size = new Size(148, 17);
             selectedComportLabel.Text = "選択中のCOMポート: 未選択";
             // 
+            // 読み込みRToolStripMenuItem
+            // 
+            読み込みRToolStripMenuItem.Name = "読み込みRToolStripMenuItem";
+            読み込みRToolStripMenuItem.Size = new Size(180, 22);
+            読み込みRToolStripMenuItem.Text = "読み込み(&R)";
+            読み込みRToolStripMenuItem.Click += 読み込みRToolStripMenuItem_Click;
+            // 
+            // 読み込みRToolStripMenuItem1
+            // 
+            読み込みRToolStripMenuItem1.Name = "読み込みRToolStripMenuItem1";
+            読み込みRToolStripMenuItem1.Size = new Size(180, 22);
+            読み込みRToolStripMenuItem1.Text = "読み込み(&R)";
+            // 
             // Form1
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
@@ -416,5 +431,7 @@ namespace DJ_X100_memory_writer
         private ToolStripMenuItem エクスポートEToolStripMenuItem;
         private ToolStripMenuItem x100cmdexe用CSVToolStripMenuItem;
         private ToolStripMenuItem バンク設定BToolStripMenuItem;
+        private ToolStripMenuItem 読み込みRToolStripMenuItem;
+        private ToolStripMenuItem 読み込みRToolStripMenuItem1;
     }
 }

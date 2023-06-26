@@ -13,7 +13,7 @@ namespace DJ_X100_memory_writer
         {
             InitializeComponent();
         }
-        public void WriteX100(string selectedPort)
+        public void WriteMemoryChannel(string selectedPort)
         {
             if (!CheckX100cmdVersion()) return;
 
@@ -117,12 +117,12 @@ namespace DJ_X100_memory_writer
             return true;
         }
 
-        public async Task UpdateDataFromCommandAsync(Action<char, string> updateBankName)
+        public async Task ReadBankName(Action<char, string> updateBankName)
         {
             for (char c = 'A'; c <= 'Z'; c++)
             {
                 string command = $".\\x100cmd.exe bank read {c}";
-                string output = await ExecuteCommandAsync(command);
+                string output = await ExecuteBankNameWrite(command);
 
                 var match = Regex.Match(output, $"\"{c}\",\"(.+)\"");
                 string bankName = match.Success ? match.Groups[1].Value.Trim() : "";
@@ -145,7 +145,7 @@ namespace DJ_X100_memory_writer
             }
         }
 
-        private async Task<string> ExecuteCommandAsync(string command)
+        private async Task<string> ExecuteBankNameWrite(string command)
         {
             var output = new StringBuilder();
 
@@ -185,7 +185,7 @@ namespace DJ_X100_memory_writer
 
             return output.ToString();
         }
-        public async Task WriteDataToCommandAsync(string selectedPort, Dictionary<char, string> bankNames)
+        public async Task WriteBankName(string selectedPort, Dictionary<char, string> bankNames)
         {
             if (!CheckX100cmdVersion()) return;
 
@@ -196,7 +196,7 @@ namespace DJ_X100_memory_writer
                 string bankName = bankNames.ContainsKey(c) ? bankNames[c] : "";
 
                 string command = $".\\x100cmd.exe bank write -y {c} \"{bankName}\"";
-                string output = await ExecuteCommandAsync(command);
+                string output = await ExecuteBankNameWrite(command);
 
                 if (output.Contains("OK"))
                 {

@@ -342,5 +342,9 @@ namespace DJ_X100_memory_writer
             }
         }
 
+        private void ì«Ç›çûÇ›RToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+
+        }
     }
 }

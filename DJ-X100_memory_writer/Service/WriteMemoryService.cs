@@ -13,7 +13,7 @@ namespace DJ_X100_memory_writer.Service
             createCsvFileService.ExportDataGridViewToX100CmdCsv(dataGridView, ".\\x100cmd_temp.csv");
             X100cmdForm x100CmdForm = new X100cmdForm();
             x100CmdForm.Show();
-            x100CmdForm.WriteX100(selectedPort);
+            x100CmdForm.WriteMemoryChannel(selectedPort);
         }
     }
 }
