@@ -9,7 +9,7 @@ namespace DJ_X100_memory_writer
 {
     public partial class Form1 : Form
     {
-        CreateCsvFileService csvUtils = new CreateCsvFileService();
+        CsvFileService csvUtils = new CsvFileService();
         WriteMemoryService writeMemory = new WriteMemoryService();
 
         public string selectedPort;
@@ -344,7 +344,14 @@ namespace DJ_X100_memory_writer
 
         private void 読み込みRToolStripMenuItem_Click(object sender, EventArgs e)
         {
-
+            if (!IsDataGridViewEmpty() &&
+                MessageBox.Show("作成中のデータは破棄されます。よろしいですか？", "警告", MessageBoxButtons.YesNo, MessageBoxIcon.Warning) == DialogResult.No)
+            {
+                return;
+            }
+            var x100cmdForm = new X100cmdForm();
+            x100cmdForm.ReadMemoryChannel(selectedPort);
+            csvUtils.ImportX100cmdCsvToDataGridView(memoryChDataGridView);
         }
     }
 }

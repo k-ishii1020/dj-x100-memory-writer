@@ -184,6 +184,36 @@ namespace DJ_X100_memory_writer
                         return;
                     }
                     break;
+
+                case var ec when ec == Columns.EC.Id:
+                    // 空欄、nullの場合は無視
+                    if (string.IsNullOrWhiteSpace(input)) return;
+
+                    // inputが"OFF"かチェック
+                    if (input.Equals("OFF", StringComparison.OrdinalIgnoreCase)) return;
+
+                    // inputが1-32767の整数かチェック
+                    if (int.TryParse(input, out int ecVvalue) && ecVvalue >= 1 && ecVvalue <= 32767) return;
+
+                    MessageBox.Show($"エラー: 行 {e.RowIndex + 1} の 'EC' 列が不正な数値です(OFF,1～32767)",
+                                    "エラー", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    memoryChDataGridView.Rows[e.RowIndex].Cells[e.ColumnIndex].Value = null;
+                    break;
+
+                case var gc when gc == Columns.GC.Id:
+                    // 空欄、nullの場合は無視
+                    if (string.IsNullOrWhiteSpace(input)) return;
+
+                    // inputが"ALL"かチェック
+                    if (input.Equals("ALL", StringComparison.OrdinalIgnoreCase)) return;
+
+                    // inputが1-65535の整数かチェック
+                    if (int.TryParse(input, out int gcValue) && gcValue >= 1 && gcValue <= 65535) return;
+
+                    MessageBox.Show($"エラー: 行 {e.RowIndex + 1} の 'GC' 列が不正な数値です(ALL,1～65535)",
+                                    "エラー", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    memoryChDataGridView.Rows[e.RowIndex].Cells[e.ColumnIndex].Value = null;
+                    break;
             }
         }
 
@@ -194,6 +224,7 @@ namespace DJ_X100_memory_writer
 
             MessageBox.Show($"エラー: 行 {e.RowIndex + 1} の '{columnName}' 列でエラーが発生しました。\n{e.Exception.Message}",
                             "エラー", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+            memoryChDataGridView.Rows[e.RowIndex].Cells[e.ColumnIndex].Value = null;
 
             e.ThrowException = false;
         }
@@ -212,7 +243,7 @@ namespace DJ_X100_memory_writer
 
                 if (value < 20m || value > 470m || decimalPart.Length > 6)
                 {
-                    return $"行{rowNumber + 1}, 列{columnName}: '{cellValue}' は範囲外です。";
+                    return $"行{rowNumber + 1}, 列{columnName}: '{cellValue}' は範囲外です。(20MHz～470MHz)";
                 }
                 else
                 {

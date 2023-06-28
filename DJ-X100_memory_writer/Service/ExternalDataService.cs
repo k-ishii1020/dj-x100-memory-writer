@@ -4,7 +4,7 @@ using static DJ_X100_memory_writer.domain.MemoryChannnelConfig;
 
 namespace DJ_X100_memory_writer.Service
 {
-    internal class CreateExternalDataService
+    internal class ExternalDataService
     {
         HexUtils hexUtils = new HexUtils();
 
@@ -17,62 +17,62 @@ namespace DJ_X100_memory_writer.Service
             int initialLength = externalStr.Length;
 
             // REV_ECの処理
-            externalStr = RevEcOnOff(row, externalStr);
+            externalStr = EncodeRevEcOnOff(row, externalStr);
 
             // REV_EC_FREQの処理
-            externalStr = RevEcFreq(row, externalStr);
+            externalStr = EncodeRevEcFreq(row, externalStr);
 
             // T98_WCの処理
-            externalStr = T98AndT102AndB54Wc(externalStr, row, "T98", 4);
+            externalStr = EncodeT98AndT102AndB54Wc(externalStr, row, "T98", 4);
 
             // Unknown_1
 
             // T102_B54_WCの処理
-            externalStr = T98AndT102AndB54Wc(externalStr, row, "T102_B54", 12);
+            externalStr = EncodeT98AndT102AndB54Wc(externalStr, row, "T102_B54", 12);
 
             // T61_WCの処理
-            externalStr = T61Wc(row, externalStr);
+            externalStr = EncodeT61Wc(row, externalStr);
 
 
             // T98_UCの処理
-            externalStr = T98AndT102AndB54Uc(row, "T98", 36, externalStr);
+            externalStr = EncodeT98AndT102AndB54Uc(row, "T98", 36, externalStr);
 
             // T102_B54_UCの処理
-            externalStr = T98AndT102AndB54Uc(row, "T102_B54", 40, externalStr);
+            externalStr = EncodeT98AndT102AndB54Uc(row, "T102_B54", 40, externalStr);
 
 
             // T98_ECの処理
-            externalStr = T98AndT102AndB54Ec(row, "T98", 44, externalStr);
+            externalStr = EncodeT98AndT102AndB54Ec(row, "T98", 44, externalStr);
 
             // T102_B54_ECの処理
-            externalStr = T98AndT102AndB54Ec(row, "T102_B54", 48, externalStr);
+            externalStr = EncodeT98AndT102AndB54Ec(row, "T102_B54", 48, externalStr);
 
 
             // T98_GCの処理
-            externalStr = T98AndT102AndDmrGc(row, "T98", 52, externalStr);
+            externalStr = EncodeT98AndT102AndDmrGc(row, "T98", 52, externalStr);
             // T102_B54_GCの処理
-            externalStr = T98AndT102AndDmrGc(row, "T102_B54", 60, externalStr);
+            externalStr = EncodeT98AndT102AndDmrGc(row, "T102_B54", 60, externalStr);
 
             // DMR_GCの処理
-            externalStr = T98AndT102AndDmrGc(row, "DMR", 68, externalStr);
+            externalStr = EncodeT98AndT102AndDmrGc(row, "DMR", 68, externalStr);
             // DMR_SLOTの処理
-            externalStr = DmrSlot(row, "DMR", 76, externalStr);
+            externalStr = EncodeDmrSlot(row, "DMR", 76, externalStr);
             // DMR_CCの処理
-            externalStr = DmrCc(row, "DMR", 78, externalStr);
+            externalStr = EncodeDmrCc(row, "DMR", 78, externalStr);
 
 
 
             // DSTAR_CSの処理
-            externalStr = DstarCs(row, "DSTAR", 82, externalStr);
+            externalStr = EncodeDstarCs(row, "DSTAR", 82, externalStr);
 
             // C4FM_DGの処理
-            externalStr = C4fmDg(row, "C4FM", 86, externalStr);
+            externalStr = EncodeC4fmDg(row, "C4FM", 86, externalStr);
 
             // T61経度の処理
-            externalStr = T61Lon(row, 90, externalStr);
+            externalStr = EncodeT61Lon(row, 90, externalStr);
 
             // T61緯度の処理
-            externalStr = T61Lat(row, 92, externalStr);
+            externalStr = EncodeT61Lat(row, 92, externalStr);
 
 
             // Unknown_2
@@ -87,33 +87,21 @@ namespace DJ_X100_memory_writer.Service
             return externalStr;
         }
 
-        private string T61Wc(DataGridViewRow row, string externalStr)
+
+        private static string EncodeRevEcOnOff(DataGridViewRow row, string externalStr)
         {
-            Dictionary<string, int> modeToIndexMap = new Dictionary<string, int>
-            {
-                { "T61_typ1", 16 },
-                { "T61_typ2", 20 },
-                { "T61_typ3", 24 },
-                { "T61_typ4", 28 },
-                { "T61_typx", 32 }
-            };
-            // モード値を取得
-            string modeValue = row.Cells[Columns.MODE.Id].Value != null ? row.Cells[Columns.MODE.Id].Value.ToString() : null;
-            // wc値を取得
-            string wcValue = row.Cells[Columns.WC.Id].Value != null ? row.Cells[Columns.WC.Id].Value.ToString() : "0000";
-
-            if (modeValue != null && modeToIndexMap.ContainsKey(modeValue))
-            {
-                string replaceValue = hexUtils.SwapEndianHexForFourHex(wcValue);
-                int index = modeToIndexMap[modeValue];
-                externalStr = externalStr.Remove(index, 4);
-                externalStr = externalStr.Insert(index, replaceValue);
-            }
-
+            string revEcValue = row.Cells[Columns.REV_EC.Id].Value?.ToString();
+            externalStr = (revEcValue == "ON" ? "01" : "00") + externalStr.Substring(2);
             return externalStr;
         }
 
-        private static string RevEcFreq(DataGridViewRow row, string externalStr)
+        public string DecodeRevEcOnOff(string externalStr)
+        {
+            string value = externalStr.Substring(0, 2);
+            return value == "01" ? "ON" : "OFF";
+        }
+
+        private static string EncodeRevEcFreq(DataGridViewRow row, string externalStr)
         {
             Dictionary<string, string> revEcFreqValues = new Dictionary<string, string>
             {
@@ -139,14 +127,31 @@ namespace DJ_X100_memory_writer.Service
             return externalStr;
         }
 
-        private static string RevEcOnOff(DataGridViewRow row, string externalStr)
+        public string DecodeRevEcFreq(string externalStr)
         {
-            string revEcValue = row.Cells[Columns.REV_EC.Id].Value?.ToString();
-            externalStr = (revEcValue == "ON" ? "01" : "00") + externalStr.Substring(2);
-            return externalStr;
+            Dictionary<string, string> revEcFreqValues = new Dictionary<string, string>
+            {
+                {"00", "2500"},
+                {"01", "2600"},
+                {"02", "2700"},
+                {"03", "2800"},
+                {"04", "2900"},
+                {"05", "3000"},
+                {"06", "3100"},
+                {"07", "3200"},
+                {"08", "3300"},
+                {"09", "3400"},
+                {"0A", "3500"},
+            };
+
+            string value = externalStr.Substring(2, 2);
+            return revEcFreqValues.ContainsKey(value) ? revEcFreqValues[value] : "2500";
         }
 
-        private string T98AndT102AndB54Wc(string externalStr, DataGridViewRow row, string mode, int position)
+
+
+
+        private string EncodeT98AndT102AndB54Wc(string externalStr, DataGridViewRow row, string mode, int position)
         {
             if (row.Cells[Columns.MODE.Id].Value != null && row.Cells[Columns.MODE.Id].Value.ToString() == mode)
             {
@@ -174,16 +179,104 @@ namespace DJ_X100_memory_writer.Service
             return externalStr;
         }
 
-        private string T98AndT102AndB54Uc(DataGridViewRow row, string mode, int index, string externalStr)
+        public string DecodeT98AndT102AndB54Wc(string externalStr, string mode)
+        {
+            string value = "";
+
+            switch(mode)
+            {
+                case "T98":
+                    value = externalStr.Substring(4, 4);
+                    break;
+
+                case "T102_B54":
+                    value = externalStr.Substring(12, 4);
+                    break;
+
+                case "T61_typ1":
+                    value = externalStr.Substring(16, 4);
+                    break;
+
+                case "T61_typ2":
+                    value = externalStr.Substring(20, 4);
+                    break;
+
+
+                case "T61_typ3":
+                    value = externalStr.Substring(24, 4);
+                    break;
+
+                case "T61_typ4":
+                    value = externalStr.Substring(28, 4);
+                    break;
+
+
+                case "T61_typx":
+                    value = externalStr.Substring(32, 4);
+                    break;
+                default:
+                    return "AUTO";
+            }
+
+            // Decode失敗したら
+            if (!hexUtils.DecodeWcUcEcHex(value, out bool autoScan, out int code))
+            {
+                return "228";
+            }
+            
+            if(autoScan) return "AUTO";
+
+            return code.ToString("D3");
+        }
+
+
+
+
+
+
+
+
+
+
+
+
+
+        private string EncodeT61Wc(DataGridViewRow row, string externalStr)
+        {
+            Dictionary<string, int> modeToIndexMap = new Dictionary<string, int>
+            {
+                { "T61_typ1", 16 },
+                { "T61_typ2", 20 },
+                { "T61_typ3", 24 },
+                { "T61_typ4", 28 },
+                { "T61_typx", 32 }
+            };
+            // モード値を取得
+            string modeValue = row.Cells[Columns.MODE.Id].Value != null ? row.Cells[Columns.MODE.Id].Value.ToString() : null;
+            // wc値を取得
+            string wcValue = row.Cells[Columns.WC.Id].Value != null ? row.Cells[Columns.WC.Id].Value.ToString() : "0000";
+
+            if (modeValue != null && modeToIndexMap.ContainsKey(modeValue))
+            {
+                string replaceValue = hexUtils.SwapEndianHexForFourHex(wcValue);
+                int index = modeToIndexMap[modeValue];
+                externalStr = externalStr.Remove(index, 4);
+                externalStr = externalStr.Insert(index, replaceValue);
+            }
+
+            return externalStr;
+        }
+
+        private string EncodeT98AndT102AndB54Uc(DataGridViewRow row, string mode, int index, string externalStr)
         {
             if (row.Cells[Columns.MODE.Id].Value != null && row.Cells[Columns.MODE.Id].Value.ToString() == mode)
             {
                 string value = row.Cells[Columns.UC.Id].Value != null ? row.Cells[Columns.UC.Id].Value.ToString() : null;
-                string replaceValue = "0180";
+                string replaceValue = "0080";
 
                 if (value != null)
                 {
-                    replaceValue = (value == "0") ? "0180" : hexUtils.SwapEndianHexForFourHex(value);
+                    replaceValue = (value == "OFF") ? "0080" : hexUtils.SwapEndianHexForFourHex(value);
                 }
 
                 externalStr = externalStr.Remove(index, 4);
@@ -193,7 +286,50 @@ namespace DJ_X100_memory_writer.Service
 
         }
 
-        private string T98AndT102AndB54Ec(DataGridViewRow row, string mode, int index, string externalStr)
+        public string DecodeT98AndT102AndB54Uc(string externalStr, string mode)
+        {
+            string value = "";
+
+            switch (mode)
+            {
+                case "T98":
+                    value = externalStr.Substring(36, 4);
+                    break;
+
+                case "T102_B54":
+                    value = externalStr.Substring(40, 4);
+                    break;
+                default:
+                    return "OFF";
+            }
+
+            // Decode失敗したら
+            if (!hexUtils.DecodeWcUcEcHex(value, out bool autoScan, out int code))
+            {
+                return "OFF";
+            }
+
+            if (autoScan) return "OFF";
+
+            return code.ToString("D3");
+        }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        private string EncodeT98AndT102AndB54Ec(DataGridViewRow row, string mode, int index, string externalStr)
         {
             if (row.Cells[Columns.MODE.Id].Value != null && row.Cells[Columns.MODE.Id].Value.ToString() == mode)
             {
@@ -211,8 +347,35 @@ namespace DJ_X100_memory_writer.Service
             return externalStr;
 
         }
+        public string DecodeT98AndT102AndB54Ec(string externalStr, string mode)
+        {
+            string value = "";
 
-        private string T98AndT102AndDmrGc(DataGridViewRow row, string mode, int removeIndex, string externalStr)
+            switch (mode)
+            {
+                case "T98":
+                    value = externalStr.Substring(44, 4);
+                    break;
+
+                case "T102_B54":
+                    value = externalStr.Substring(48, 4);
+                    break;
+                default:
+                    return "OFF";
+            }
+
+            // Decode失敗したら
+            if (!hexUtils.DecodeWcUcEcHex(value, out bool autoScan, out int code))
+            {
+                return "OFF";
+            }
+
+            if (autoScan) return "OFF";
+
+            return code.ToString("D5");
+        }
+
+        private string EncodeT98AndT102AndDmrGc(DataGridViewRow row, string mode, int removeIndex, string externalStr)
         {
             if (row.Cells[Columns.MODE.Id].Value != null && row.Cells[Columns.MODE.Id].Value.ToString() == mode)
             {
@@ -233,7 +396,35 @@ namespace DJ_X100_memory_writer.Service
 
         }
 
-        private string DmrSlot(DataGridViewRow row, string mode, int removeIndex, string externalStr)
+        public string DecodeT98AndT102AndB54Gc(string externalStr, string mode)
+        {
+            string value = "";
+
+            switch (mode)
+            {
+                case "T98":
+                    value = externalStr.Substring(52, 4);
+                    break;
+
+                case "T102_B54":
+                    value = externalStr.Substring(60, 4);
+                    break;
+                default:
+                    return "ALL";
+            }
+
+            // Decode失敗したら
+            if (!hexUtils.DecodeGcHex(value, out bool all, out long code))
+            {
+                return "ALL";
+            }
+
+            if (all) return "ALL";
+
+            return code.ToString("D5");
+        }
+
+        private string EncodeDmrSlot(DataGridViewRow row, string mode, int removeIndex, string externalStr)
         {
             if (row.Cells[Columns.MODE.Id].Value != null && row.Cells[Columns.MODE.Id].Value.ToString() == mode)
             {
@@ -269,7 +460,7 @@ namespace DJ_X100_memory_writer.Service
 
         }
 
-        private string DmrCc(DataGridViewRow row, string mode, int removeIndex, string externalStr)
+        private string EncodeDmrCc(DataGridViewRow row, string mode, int removeIndex, string externalStr)
         {
             if (row.Cells[Columns.MODE.Id].Value != null && row.Cells[Columns.MODE.Id].Value.ToString() == mode)
             {
@@ -291,7 +482,7 @@ namespace DJ_X100_memory_writer.Service
 
         }
 
-        private string DstarCs(DataGridViewRow row, string mode, int removeIndex, string externalStr)
+        private string EncodeDstarCs(DataGridViewRow row, string mode, int removeIndex, string externalStr)
         {
             if (row.Cells[Columns.MODE.Id].Value != null && row.Cells[Columns.MODE.Id].Value.ToString() == mode)
             {
@@ -313,7 +504,7 @@ namespace DJ_X100_memory_writer.Service
 
         }
 
-        private string C4fmDg(DataGridViewRow row, string mode, int removeIndex, string externalStr)
+        private string EncodeC4fmDg(DataGridViewRow row, string mode, int removeIndex, string externalStr)
         {
             if (row.Cells[Columns.MODE.Id].Value != null && row.Cells[Columns.MODE.Id].Value.ToString() == mode)
             {
@@ -334,7 +525,7 @@ namespace DJ_X100_memory_writer.Service
             return externalStr;
         }
 
-        private string T61Lon(DataGridViewRow row, int index, string externalStr)
+        private string EncodeT61Lon(DataGridViewRow row, int index, string externalStr)
         {
             if (row.Cells[Columns.MODE.Id].Value != null &&
                 (row.Cells[Columns.MODE.Id].Value.ToString() == "T61_typ1" || row.Cells[Columns.MODE.Id].Value.ToString() == "T61_typ2"))
@@ -353,7 +544,7 @@ namespace DJ_X100_memory_writer.Service
             return externalStr;
         }
 
-        private string T61Lat(DataGridViewRow row, int index, string externalStr)
+        private string EncodeT61Lat(DataGridViewRow row, int index, string externalStr)
         {
             if (row.Cells[Columns.MODE.Id].Value != null &&
                 (row.Cells[Columns.MODE.Id].Value.ToString() == "T61_typ1" || row.Cells[Columns.MODE.Id].Value.ToString() == "T61_typ2"))

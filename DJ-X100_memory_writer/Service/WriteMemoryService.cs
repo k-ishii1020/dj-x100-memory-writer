@@ -6,7 +6,7 @@ namespace DJ_X100_memory_writer.Service
     internal class WriteMemoryService
     {
         DataGridView dataGridView = new DataGridView();
-        CreateCsvFileService createCsvFileService = new CreateCsvFileService();
+        CsvFileService createCsvFileService = new CsvFileService();
 
         public void Write(DataGridView dataGridView, string selectedPort)
         {

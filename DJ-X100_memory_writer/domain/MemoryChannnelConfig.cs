@@ -58,11 +58,24 @@
 
         private static string[] GenerateWcOptions()
         {
-            string[] options = new string[511];
+            string[] options = new string[513];
             options[0] = "AUTO";
-            for (int i = 1; i < 511; i++)
+            for (int i = 1; i <= 512; i++)
             {
-                options[i] = i.ToString("D3");
+                options[i] = (i - 1).ToString("D3");
+            }
+            return options;
+        }
+
+        private static string[] ucOptions = GenerateUcOptions();
+
+        private static string[] GenerateUcOptions()
+        {
+            string[] options = new string[512];
+            options[0] = "OFF";
+            for (int i = 1; i < 512; i++)
+            {
+                options[i] = (i).ToString("D3");
             }
             return options;
         }
@@ -308,8 +321,9 @@
             {
                 Id = Columns.UC.Id,
                 HeaderText = Columns.UC.Name,
-                Width = 40,
-                Type = ColumnType.Text
+                Width = 65,
+                Type = ColumnType.Dropdown,
+                Options = ucOptions
             },
             new ColumnSetup
             {
@@ -322,7 +336,7 @@
             {
                 Id = Columns.EC.Id,
                 HeaderText = Columns.EC.Name,
-                Width = 40,
+                Width = 65,
                 Type = ColumnType.Text
             },
             new ColumnSetup

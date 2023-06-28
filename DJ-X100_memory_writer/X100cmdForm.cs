@@ -243,5 +243,39 @@ namespace DJ_X100_memory_writer
         {
             this.Close();
         }
+
+
+
+
+
+        public void ReadMemoryChannel(string selectedPort)
+        {
+            if (!CheckX100cmdVersion()) return;
+
+            string port;
+
+            if (selectedPort == "自動選択")
+            {
+                port = "auto";
+            }
+            else
+            {
+                port = selectedPort;
+            }
+
+            string command = $"/K x100cmd.exe -p {port} export -y --ext x100cmd_temp_export.csv && pause && exit";
+
+            var processStartInfo = new ProcessStartInfo
+            {
+                FileName = "cmd.exe",
+                Arguments = command,
+                UseShellExecute = false
+            };
+
+            var process = new Process { StartInfo = processStartInfo };
+            process.Start();
+            process.WaitForExit();
+            MessageBox.Show("メモリチャンネルの読み込みが完了しました", "通知", MessageBoxButtons.OK, MessageBoxIcon.Information);
+        }
     }
 }

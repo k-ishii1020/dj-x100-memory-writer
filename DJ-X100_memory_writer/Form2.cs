@@ -12,7 +12,7 @@ namespace DJ_X100_memory_writer
     public partial class Form2 : Form
     {
         private Form1 form1;
-        private DataGridView dgv;  // dgvをクラスのフィールドとして定義
+        private DataGridView dgv;
         DataGridViewUtils dataGridViewUtils = new DataGridViewUtils();
 
         public Form2(Form1 form1)

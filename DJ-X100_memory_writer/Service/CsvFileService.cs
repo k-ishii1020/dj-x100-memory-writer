@@ -1,12 +1,22 @@
-﻿using System.Globalization;
+﻿using System.Data;
+using System.Globalization;
 using System.Text;
 using static DJ_X100_memory_writer.domain.MemoryChannnelConfig;
 
 namespace DJ_X100_memory_writer.Service
 {
-    internal class CreateCsvFileService
+    internal class CsvFileService
     {
-        CreateExternalDataService externalData = new CreateExternalDataService();
+        ExternalDataService externalData = new ExternalDataService();
+
+        string[] columnOrder = new string[]
+        {
+            Columns.MEMORY_NO.Id, Columns.FREQ.Id, Columns.MODE.Id, Columns.STEP.Id, Columns.MEMORY_NAME.Id,
+            Columns.OFFSET.Id, Columns.SHIFT_FREQ.Id, Columns.ATT.Id, Columns.SQL_MODE.Id, Columns.CTCSS.Id,
+            Columns.DCS.Id, Columns.BANK.Id, Columns.LAT.Id, Columns.LON.Id, Columns.SKIP.Id, "ext"
+        };
+
+
         public void ExportDataGridViewToCsv(DataGridView memoryChDataGridView, string filename)
         {
             try
@@ -182,12 +192,6 @@ namespace DJ_X100_memory_writer.Service
             {
                 using (StreamWriter writer = new StreamWriter(filename, false, Encoding.UTF8))
                 {
-                    string[] columnOrder = new string[]
-                    { Columns.MEMORY_NO.Id, Columns.FREQ.Id, Columns.MODE.Id, Columns.STEP.Id, Columns.MEMORY_NAME.Id,
-                      Columns.OFFSET.Id, Columns.SHIFT_FREQ.Id, Columns.ATT.Id, Columns.SQL_MODE.Id, Columns.CTCSS.Id,
-                      Columns.DCS.Id, Columns.BANK.Id, Columns.LAT.Id, Columns.LON.Id, Columns.SKIP.Id, "ext"
-                    };
-
                     IEnumerable<string> headerValues = columnOrder
                         .Select(columnName => columnName == "ext" ? columnName : memoryChDataGridView.Columns[columnName].Name);
 
@@ -220,5 +224,136 @@ namespace DJ_X100_memory_writer.Service
                 MessageBox.Show("エラー: " + ex.Message);
             }
         }
+
+        public void ImportX100cmdCsvToDataGridView(DataGridView memoryChDataGridView)
+        {
+            string[] lines = File.ReadAllLines(".\\x100cmd_temp_export.csv");
+            DataTable dataTable = new DataTable();
+
+            // ヘッダー行から列名を取得してDataTableに追加
+            string[] columnNames = lines[0].Split(',');
+            foreach (string columnName in columnNames)
+            {
+                dataTable.Columns.Add(columnName);
+            }
+
+            // データ行を追加
+            for (int i = 1; i < lines.Length; i++)
+            {
+                dataTable.Rows.Add(lines[i].Split(','));
+            }
+
+            memoryChDataGridView.Rows.Clear();
+
+            // 旧のDataTableから新のDataTableにデータをコピー
+            foreach (DataRow row in dataTable.Rows)
+            {
+
+                if (row["ext"] == null || row["ext"].ToString().Equals(""))
+                {
+                    memoryChDataGridView.Rows.Add(
+                        row[Columns.MEMORY_NO.Id],
+                        row[Columns.FREQ.Id],
+                        row[Columns.MEMORY_NAME.Id],
+                        row[Columns.MODE.Id],
+                        row[Columns.BANK.Id],
+                        row[Columns.SKIP.Id],
+                        row[Columns.STEP.Id],
+                        row[Columns.OFFSET.Id],
+                        row[Columns.SHIFT_FREQ.Id],
+                        row[Columns.ATT.Id],
+                        row[Columns.SQL_MODE.Id],
+                        row[Columns.CTCSS.Id],
+                        row[Columns.DCS.Id],
+                        "",
+                        "",
+                        "",
+                        "",
+                        "",
+                        "",
+                        "",
+                        "",
+                        "",
+                        "",
+                        "",
+                        "",
+                        "",
+                        row[Columns.LON.Id],
+                        row[Columns.LAT.Id]
+                );
+                    return;
+                }
+
+                DataTable extTable = DecodeExternalData(row["ext"].ToString(), row[Columns.MODE.Id].ToString());
+
+                memoryChDataGridView.Rows.Add(
+
+                row[Columns.MEMORY_NO.Id],
+                row[Columns.FREQ.Id],
+                row[Columns.MEMORY_NAME.Id],
+                row[Columns.MODE.Id],
+                row[Columns.BANK.Id],
+                row[Columns.SKIP.Id],
+                row[Columns.STEP.Id],
+                row[Columns.OFFSET.Id],
+                row[Columns.SHIFT_FREQ.Id],
+                row[Columns.ATT.Id],
+                row[Columns.SQL_MODE.Id],
+                row[Columns.CTCSS.Id],
+                row[Columns.DCS.Id],
+
+
+                extTable.Rows[0][Columns.REV_EC.Id],
+                extTable.Rows[0][Columns.REV_EC_FREQ.Id],
+                extTable.Rows[0][Columns.UC.Id],
+                extTable.Rows[0][Columns.GC.Id],
+                extTable.Rows[0][Columns.EC.Id],
+                extTable.Rows[0][Columns.WC.Id],
+                "", // extTable.Rows[0][Columns.T61_LON.Id],
+                "", // extTable.Rows[0][Columns.T61_LAT.Id],
+                "", // extTable.Rows[0][Columns.DMR_SLOT.Id],
+                "", // extTable.Rows[0][Columns.DMR_CC.Id],
+                "", // extTable.Rows[0][Columns.DMR_GC.Id],
+                "", // extTable.Rows[0][Columns.DSTAR_CS.Id],
+                "", // extTable.Rows[0][Columns.C4FM_DG.Id],
+
+                row[Columns.LON.Id],
+                row[Columns.LAT.Id]
+                );
+            }
+
+        }
+
+        public DataTable DecodeExternalData(string externalDataStr, string mode)
+        {
+            DataTable dataTable = new DataTable();
+            dataTable.Columns.Add(Columns.REV_EC.Id);
+            dataTable.Columns.Add(Columns.REV_EC_FREQ.Id);
+            dataTable.Columns.Add(Columns.UC.Id);
+            dataTable.Columns.Add(Columns.GC.Id);
+            dataTable.Columns.Add(Columns.EC.Id);
+            dataTable.Columns.Add(Columns.WC.Id);
+            dataTable.Columns.Add(Columns.T61_LON.Id);
+            dataTable.Columns.Add(Columns.T61_LAT.Id);
+            dataTable.Columns.Add(Columns.DMR_SLOT.Id);
+            dataTable.Columns.Add(Columns.DMR_CC.Id);
+            dataTable.Columns.Add(Columns.DMR_GC.Id);
+            dataTable.Columns.Add(Columns.DSTAR_CS.Id);
+            dataTable.Columns.Add(Columns.C4FM_DG.Id);
+
+            DataRow row = dataTable.NewRow();
+
+            row[Columns.REV_EC.Id] = externalData.DecodeRevEcOnOff(externalDataStr);
+            row[Columns.REV_EC_FREQ.Id] = externalData.DecodeRevEcFreq(externalDataStr);
+            row[Columns.UC.Id] = externalData.DecodeT98AndT102AndB54Uc(externalDataStr, mode);
+            row[Columns.GC.Id] = externalData.DecodeT98AndT102AndB54Gc(externalDataStr, mode);
+            row[Columns.EC.Id] = externalData.DecodeT98AndT102AndB54Uc(externalDataStr, mode);
+            row[Columns.WC.Id] = externalData.DecodeT98AndT102AndB54Wc(externalDataStr, mode);
+
+
+            dataTable.Rows.Add(row);
+            return dataTable;
+        }
+
     }
 }
