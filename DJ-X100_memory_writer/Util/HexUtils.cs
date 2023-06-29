@@ -51,7 +51,7 @@ namespace DJ_X100_memory_writer.Util
         public string SwapEndianHexForFourHex(string strValue)
         {
             int value;
-            if(strValue == null || strValue.Equals(""))
+            if(strValue == null || strValue.Equals("") || (strValue.Equals("OFF")))
             {
                 return "0180";
             }
@@ -107,7 +107,7 @@ namespace DJ_X100_memory_writer.Util
         public string SwapEndianHexForEightDigits(string strValue)
         {
             int value;
-            if (strValue == null || strValue.Equals(""))
+            if (strValue == null || strValue.Equals("") || (strValue.Equals("ALL")))
             {
                 return "01000080";
             }
