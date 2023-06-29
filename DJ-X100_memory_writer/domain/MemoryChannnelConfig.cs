@@ -404,14 +404,14 @@
             {
                 Id = Columns.LON.Id,
                 HeaderText = Columns.LON.Name,
-                Width = 40,
+                Width = 80,
                 Type = ColumnType.Text
             },
             new ColumnSetup
             {
                 Id = Columns.LAT.Id,
                 HeaderText = Columns.LAT.Name,
-                Width = 40,
+                Width = 80,
                 Type = ColumnType.Text
             },
         };

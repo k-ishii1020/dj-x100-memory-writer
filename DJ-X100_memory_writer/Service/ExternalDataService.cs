@@ -49,12 +49,12 @@ namespace DJ_X100_memory_writer.Service
 
 
             // T98_GCの処理
-            externalStr = EncodeT98AndT102AndDmrGc(row, "T98", 52, externalStr);
+            externalStr = EncodeT98AndT102AndB54AndDmrGc(row, "T98", 52, externalStr);
             // T102_B54_GCの処理
-            externalStr = EncodeT98AndT102AndDmrGc(row, "T102_B54", 60, externalStr);
+            externalStr = EncodeT98AndT102AndB54AndDmrGc(row, "T102_B54", 60, externalStr);
 
             // DMR_GCの処理
-            externalStr = EncodeT98AndT102AndDmrGc(row, "DMR", 68, externalStr);
+            externalStr = EncodeT98AndT102AndB54AndDmrGc(row, "DMR", 68, externalStr);
             // DMR_SLOTの処理
             externalStr = EncodeDmrSlot(row, "DMR", 76, externalStr);
             // DMR_CCの処理
@@ -219,7 +219,7 @@ namespace DJ_X100_memory_writer.Service
             }
 
             // Decode失敗したら
-            if (!hexUtils.DecodeWcUcEcHex(value, out bool autoScan, out int code))
+            if (!hexUtils.DecodeFourHex(value, out bool autoScan, out int code))
             {
                 return "228";
             }
@@ -286,7 +286,7 @@ namespace DJ_X100_memory_writer.Service
 
         }
 
-        public string DecodeT98AndT102AndB54Uc(string externalStr, string mode)
+        public string DecodeT98AndT102AndB54UcAndDstarAndC4fm(string externalStr, string mode)
         {
             string value = "";
 
@@ -299,19 +299,36 @@ namespace DJ_X100_memory_writer.Service
                 case "T102_B54":
                     value = externalStr.Substring(40, 4);
                     break;
+
+                case "DSTAR":
+                    value = externalStr.Substring(82, 4);
+                    break;
+
+                case "C4FM":
+                    value = externalStr.Substring(86, 4);
+                    break;
+
                 default:
                     return "OFF";
             }
 
             // Decode失敗したら
-            if (!hexUtils.DecodeWcUcEcHex(value, out bool autoScan, out int code))
+            if (!hexUtils.DecodeFourHex(value, out bool flag, out int code))
             {
                 return "OFF";
             }
 
-            if (autoScan) return "OFF";
+            if (flag) return "OFF";
 
-            return code.ToString("D3");
+            switch (mode)
+            {
+                case "DSTAR":
+                case "C4FM":
+                    return code.ToString("D2");
+
+                default:
+                    return code.ToString("D3");
+            }
         }
 
 
@@ -365,7 +382,7 @@ namespace DJ_X100_memory_writer.Service
             }
 
             // Decode失敗したら
-            if (!hexUtils.DecodeWcUcEcHex(value, out bool autoScan, out int code))
+            if (!hexUtils.DecodeFourHex(value, out bool autoScan, out int code))
             {
                 return "OFF";
             }
@@ -375,7 +392,7 @@ namespace DJ_X100_memory_writer.Service
             return code.ToString("D5");
         }
 
-        private string EncodeT98AndT102AndDmrGc(DataGridViewRow row, string mode, int removeIndex, string externalStr)
+        private string EncodeT98AndT102AndB54AndDmrGc(DataGridViewRow row, string mode, int removeIndex, string externalStr)
         {
             if (row.Cells[Columns.MODE.Id].Value != null && row.Cells[Columns.MODE.Id].Value.ToString() == mode)
             {
@@ -396,32 +413,36 @@ namespace DJ_X100_memory_writer.Service
 
         }
 
-        public string DecodeT98AndT102AndB54Gc(string externalStr, string mode)
+        public string DecodeT98AndT102AndB54AndDmrGc(string externalStr, string mode)
         {
             string value = "";
 
             switch (mode)
             {
                 case "T98":
-                    value = externalStr.Substring(52, 4);
+                    value = externalStr.Substring(52, 8);
                     break;
 
                 case "T102_B54":
-                    value = externalStr.Substring(60, 4);
+                    value = externalStr.Substring(60, 8);
+                    break;
+
+                case "DMR":
+                    value = externalStr.Substring(68, 8);
                     break;
                 default:
                     return "ALL";
             }
 
             // Decode失敗したら
-            if (!hexUtils.DecodeGcHex(value, out bool all, out long code))
+            if (!hexUtils.DecodeEightHex(value, out bool all, out long code))
             {
                 return "ALL";
             }
 
             if (all) return "ALL";
 
-            return code.ToString("D5");
+            return code.ToString("D8");
         }
 
         private string EncodeDmrSlot(DataGridViewRow row, string mode, int removeIndex, string externalStr)
@@ -457,9 +478,24 @@ namespace DJ_X100_memory_writer.Service
                 externalStr = externalStr.Insert(removeIndex, replaceValue);
             }
             return externalStr;
-
         }
 
+        public string DecodeDmrSlot(string externalStr)
+        {
+            string value = externalStr.Substring(76, 2);
+
+            switch (value)
+            {
+                case "00":
+                    return "AUTO";
+                case "01":
+                    return "1";
+                case "02":
+                    return "2";
+                default:
+                    return "AUTO";
+            }
+        }
         private string EncodeDmrCc(DataGridViewRow row, string mode, int removeIndex, string externalStr)
         {
             if (row.Cells[Columns.MODE.Id].Value != null && row.Cells[Columns.MODE.Id].Value.ToString() == mode)
@@ -479,7 +515,21 @@ namespace DJ_X100_memory_writer.Service
                 externalStr = externalStr.Insert(removeIndex, replaceValue);
             }
             return externalStr;
+        }
 
+        public string DecodeDmrCc(string externalStr)
+        {
+            string value = externalStr.Substring(78, 4);
+
+            // Decode失敗したら
+            if (!hexUtils.DecodeFourHex(value, out bool flag, out int code))
+            {
+                return "OFF";
+            }
+
+            if (flag) return "OFF";
+
+            return code.ToString("D2");
         }
 
         private string EncodeDstarCs(DataGridViewRow row, string mode, int removeIndex, string externalStr)
@@ -562,5 +612,25 @@ namespace DJ_X100_memory_writer.Service
             }
             return externalStr;
         }
+
+        public string Decode61LonLat(string externalStr, string lonLat)
+        {
+            string value = "";
+
+            switch (lonLat)
+            {
+                case "LON":
+                    value = externalStr.Substring(90, 2);
+                    break;
+
+                case "LAT":
+                    value = externalStr.Substring(92, 2);
+                    break;
+                default:
+                    return "";
+            }
+            return hexUtils.HexToDecimal(value).ToString();
+        }
     }
+
 }

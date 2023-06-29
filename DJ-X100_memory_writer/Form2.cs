@@ -1,11 +1,4 @@
 ﻿using DJ_X100_memory_writer.Util;
-using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Text;
-using System.Text.RegularExpressions;
-using System.Windows.Forms;
-using static DJ_X100_memory_writer.domain.MemoryChannnelConfig;
 
 namespace DJ_X100_memory_writer
 {
@@ -185,7 +178,7 @@ namespace DJ_X100_memory_writer
         private async void バンク設定読込RToolStripMenuItem_Click(object sender, EventArgs e)
         {
             var x100cmdForm = new X100cmdForm();
-            x100cmdForm.Show();
+            x100cmdForm.ShowDialog();
             await x100cmdForm.ReadBankName(UpdateBankName);
         }
 
@@ -205,7 +198,7 @@ namespace DJ_X100_memory_writer
         private async void バンク設定書込WToolStripMenuItem_Click(object sender, EventArgs e)
         {
             var x100cmdForm = new X100cmdForm();
-            x100cmdForm.Show();
+            x100cmdForm.ShowDialog();
 
             var bankNames = new Dictionary<char, string>();
             foreach (DataGridViewRow row in dgv.Rows)

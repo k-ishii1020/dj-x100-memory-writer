@@ -107,8 +107,8 @@ namespace DJ_X100_memory_writer.Service
                     }
 
 
-                    // "No" 列および12列目を3桁0埋めで設定
-                    if ((j == 0 || j == 12) && int.TryParse(cells[j], out int no))
+                    // No(0),DCS(12),UC(15),WC(18)を3桁0埋めで設定
+                    if ((j == 0 || j == 12　|| j == 15) && int.TryParse(cells[j], out int no))
                     {
                         cells[j] = String.Format("{0:D3}", no);
                     }
@@ -245,6 +245,7 @@ namespace DJ_X100_memory_writer.Service
 
             memoryChDataGridView.Rows.Clear();
 
+            int totalRows = 1000;
             // 旧のDataTableから新のDataTableにデータをコピー
             foreach (DataRow row in dataTable.Rows)
             {
@@ -302,24 +303,34 @@ namespace DJ_X100_memory_writer.Service
                 row[Columns.CTCSS.Id],
                 row[Columns.DCS.Id],
 
-
                 extTable.Rows[0][Columns.REV_EC.Id],
                 extTable.Rows[0][Columns.REV_EC_FREQ.Id],
                 extTable.Rows[0][Columns.UC.Id],
                 extTable.Rows[0][Columns.GC.Id],
                 extTable.Rows[0][Columns.EC.Id],
                 extTable.Rows[0][Columns.WC.Id],
-                "", // extTable.Rows[0][Columns.T61_LON.Id],
-                "", // extTable.Rows[0][Columns.T61_LAT.Id],
-                "", // extTable.Rows[0][Columns.DMR_SLOT.Id],
-                "", // extTable.Rows[0][Columns.DMR_CC.Id],
-                "", // extTable.Rows[0][Columns.DMR_GC.Id],
-                "", // extTable.Rows[0][Columns.DSTAR_CS.Id],
-                "", // extTable.Rows[0][Columns.C4FM_DG.Id],
+                extTable.Rows[0][Columns.T61_LON.Id],
+                extTable.Rows[0][Columns.T61_LAT.Id],
+                extTable.Rows[0][Columns.DMR_SLOT.Id],
+                extTable.Rows[0][Columns.DMR_CC.Id],
+                extTable.Rows[0][Columns.DMR_GC.Id],
+                extTable.Rows[0][Columns.DSTAR_CS.Id],
+                extTable.Rows[0][Columns.C4FM_DG.Id],
 
                 row[Columns.LON.Id],
                 row[Columns.LAT.Id]
                 );
+            }
+            // 残りの行を空白で埋める
+            int remainingRows = totalRows - memoryChDataGridView.Rows.Count;
+            for (int i = 0; i < remainingRows; i++)
+            {
+                memoryChDataGridView.Rows.Add();
+            }
+            // TODO
+            for (int i = 1; i < totalRows; i++)
+            {
+                memoryChDataGridView.Rows[i].Cells[0].Value = i.ToString("D3"); // "D3"は0でパディングされた3桁の数値を表す書式指定子です。
             }
 
         }
@@ -345,10 +356,18 @@ namespace DJ_X100_memory_writer.Service
 
             row[Columns.REV_EC.Id] = externalData.DecodeRevEcOnOff(externalDataStr);
             row[Columns.REV_EC_FREQ.Id] = externalData.DecodeRevEcFreq(externalDataStr);
-            row[Columns.UC.Id] = externalData.DecodeT98AndT102AndB54Uc(externalDataStr, mode);
-            row[Columns.GC.Id] = externalData.DecodeT98AndT102AndB54Gc(externalDataStr, mode);
-            row[Columns.EC.Id] = externalData.DecodeT98AndT102AndB54Uc(externalDataStr, mode);
+            row[Columns.UC.Id] = externalData.DecodeT98AndT102AndB54UcAndDstarAndC4fm(externalDataStr, mode);
+            row[Columns.GC.Id] = externalData.DecodeT98AndT102AndB54AndDmrGc(externalDataStr, mode);
+            row[Columns.EC.Id] = externalData.DecodeT98AndT102AndB54UcAndDstarAndC4fm(externalDataStr, mode);
             row[Columns.WC.Id] = externalData.DecodeT98AndT102AndB54Wc(externalDataStr, mode);
+            row[Columns.T61_LON.Id] = externalData.Decode61LonLat(externalDataStr, "LON");
+            row[Columns.T61_LAT.Id] = externalData.Decode61LonLat(externalDataStr, "LAT");
+
+            row[Columns.DMR_SLOT.Id] = externalData.DecodeDmrSlot(externalDataStr);
+            row[Columns.DMR_CC.Id] = externalData.DecodeDmrCc(externalDataStr);
+            row[Columns.DMR_GC.Id] = externalData.DecodeT98AndT102AndB54AndDmrGc(externalDataStr, mode);
+            row[Columns.DSTAR_CS.Id] = externalData.DecodeT98AndT102AndB54UcAndDstarAndC4fm(externalDataStr, mode);
+            row[Columns.C4FM_DG.Id] = externalData.DecodeT98AndT102AndB54UcAndDstarAndC4fm(externalDataStr, mode);
 
 
             dataTable.Rows.Add(row);

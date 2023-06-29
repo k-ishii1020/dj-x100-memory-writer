@@ -29,8 +29,24 @@ namespace DJ_X100_memory_writer.Util
             return hex.Substring(1, 1) + hex.Substring(0, 1);
         }
 
+        public string HexToDecimal(string hexValue)
+        {
+            if (string.IsNullOrEmpty(hexValue))
+            {
+                return "";
+            }
 
+            try
+            {
+                int decimalValue = int.Parse(hexValue, System.Globalization.NumberStyles.HexNumber);
 
+                return decimalValue.ToString();
+            }
+            catch (Exception)
+            {
+                throw new Exception("有効な16進数値ではありません");
+            }
+        }
 
         public string SwapEndianHexForFourHex(string strValue)
         {
@@ -58,10 +74,10 @@ namespace DJ_X100_memory_writer.Util
 
 
 
-        public bool DecodeWcUcEcHex(string hexString, out bool autoScan, out int value)
+        public bool DecodeFourHex(string hexString, out bool flag, out int value)
         {
             // 初期化
-            autoScan = false;
+            flag = false;
             value = 0;
 
             // 16進数の文字列を整数に変換
@@ -79,7 +95,7 @@ namespace DJ_X100_memory_writer.Util
             int bitFields = ((num & 0x00FF) << 8) | ((num & 0xFF00) >> 8);
 
             // AUTOフィールド（最上位ビット）と値フィールド（その他のビット）を取り出す
-            autoScan = (bitFields & 0x8000) != 0;  // 最上位ビットを調べる
+            flag = (bitFields & 0x8000) != 0;  // 最上位ビットを調べる
             value = bitFields & 0x7FFF;  // 最上位ビットを除く
 
             return true;
@@ -108,7 +124,7 @@ namespace DJ_X100_memory_writer.Util
             return hex.Substring(6, 2) + hex.Substring(4, 2) + hex.Substring(2, 2) + hex.Substring(0, 2);
         }
 
-        public bool DecodeGcHex(string hexString, out bool all, out long value)
+        public bool DecodeEightHex(string hexString, out bool all, out long value)
         {
             // 初期化
             all = false;
@@ -126,7 +142,7 @@ namespace DJ_X100_memory_writer.Util
             }
 
             // リトルエンディアンなので、ビットを反転
-            long bitFields = ((num & 0x00FF) << 24) | ((num & 0xFF00) << 8) | ((num & 0xFF0000) >> 8) | ((num & 0xFF000000) >> 24);
+            long bitFields = ((num & 0x000000FF) << 24) | ((num & 0x0000FF00) << 8) | ((num & 0x00FF0000) >> 8) | ((num & 0xFF000000) >> 24);
 
             // AUTOフィールド（最上位ビット）と値フィールド（その他のビット）を取り出す
             all = (bitFields & 0x80000000) != 0;  // 最上位ビットを調べる
@@ -134,6 +150,7 @@ namespace DJ_X100_memory_writer.Util
 
             return true;
         }
+
 
     }
 }

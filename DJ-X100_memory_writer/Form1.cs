@@ -264,7 +264,7 @@ namespace DJ_X100_memory_writer
         private void ÉoÉìÉNê›íËBToolStripMenuItem_Click(object sender, EventArgs e)
         {
             Form2 form2 = new Form2(this);
-            form2.Show();
+            form2.ShowDialog();
         }
 
         public void UpdateTreeView(List<string> bankNames)
