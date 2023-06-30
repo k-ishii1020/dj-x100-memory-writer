@@ -195,7 +195,7 @@ namespace DJ_X100_memory_writer
             SaveFileDialog saveFileDialog = new SaveFileDialog();
             saveFileDialog.Title = "名前をつけてCSVファイルを保存";
             saveFileDialog.InitialDirectory = @"C:\";
-            saveFileDialog.Filter = "CSVファイル(*.csv)|*csv|すべてのファイル(*.*)|*.*";
+            saveFileDialog.Filter = "CSVファイル(*.csv)|*.csv|すべてのファイル(*.*)|*.*";
             saveFileDialog.FilterIndex = 0;
             saveFileDialog.OverwritePrompt = true;
             saveFileDialog.InitialDirectory = Environment.GetFolderPath(Environment.SpecialFolder.Desktop);
@@ -264,7 +264,7 @@ namespace DJ_X100_memory_writer
         private void バンク設定BToolStripMenuItem_Click(object sender, EventArgs e)
         {
             Form2 form2 = new Form2(this);
-            form2.ShowDialog();
+            form2.Show();
         }
 
         public void UpdateTreeView(List<string> bankNames)

@@ -250,6 +250,43 @@ namespace DJ_X100_memory_writer.Service
             foreach (DataRow row in dataTable.Rows)
             {
 
+                if (row[Columns.FREQ.Id].ToString().Equals("0.000000"))
+                {
+                    memoryChDataGridView.Rows.Add(
+                        row[Columns.MEMORY_NO.Id],
+                        "",
+                        "",
+                        "",
+                        "",
+                        "",
+                        "",
+                        "",
+                        "",
+                        "",
+                        "",
+                        "",
+                        "",
+                        "",
+                        "",
+                        "",
+                        "",
+                        "",
+                        "",
+                        "",
+                        "",
+                        "",
+                        "",
+                        "",
+                        "",
+                        "",
+                        "",
+                        ""
+                    );
+                    continue;
+                }
+
+
+
                 if (row["ext"] == null || row["ext"].ToString().Equals(""))
                 {
                     memoryChDataGridView.Rows.Add(
@@ -282,7 +319,7 @@ namespace DJ_X100_memory_writer.Service
                         row[Columns.LON.Id],
                         row[Columns.LAT.Id]
                 );
-                    return;
+                    continue;
                 }
 
                 DataTable extTable = DecodeExternalData(row["ext"].ToString(), row[Columns.MODE.Id].ToString());
@@ -365,9 +402,9 @@ namespace DJ_X100_memory_writer.Service
 
             row[Columns.DMR_SLOT.Id] = externalData.DecodeDmrSlot(externalDataStr);
             row[Columns.DMR_CC.Id] = externalData.DecodeDmrCc(externalDataStr);
-            row[Columns.DMR_GC.Id] = externalData.DecodeT98AndT102AndB54AndDmrGc(externalDataStr, mode);
-            row[Columns.DSTAR_CS.Id] = externalData.DecodeT98AndT102AndB54UcAndDstarAndC4fm(externalDataStr, mode);
-            row[Columns.C4FM_DG.Id] = externalData.DecodeT98AndT102AndB54UcAndDstarAndC4fm(externalDataStr, mode);
+            row[Columns.DMR_GC.Id] = externalData.DecodeT98AndT102AndB54AndDmrGc(externalDataStr, "DMR");
+            row[Columns.DSTAR_CS.Id] = externalData.DecodeT98AndT102AndB54UcAndDstarAndC4fm(externalDataStr, "DSTAR");
+            row[Columns.C4FM_DG.Id] = externalData.DecodeT98AndT102AndB54UcAndDstarAndC4fm(externalDataStr, "C4FM");
 
 
             dataTable.Rows.Add(row);

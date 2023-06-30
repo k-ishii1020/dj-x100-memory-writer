@@ -178,7 +178,7 @@ namespace DJ_X100_memory_writer
         private async void バンク設定読込RToolStripMenuItem_Click(object sender, EventArgs e)
         {
             var x100cmdForm = new X100cmdForm();
-            x100cmdForm.ShowDialog();
+            x100cmdForm.Show();
             await x100cmdForm.ReadBankName(UpdateBankName);
         }
 
@@ -198,7 +198,7 @@ namespace DJ_X100_memory_writer
         private async void バンク設定書込WToolStripMenuItem_Click(object sender, EventArgs e)
         {
             var x100cmdForm = new X100cmdForm();
-            x100cmdForm.ShowDialog();
+            x100cmdForm.Show();
 
             var bankNames = new Dictionary<char, string>();
             foreach (DataGridViewRow row in dgv.Rows)

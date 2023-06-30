@@ -1,5 +1,6 @@
 ﻿using System.Globalization;
 using System.Text.RegularExpressions;
+using System.Windows.Forms;
 using DJ_X100_memory_writer.Util;
 using static DJ_X100_memory_writer.domain.MemoryChannnelConfig;
 
@@ -71,6 +72,30 @@ namespace DJ_X100_memory_writer
                 memoryChDataGridView.EndEdit();
                 e.Handled = true;
             }
+
+
+
+
+
+            // if (e.Control)
+            // {
+            //     switch (e.KeyCode)
+            //     {
+            //         case Keys.Up:
+            //             // If the Up key is pressed, move the selected rows up
+            //             MoveRow(-1);
+            //             e.Handled = true;
+            //             break;
+            // 
+            //         case Keys.Down:
+            //             // If the Down key is pressed, move the selected rows down
+            //             MoveRow(1);
+            //             e.Handled = true;
+            //             break;
+            //     }
+            // }
+
+
         }
 
         private void PasteClipboardData()
@@ -260,5 +285,48 @@ namespace DJ_X100_memory_writer
         {
             return;
         }
+
+        private void MoveRow(int direction)
+        {
+            if (memoryChDataGridView.SelectedRows.Count > 0)
+            {
+                memoryChDataGridView.SuspendLayout();
+
+                List<DataGridViewRow> rowsToMove = new List<DataGridViewRow>();
+                foreach (DataGridViewRow row in memoryChDataGridView.SelectedRows)
+                {
+                    rowsToMove.Add(row);
+                }
+
+                // Reverse the order for correct insertion order based on direction
+                if (direction > 0) // Reverse only for moving down
+                {
+                    rowsToMove.Reverse();
+                }
+
+                foreach (DataGridViewRow row in rowsToMove)
+                {
+                    int oldIndex = row.Index;
+                    int newIndex = oldIndex + direction;
+                    // Check if the new index is within the range
+                    if (newIndex >= 0 && newIndex < memoryChDataGridView.Rows.Count)
+                    {
+                        memoryChDataGridView.Rows.RemoveAt(oldIndex);
+                        memoryChDataGridView.Rows.Insert(newIndex, row);
+                    }
+                }
+
+                memoryChDataGridView.ClearSelection();
+                foreach (DataGridViewRow row in rowsToMove)
+                {
+                    memoryChDataGridView.Rows[row.Index].Selected = true;
+                }
+
+                memoryChDataGridView.ResumeLayout();
+            }
+        }
+
+
+
     }
 }

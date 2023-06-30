@@ -132,10 +132,10 @@ namespace DJ_X100_memory_writer
             {
                 if (!String.IsNullOrEmpty(e.Data))
                 {
-                    this.Invoke((Action)delegate
-                    {
-                        textBox1.AppendText(e.Data + Environment.NewLine);
-                    });
+                            this.Invoke((Action)delegate
+                            {
+                                textBox1.AppendText(e.Data + Environment.NewLine);
+                            });
                     output.AppendLine(e.Data);
                 }
             };
@@ -230,7 +230,7 @@ namespace DJ_X100_memory_writer
                 port = selectedPort;
             }
 
-            string command = $"/K x100cmd.exe -p {port} export -y --ext x100cmd_temp_export.csv && pause && exit";
+            string command = $"/K x100cmd.exe -p {port} export -y -a --ext x100cmd_temp_export.csv && pause && exit";
 
             var processStartInfo = new ProcessStartInfo
             {
