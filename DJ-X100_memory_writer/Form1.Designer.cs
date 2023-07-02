@@ -85,6 +85,7 @@ namespace DJ_X100_memory_writer
             statusLabel1 = new ToolStripStatusLabel();
             selectedComportLabel = new ToolStripStatusLabel();
             toolStripStatusLabel1 = new ToolStripStatusLabel();
+            toolStripStatusLabel2 = new ToolStripStatusLabel();
             menuStrip1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)splitContainer1).BeginInit();
             splitContainer1.Panel1.SuspendLayout();
@@ -344,7 +345,7 @@ namespace DJ_X100_memory_writer
             // 
             // statusStrip1
             // 
-            statusStrip1.Items.AddRange(new ToolStripItem[] { toolStripProgressBar1, statusLabel1, selectedComportLabel, toolStripStatusLabel1 });
+            statusStrip1.Items.AddRange(new ToolStripItem[] { toolStripProgressBar1, statusLabel1, selectedComportLabel, toolStripStatusLabel2, toolStripStatusLabel1 });
             statusStrip1.Location = new Point(0, 689);
             statusStrip1.Name = "statusStrip1";
             statusStrip1.Size = new Size(1284, 22);
@@ -370,10 +371,16 @@ namespace DJ_X100_memory_writer
             // toolStripStatusLabel1
             // 
             toolStripStatusLabel1.Name = "toolStripStatusLabel1";
-            toolStripStatusLabel1.Size = new Size(1019, 17);
-            toolStripStatusLabel1.Spring = true;
+            toolStripStatusLabel1.Size = new Size(155, 17);
             toolStripStatusLabel1.Text = "※000chはプライオリティCHです";
             toolStripStatusLabel1.TextAlign = ContentAlignment.MiddleRight;
+            // 
+            // toolStripStatusLabel2
+            // 
+            toolStripStatusLabel2.Name = "toolStripStatusLabel2";
+            toolStripStatusLabel2.Size = new Size(833, 17);
+            toolStripStatusLabel2.Spring = true;
+            toolStripStatusLabel2.Text = "行移動は左端を選択してCtrl+↑↓です。ウィンドウの表示範囲をNoからNAMEまでにするとスムーズに動作します";
             // 
             // Form1
             // 
@@ -426,5 +433,6 @@ namespace DJ_X100_memory_writer
         private ToolStripMenuItem バンク設定BToolStripMenuItem;
         private ToolStripMenuItem 読み込みRToolStripMenuItem;
         private ToolStripStatusLabel toolStripStatusLabel1;
+        private ToolStripStatusLabel toolStripStatusLabel2;
     }
 }

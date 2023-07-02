@@ -49,9 +49,9 @@ namespace DJ_X100_memory_writer
             }
         }
 
-        // DeleteキーでNo列消させない
         public void MemoryChDataGridView_KeyDown(object sender, KeyEventArgs e)
         {
+            // DeleteキーでNo列消させない
             if (e.KeyCode == Keys.Delete)
             {
                 foreach (DataGridViewCell cell in memoryChDataGridView.SelectedCells)
@@ -73,29 +73,22 @@ namespace DJ_X100_memory_writer
                 e.Handled = true;
             }
 
-
-
-
-
-            // if (e.Control)
-            // {
-            //     switch (e.KeyCode)
-            //     {
-            //         case Keys.Up:
-            //             // If the Up key is pressed, move the selected rows up
-            //             MoveRow(-1);
-            //             e.Handled = true;
-            //             break;
-            // 
-            //         case Keys.Down:
-            //             // If the Down key is pressed, move the selected rows down
-            //             MoveRow(1);
-            //             e.Handled = true;
-            //             break;
-            //     }
-            // }
-
-
+           // Ctrl + ↑↓で行移動 
+           if (e.Control)
+           {
+               switch (e.KeyCode)
+               {
+                   case Keys.Up:
+                       MoveRow(-1);
+                       e.Handled = true;
+                       break;
+           
+                   case Keys.Down:
+                       MoveRow(1);
+                       e.Handled = true;
+                       break;
+               }
+           }
         }
 
         private void PasteClipboardData()
@@ -292,41 +285,50 @@ namespace DJ_X100_memory_writer
             {
                 memoryChDataGridView.SuspendLayout();
 
-                List<DataGridViewRow> rowsToMove = new List<DataGridViewRow>();
+                var rowsToMove = new List<DataGridViewRow>();
                 foreach (DataGridViewRow row in memoryChDataGridView.SelectedRows)
                 {
                     rowsToMove.Add(row);
                 }
 
-                // Reverse the order for correct insertion order based on direction
-                if (direction > 0) // Reverse only for moving down
+                rowsToMove = rowsToMove.OrderBy(r => r.Index).ToList();
+
+                if (direction > 0)
                 {
                     rowsToMove.Reverse();
                 }
+
+                int? lastNewIndex = null;
 
                 foreach (DataGridViewRow row in rowsToMove)
                 {
                     int oldIndex = row.Index;
                     int newIndex = oldIndex + direction;
-                    // Check if the new index is within the range
-                    if (newIndex >= 0 && newIndex < memoryChDataGridView.Rows.Count)
+
+                    if (newIndex >= 0 && newIndex < memoryChDataGridView.Rows.Count && newIndex != lastNewIndex)
                     {
+                        lastNewIndex = newIndex;
+
                         memoryChDataGridView.Rows.RemoveAt(oldIndex);
                         memoryChDataGridView.Rows.Insert(newIndex, row);
                     }
                 }
 
                 memoryChDataGridView.ClearSelection();
+
                 foreach (DataGridViewRow row in rowsToMove)
                 {
                     memoryChDataGridView.Rows[row.Index].Selected = true;
                 }
 
+                // ここで行番号を振り直す
+                for (int i = 0; i < memoryChDataGridView.Rows.Count; i++)
+                {
+                    memoryChDataGridView.Rows[i].Cells[0].Value = i.ToString("D3");
+                }
+
                 memoryChDataGridView.ResumeLayout();
             }
         }
-
-
-
     }
 }

@@ -1,9 +1,6 @@
 using DJ_X100_memory_writer.Service;
-using System;
-using System.Diagnostics;
 using System.IO.Ports;
-using System.Text;
-using System.Windows.Forms;
+
 
 namespace DJ_X100_memory_writer
 {
@@ -24,7 +21,7 @@ namespace DJ_X100_memory_writer
 
             this.Load += Form1_Load;
 
-            Text = "DJ - X100 Memory Writer(”ñŒöŽ®) v" + version + "(ƒÀ”Å)";
+            Text = "DJ-X100 Memory Writer(”ñŒöŽ®) v" + version + "(ƒÀ”Å)";
 
             InitComPort();
             treeViewSetup();
