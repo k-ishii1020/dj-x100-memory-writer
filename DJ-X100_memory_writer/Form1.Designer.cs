@@ -84,6 +84,7 @@ namespace DJ_X100_memory_writer
             toolStripProgressBar1 = new ToolStripProgressBar();
             statusLabel1 = new ToolStripStatusLabel();
             selectedComportLabel = new ToolStripStatusLabel();
+            toolStripStatusLabel1 = new ToolStripStatusLabel();
             menuStrip1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)splitContainer1).BeginInit();
             splitContainer1.Panel1.SuspendLayout();
@@ -343,7 +344,7 @@ namespace DJ_X100_memory_writer
             // 
             // statusStrip1
             // 
-            statusStrip1.Items.AddRange(new ToolStripItem[] { toolStripProgressBar1, statusLabel1, selectedComportLabel });
+            statusStrip1.Items.AddRange(new ToolStripItem[] { toolStripProgressBar1, statusLabel1, selectedComportLabel, toolStripStatusLabel1 });
             statusStrip1.Location = new Point(0, 689);
             statusStrip1.Name = "statusStrip1";
             statusStrip1.Size = new Size(1284, 22);
@@ -366,6 +367,14 @@ namespace DJ_X100_memory_writer
             selectedComportLabel.Size = new Size(148, 17);
             selectedComportLabel.Text = "選択中のCOMポート: 未選択";
             // 
+            // toolStripStatusLabel1
+            // 
+            toolStripStatusLabel1.Name = "toolStripStatusLabel1";
+            toolStripStatusLabel1.Size = new Size(1019, 17);
+            toolStripStatusLabel1.Spring = true;
+            toolStripStatusLabel1.Text = "※000chはプライオリティCHです";
+            toolStripStatusLabel1.TextAlign = ContentAlignment.MiddleRight;
+            // 
             // Form1
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
@@ -377,7 +386,7 @@ namespace DJ_X100_memory_writer
             Icon = (Icon)resources.GetObject("$this.Icon");
             MainMenuStrip = menuStrip1;
             Name = "Form1";
-            Text = "DJ-X100 Memory Writer (非公式) v0.9.1 (β版)";
+            Text = "DJ-X100 Memory Writer (非公式) v0.9.2 (β版)";
             menuStrip1.ResumeLayout(false);
             menuStrip1.PerformLayout();
             splitContainer1.Panel1.ResumeLayout(false);
@@ -416,5 +425,6 @@ namespace DJ_X100_memory_writer
         private ToolStripMenuItem x100cmdexe用CSVToolStripMenuItem;
         private ToolStripMenuItem バンク設定BToolStripMenuItem;
         private ToolStripMenuItem 読み込みRToolStripMenuItem;
+        private ToolStripStatusLabel toolStripStatusLabel1;
     }
 }
