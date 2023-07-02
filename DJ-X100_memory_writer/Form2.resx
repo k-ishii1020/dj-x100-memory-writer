@@ -4266,7 +4266,7 @@
 </value>
   </data>
   <data name="$this.Text" xml:space="preserve">
-    <value>バンク設定</value>
+    <value>バンク設定(初期バージョンのみ対応)</value>
   </data>
   <data name="&gt;&gt;ファイルFToolStripMenuItem.Name" xml:space="preserve">
     <value>ファイルFToolStripMenuItem</value>
