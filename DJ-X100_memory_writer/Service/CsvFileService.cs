@@ -364,8 +364,8 @@ namespace DJ_X100_memory_writer.Service
             {
                 memoryChDataGridView.Rows.Add();
             }
-            // TODO
-            for (int i = 1; i < totalRows; i++)
+
+            for (int i = 0; i < totalRows; i++)
             {
                 memoryChDataGridView.Rows[i].Cells[0].Value = i.ToString("D3"); // "D3"は0でパディングされた3桁の数値を表す書式指定子です。
             }

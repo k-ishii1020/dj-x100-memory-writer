@@ -69,8 +69,7 @@ namespace DJ_X100_memory_writer.Service
                 memoryChDataGridView.Columns.Add(viewColumn);
             }
 
-            // TODO
-           for (int i = 1; i <= 999; i++)
+           for (int i = 0; i <= 999; i++)
             {
                 int index = memoryChDataGridView.Rows.Add();
                 memoryChDataGridView.Rows[index].Cells[Columns.MEMORY_NO.Id].Value = i.ToString("D3");
