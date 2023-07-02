@@ -66,7 +66,7 @@ namespace DJ_X100_memory_writer
                 var versionString = versionMatch.Groups[1].Value;
                 var version = new Version(versionString);
 
-                var requiredVersion = new Version("1.3.8");
+                var requiredVersion = new Version("1.3.9");
                 if (version < requiredVersion)
                 {
                     MessageBox.Show("x100cmdのバージョンが要求バージョン以下です。" + requiredVersion + "以上のバージョンを使用してください。", "エラー", MessageBoxButtons.OK, MessageBoxIcon.Warning);
@@ -152,6 +152,7 @@ namespace DJ_X100_memory_writer
 
             return output.ToString();
         }
+
         public async Task WriteBankName(string selectedPort, Dictionary<char, string> bankNames)
         {
             if (!CheckX100cmdVersion()) return;
@@ -210,10 +211,6 @@ namespace DJ_X100_memory_writer
         {
             this.Close();
         }
-
-
-
-
 
         public void ReadMemoryChannel(string selectedPort)
         {
