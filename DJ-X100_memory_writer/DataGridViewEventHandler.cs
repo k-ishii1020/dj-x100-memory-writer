@@ -54,13 +54,7 @@ namespace DJ_X100_memory_writer
             // DeleteキーでNo列消させない
             if (e.KeyCode == Keys.Delete)
             {
-                foreach (DataGridViewCell cell in memoryChDataGridView.SelectedCells)
-                {
-                    if (cell.OwningColumn.Name != Columns.MEMORY_NO.Id)
-                    {
-                        cell.Value = null;
-                    }
-                }
+                CellDelete();
                 e.Handled = true;
             }
             else if ((Control.ModifierKeys & Keys.Control) == Keys.Control && e.KeyCode == Keys.V)
@@ -89,6 +83,20 @@ namespace DJ_X100_memory_writer
                        break;
                }
            }
+
+            if (e.Control && e.Shift && e.KeyCode == Keys.Oemplus)
+            {
+                AddRowAndRenumber();
+
+                e.Handled = true;
+            }
+
+            if (e.Control && e.Shift && e.KeyCode == Keys.OemMinus)
+            {
+                DeleteRowAndRenumber();
+
+                e.Handled = true;
+            }
         }
 
         private void PasteClipboardData()
@@ -327,6 +335,71 @@ namespace DJ_X100_memory_writer
                 }
 
                 memoryChDataGridView.ResumeLayout();
+            }
+        }   
+
+        public void AddRowAndRenumber()
+        {
+            // 左から2番目のセル（インデックス1）に値がある場合は行を追加しない
+            if (memoryChDataGridView.Rows[999].Cells[1].Value != null)
+            {
+                MessageBox.Show("999行目にデータがあるため、これ以上行を追加することはできません。");
+                return;
+            }
+
+            memoryChDataGridView.Rows.RemoveAt(999);
+            
+            if (memoryChDataGridView.CurrentRow != null) // 現在の行が存在するか確認
+            {
+                // 現在の行の次に新しい行を挿入
+                int currentIndex = memoryChDataGridView.CurrentRow.Index;
+                DataGridViewRow newRow = new DataGridViewRow();
+                newRow.CreateCells(memoryChDataGridView);
+                newRow.Height = 20;
+                memoryChDataGridView.Rows.Insert(currentIndex, newRow);
+            }
+
+            // 左列の数値を採番し直す
+            for (int i = 0; i < memoryChDataGridView.Rows.Count; i++)
+            {
+                memoryChDataGridView.Rows[i].Cells[0].Value = i.ToString("D3");
+            }
+        }
+
+        public void DeleteRowAndRenumber()
+        {
+            if (memoryChDataGridView.SelectedRows.Count > 0)
+            {
+                foreach (DataGridViewRow row in memoryChDataGridView.SelectedRows)
+                {
+                    if (!row.IsNewRow)
+                    {
+                        memoryChDataGridView.Rows.Remove(row);
+                    }
+                }
+
+                // 削除後に最終行に行を追加
+                DataGridViewRow newRow = new DataGridViewRow();
+                newRow.CreateCells(memoryChDataGridView);
+                newRow.Height = 20;
+                memoryChDataGridView.Rows.Add(newRow);
+
+                // 左列の数値を採番し直す
+                for (int i = 0; i < memoryChDataGridView.Rows.Count; i++)
+                {
+                    memoryChDataGridView.Rows[i].Cells[0].Value = i.ToString("D3");
+                }
+            }
+        }
+
+        public void CellDelete()
+        {
+            foreach (DataGridViewCell cell in memoryChDataGridView.SelectedCells)
+            {
+                if (cell.OwningColumn.Name != Columns.MEMORY_NO.Id)
+                {
+                    cell.Value = null;
+                }
             }
         }
     }

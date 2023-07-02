@@ -29,6 +29,8 @@ namespace DJ_X100_memory_writer.Service
 
             memoryChDataGridView.CellValueChanged += handler.MemoryChDataGridView_CellValueChanged;
 
+            memoryChDataGridView.CellBeginEdit += handler.MemoryChDataGridView_CellBeginEdit;
+
 
 
             // 表示部

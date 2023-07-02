@@ -10,7 +10,6 @@ namespace DJ_X100_memory_writer
 
         CsvFileService csvUtils = new CsvFileService();
         WriteMemoryService writeMemory = new WriteMemoryService();
-
         public string selectedPort;
         private List<ToolStripMenuItem> portMenuItems;
 
@@ -25,8 +24,50 @@ namespace DJ_X100_memory_writer
 
             InitComPort();
             treeViewSetup();
+
+            // コンテクストメニューの作成
+            ContextMenuStrip menu = new ContextMenuStrip();
+
+            // クリア
+            ToolStripMenuItem itemClear = new ToolStripMenuItem("クリア  Del");
+            itemClear.Click += ItemDelete_Click;
+            menu.Items.Add(itemClear);
+
+            // 挿入
+            ToolStripMenuItem itemInsert = new ToolStripMenuItem("挿入   Ctrl + +");
+            itemInsert.Click += ItemInsert_Click;
+            menu.Items.Add(itemInsert);
+
+            // 削除
+            ToolStripMenuItem itemDelete = new ToolStripMenuItem("削除   Ctrl + -");
+            itemDelete.Click += ItemDelete_Click;
+            menu.Items.Add(itemDelete);
+
+
+            // DataGridViewにコンテクストメニューを設定
+            memoryChDataGridView.ContextMenuStrip = menu;
+
+
             var configurer = new MemoryChannnelSetupService(memoryChDataGridView);
             configurer.SetupDataGridView();
+        }
+
+        private void ItemClear_Click(object sender, EventArgs e)
+        {
+            var handler = new DataGridViewEventHandler(memoryChDataGridView);
+            handler.CellDelete();
+        }
+
+        private void ItemInsert_Click(object sender, EventArgs e)
+        {
+            var handler = new DataGridViewEventHandler(memoryChDataGridView);
+            handler.AddRowAndRenumber();
+        }
+
+        private void ItemDelete_Click(object sender, EventArgs e)
+        {
+            var handler = new DataGridViewEventHandler(memoryChDataGridView);
+            handler.DeleteRowAndRenumber();
         }
 
         private void Form1_Load(object sender, EventArgs e)
