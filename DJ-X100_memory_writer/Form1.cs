@@ -9,6 +9,8 @@ namespace DJ_X100_memory_writer
 {
     public partial class Form1 : Form
     {
+        string version = "0.9.3";
+
         CsvFileService csvUtils = new CsvFileService();
         WriteMemoryService writeMemory = new WriteMemoryService();
 
@@ -21,6 +23,8 @@ namespace DJ_X100_memory_writer
             Application.ApplicationExit += new EventHandler(Form1_ApplicationExit);
 
             this.Load += Form1_Load;
+
+            Text = "DJ - X100 Memory Writer(”ñŒöŽ®) v" + version + "(ƒÀ”Å)";
 
             InitComPort();
             treeViewSetup();
