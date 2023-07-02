@@ -395,7 +395,7 @@ namespace DJ_X100_memory_writer.Service
             row[Columns.REV_EC_FREQ.Id] = externalData.DecodeRevEcFreq(externalDataStr);
             row[Columns.UC.Id] = externalData.DecodeT98AndT102AndB54UcAndDstarAndC4fm(externalDataStr, mode);
             row[Columns.GC.Id] = externalData.DecodeT98AndT102AndB54AndDmrGc(externalDataStr, mode);
-            row[Columns.EC.Id] = externalData.DecodeT98AndT102AndB54UcAndDstarAndC4fm(externalDataStr, mode);
+            row[Columns.EC.Id] = externalData.DecodeT98AndT102AndB54Ec(externalDataStr, mode);
             row[Columns.WC.Id] = externalData.DecodeT98AndT102AndB54Wc(externalDataStr, mode);
             row[Columns.T61_LON.Id] = externalData.Decode61LonLat(externalDataStr, "LON");
             row[Columns.T61_LAT.Id] = externalData.Decode61LonLat(externalDataStr, "LAT");

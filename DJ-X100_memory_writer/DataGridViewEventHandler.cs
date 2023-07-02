@@ -321,7 +321,6 @@ namespace DJ_X100_memory_writer
                     memoryChDataGridView.Rows[row.Index].Selected = true;
                 }
 
-                // ここで行番号を振り直す
                 for (int i = 0; i < memoryChDataGridView.Rows.Count; i++)
                 {
                     memoryChDataGridView.Rows[i].Cells[0].Value = i.ToString("D3");

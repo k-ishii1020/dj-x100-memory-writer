@@ -148,9 +148,6 @@ namespace DJ_X100_memory_writer.Service
             return revEcFreqValues.ContainsKey(value) ? revEcFreqValues[value] : "2500";
         }
 
-
-
-
         private string EncodeT98AndT102AndB54Wc(string externalStr, DataGridViewRow row, string mode, int position)
         {
             if (row.Cells[Columns.MODE.Id].Value != null && row.Cells[Columns.MODE.Id].Value.ToString() == mode)
@@ -228,18 +225,6 @@ namespace DJ_X100_memory_writer.Service
 
             return code.ToString("D3");
         }
-
-
-
-
-
-
-
-
-
-
-
-
 
         private string EncodeT61Wc(DataGridViewRow row, string externalStr)
         {
@@ -331,21 +316,6 @@ namespace DJ_X100_memory_writer.Service
             }
         }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
         private string EncodeT98AndT102AndB54Ec(DataGridViewRow row, string mode, int index, string externalStr)
         {
             if (row.Cells[Columns.MODE.Id].Value != null && row.Cells[Columns.MODE.Id].Value.ToString() == mode)
@@ -364,6 +334,7 @@ namespace DJ_X100_memory_writer.Service
             return externalStr;
 
         }
+
         public string DecodeT98AndT102AndB54Ec(string externalStr, string mode)
         {
             string value = "";
