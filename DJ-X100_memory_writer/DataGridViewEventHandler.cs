@@ -67,22 +67,22 @@ namespace DJ_X100_memory_writer
                 e.Handled = true;
             }
 
-           // Ctrl + ↑↓で行移動 
-           if (e.Control)
-           {
-               switch (e.KeyCode)
-               {
-                   case Keys.Up:
-                       MoveRow(-1);
-                       e.Handled = true;
-                       break;
-           
-                   case Keys.Down:
-                       MoveRow(1);
-                       e.Handled = true;
-                       break;
-               }
-           }
+            // Ctrl + ↑↓で行移動 
+            if (e.Control)
+            {
+                switch (e.KeyCode)
+                {
+                    case Keys.Up:
+                        MoveRow(-1);
+                        e.Handled = true;
+                        break;
+
+                    case Keys.Down:
+                        MoveRow(1);
+                        e.Handled = true;
+                        break;
+                }
+            }
 
             if (e.Control && e.Shift && e.KeyCode == Keys.Oemplus)
             {
@@ -96,6 +96,53 @@ namespace DJ_X100_memory_writer
                 DeleteRowAndRenumber();
 
                 e.Handled = true;
+            }
+            
+            // Ctrl + V で貼り付け
+            if (e.Control && e.KeyCode == Keys.V)
+            {
+                DataObject o = (DataObject)Clipboard.GetDataObject();
+                if (o.GetDataPresent(DataFormats.Text))
+                {
+                    if (memoryChDataGridView.RowCount > 0)
+                    {
+                        int row = memoryChDataGridView.CurrentCell.RowIndex;
+                        int col = memoryChDataGridView.CurrentCell.ColumnIndex;
+                        string[] pastedRows = Regex.Split(o.GetData(DataFormats.Text).ToString().TrimEnd("\r\n".ToCharArray()), "\r\n");
+                        foreach (string pastedRow in pastedRows)
+                        {
+                            string[] pastedRowCells = pastedRow.Split(new char[] { '\t' });
+
+                            // 既存の行に貼り付けるか、新たに行を作成して貼り付ける
+                            DataGridViewRow dgrvRow;
+                            if (row < memoryChDataGridView.Rows.Count)
+                            {
+                                dgrvRow = memoryChDataGridView.Rows[row];
+                            }
+                            else
+                            {
+                                dgrvRow = new DataGridViewRow();
+                                dgrvRow.CreateCells(memoryChDataGridView);
+                                memoryChDataGridView.Rows.Add(dgrvRow);
+                            }
+
+                            for (int i = 0; i < pastedRowCells.Length; i++)
+                            {
+                                if (col + i < dgrvRow.Cells.Count)
+                                {
+                                    dgrvRow.Cells[col + i].Value = pastedRowCells[i];
+                                }
+                            }
+                            row++;
+                        }
+
+                        // 左列の数値を採番し直す
+                        for (int i = 0; i < memoryChDataGridView.Rows.Count; i++)
+                        {
+                            memoryChDataGridView.Rows[i].Cells[0].Value = i.ToString("D3");
+                        }
+                    }
+                }
             }
         }
 
@@ -243,7 +290,7 @@ namespace DJ_X100_memory_writer
             }
         }
 
-         // エラー検知
+        // エラー検知
         public void memoryChDataGridView_DataError(object sender, DataGridViewDataErrorEventArgs e)
         {
             string columnName = memoryChDataGridView.Columns[e.ColumnIndex].HeaderText;
@@ -254,7 +301,7 @@ namespace DJ_X100_memory_writer
 
             e.ThrowException = false;
         }
-        
+
         // 周波数チェック
         private string ValidateAndFormatDecimalCell(string cellValue, int rowNumber, string columnName)
         {
@@ -336,7 +383,7 @@ namespace DJ_X100_memory_writer
 
                 memoryChDataGridView.ResumeLayout();
             }
-        }   
+        }
 
         public void AddRowAndRenumber()
         {
@@ -348,7 +395,7 @@ namespace DJ_X100_memory_writer
             }
 
             memoryChDataGridView.Rows.RemoveAt(999);
-            
+
             if (memoryChDataGridView.CurrentRow != null) // 現在の行が存在するか確認
             {
                 // 現在の行の次に新しい行を挿入
