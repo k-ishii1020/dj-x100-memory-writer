@@ -6,7 +6,7 @@ namespace DJ_X100_memory_writer
 {
     public partial class Form1 : Form
     {
-        string version = "0.9.3";
+        string version = "1.0.0";
 
         CsvFileService csvUtils = new CsvFileService();
         WriteMemoryService writeMemory = new WriteMemoryService();
@@ -20,10 +20,10 @@ namespace DJ_X100_memory_writer
 
             this.Load += Form1_Load;
 
-            Text = "DJ-X100 Memory Writer(非公式) v" + version + "(β版)";
+            Text = "DJ-X100 Memory Writer(非公式) v" + version;
 
             InitComPort();
-            treeViewSetup();
+            TreeViewSetup();
             CreateContextMenuStrip();
 
             var configurer = new MemoryChannnelSetupService(memoryChDataGridView);
@@ -153,10 +153,6 @@ namespace DJ_X100_memory_writer
             }
         }
 
-
-
-
-
         private void Form1_Load(object sender, EventArgs e)
         {
             DialogResult dialogResult = MessageBox.Show(
@@ -174,7 +170,6 @@ namespace DJ_X100_memory_writer
                 Application.Exit();
             }
         }
-
 
         private void InitComPort()
         {
@@ -223,7 +218,7 @@ namespace DJ_X100_memory_writer
             return portList;
         }
 
-        private void treeViewSetup()
+        private void TreeViewSetup()
         {
             treeView1.ExpandAll();
             string searchText = "メモリーチャンネル";
@@ -296,7 +291,6 @@ namespace DJ_X100_memory_writer
                     MessageBox.Show("ファイルの読み込みが完了しました。", "情報", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 }
             }
-
         }
 
         protected override void OnFormClosing(FormClosingEventArgs e)
@@ -313,11 +307,6 @@ namespace DJ_X100_memory_writer
         private void 終了NToolStripMenuItem_Click(object sender, EventArgs e)
         {
             Application.Exit();
-        }
-
-        private void splitContainer1_Panel1_Paint(object sender, PaintEventArgs e)
-        {
-
         }
 
         private void 名前を付けて保存NToolStrpMenuItem_Click(object sender, EventArgs e)
@@ -460,11 +449,17 @@ namespace DJ_X100_memory_writer
         {
             try
             {
-                string filePath = ".\\x100cmd_temp.csv";
+                string filePath1 = ".\\x100cmd_temp.csv";
+                string filePath2 = ".\\x100cmd_temp_export.csv";
 
-                if (System.IO.File.Exists(filePath))
+
+                if (System.IO.File.Exists(filePath1))
                 {
-                    System.IO.File.Delete(filePath);
+                    System.IO.File.Delete(filePath1);
+                }
+                if (System.IO.File.Exists(filePath2))
+                {
+                    System.IO.File.Delete(filePath2);
                 }
             }
             catch (Exception ex)
@@ -480,7 +475,7 @@ namespace DJ_X100_memory_writer
                 return;
             }
             var x100cmdForm = new X100cmdForm();
-            x100cmdForm.ReadMemoryChannel(selectedPort);
+            if (!x100cmdForm.ReadMemoryChannel(selectedPort)) return;
             csvUtils.ImportX100cmdCsvToDataGridView(memoryChDataGridView);
         }
     }

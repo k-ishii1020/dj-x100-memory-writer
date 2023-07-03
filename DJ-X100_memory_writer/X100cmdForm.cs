@@ -13,6 +13,80 @@ namespace DJ_X100_memory_writer
         {
             InitializeComponent();
         }
+
+        private bool CheckX100cmdVersion()
+        {
+            var process = new Process();
+            var startInfo = new ProcessStartInfo
+            {
+                FileName = "cmd.exe",
+                Arguments = $"/c .\\x100cmd.exe -v",
+                UseShellExecute = false,
+                RedirectStandardOutput = true,
+                CreateNoWindow = true
+            };
+
+            process.StartInfo = startInfo;
+            process.Start();
+            string output = process.StandardOutput.ReadToEnd();
+            process.WaitForExit();
+
+            var versionMatch = Regex.Match(output, @"version (\d+\.\d+\.\d+)");
+            if (versionMatch.Success)
+            {
+                var versionString = versionMatch.Groups[1].Value;
+                var version = new Version(versionString);
+
+                var requiredVersion = new Version("1.3.10");
+                if (version < requiredVersion)
+                {
+                    MessageBox.Show("x100cmdのバージョンが要求バージョン以下です。" + requiredVersion + "以上のバージョンを使用してください。", "エラー", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    this.Close();
+                    return false;
+                }
+            }
+            else
+            {
+                MessageBox.Show("x100cmdのバージョン情報を取得できませんでした。\nx100cmdはこのプログラムと同じディレクトリに配置が必要です。", "エラー", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                this.Close();
+
+                return false;
+            }
+            return true;
+        }
+
+        public bool ReadMemoryChannel(string selectedPort)
+        {
+            if (!CheckX100cmdVersion()) return false;
+
+            string port;
+
+            if (selectedPort == "自動選択")
+            {
+                port = "auto";
+            }
+            else
+            {
+                port = selectedPort;
+            }
+
+            string command = $"/K x100cmd.exe -p {port} export -y -a --ext x100cmd_temp_export.csv && pause && exit";
+
+            var processStartInfo = new ProcessStartInfo
+            {
+                FileName = "cmd.exe",
+                Arguments = command,
+                UseShellExecute = false
+            };
+
+            var process = new Process { StartInfo = processStartInfo };
+            process.Start();
+            process.WaitForExit();
+            MessageBox.Show("メモリチャンネルの読み込みが完了しました", "通知", MessageBoxButtons.OK, MessageBoxIcon.Information);
+
+            return true;
+        }
+
         public void WriteMemoryChannel(string selectedPort)
         {
             if (!CheckX100cmdVersion()) return;
@@ -43,49 +117,12 @@ namespace DJ_X100_memory_writer
             MessageBox.Show("メモリチャンネルの書き込みが完了しました", "通知", MessageBoxButtons.OK, MessageBoxIcon.Information);
         }
 
-        private bool CheckX100cmdVersion()
-        {
-            var process = new Process();
-            var startInfo = new ProcessStartInfo
-            {
-                FileName = "cmd.exe",
-                Arguments = $"/c .\\x100cmd.exe -v",
-                UseShellExecute = false,
-                RedirectStandardOutput = true,
-                CreateNoWindow = true
-            };
 
-            process.StartInfo = startInfo;
-            process.Start();
-            string output = process.StandardOutput.ReadToEnd();
-            process.WaitForExit();
-
-            var versionMatch = Regex.Match(output, @"version (\d+\.\d+\.\d+)");
-            if (versionMatch.Success)
-            {
-                var versionString = versionMatch.Groups[1].Value;
-                var version = new Version(versionString);
-
-                var requiredVersion = new Version("1.3.9");
-                if (version < requiredVersion)
-                {
-                    MessageBox.Show("x100cmdのバージョンが要求バージョン以下です。" + requiredVersion + "以上のバージョンを使用してください。", "エラー", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                    this.Close();
-                    return false;
-                }
-            }
-            else
-            {
-                MessageBox.Show("x100cmdのバージョン情報を取得できませんでした。\nx100cmdはこのプログラムと同じディレクトリに配置が必要です。", "エラー", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                this.Close();
-
-                return false;
-            }
-            return true;
-        }
 
         public async Task ReadBankName(Action<char, string> updateBankName)
         {
+            if (!CheckX100cmdVersion()) return;
+
             for (char c = 'A'; c <= 'Z'; c++)
             {
                 string command = $".\\x100cmd.exe bank read {c}";
@@ -199,6 +236,7 @@ namespace DJ_X100_memory_writer
                 }
             }
         }
+
         protected override void OnFormClosing(FormClosingEventArgs e)
         {
             base.OnFormClosing(e);
@@ -206,40 +244,9 @@ namespace DJ_X100_memory_writer
             process?.Kill();
         }
 
-
         private void okButton_Click(object sender, EventArgs e)
         {
             this.Close();
-        }
-
-        public void ReadMemoryChannel(string selectedPort)
-        {
-            if (!CheckX100cmdVersion()) return;
-
-            string port;
-
-            if (selectedPort == "自動選択")
-            {
-                port = "auto";
-            }
-            else
-            {
-                port = selectedPort;
-            }
-
-            string command = $"/K x100cmd.exe -p {port} export -y -a --ext x100cmd_temp_export.csv && pause && exit";
-
-            var processStartInfo = new ProcessStartInfo
-            {
-                FileName = "cmd.exe",
-                Arguments = command,
-                UseShellExecute = false
-            };
-
-            var process = new Process { StartInfo = processStartInfo };
-            process.Start();
-            process.WaitForExit();
-            MessageBox.Show("メモリチャンネルの読み込みが完了しました", "通知", MessageBoxButtons.OK, MessageBoxIcon.Information);
         }
     }
 }

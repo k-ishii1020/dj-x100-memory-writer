@@ -212,7 +212,6 @@ namespace DJ_X100_memory_writer
             // splitContainer1.Panel1
             // 
             splitContainer1.Panel1.Controls.Add(treeView1);
-            splitContainer1.Panel1.Paint += splitContainer1_Panel1_Paint;
             // 
             // splitContainer1.Panel2
             // 
