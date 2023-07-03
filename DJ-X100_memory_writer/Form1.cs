@@ -24,139 +24,14 @@ namespace DJ_X100_memory_writer
 
             InitComPort();
             TreeViewSetup();
-            CreateContextMenuStrip();
-
             var configurer = new MemoryChannnelSetupService(memoryChDataGridView);
             configurer.SetupDataGridView();
-        }
-
-        private void CreateContextMenuStrip()
-        {
-            // DataGridViewのClipboardCopyModeをEnableWithoutHeaderTextに設定します。
-            this.memoryChDataGridView.ClipboardCopyMode = DataGridViewClipboardCopyMode.EnableWithoutHeaderText;
-
-            // コンテクストメニューの作成
-            ContextMenuStrip menu = new ContextMenuStrip();
-
-            // クリア
-            ToolStripMenuItem itemClear = new ToolStripMenuItem("クリア  Del");
-            itemClear.Click += ItemClear_Click;
-            menu.Items.Add(itemClear);
-
-            // 挿入
-            ToolStripMenuItem itemInsert = new ToolStripMenuItem("挿入   Ctrl + +");
-            itemInsert.Click += ItemInsert_Click;
-            menu.Items.Add(itemInsert);
-
-            // 削除
-            ToolStripMenuItem itemDelete = new ToolStripMenuItem("削除   Ctrl + -");
-            itemDelete.Click += ItemDelete_Click;
-            menu.Items.Add(itemDelete);
-
-            // コピー
-            ToolStripMenuItem itemCopy = new ToolStripMenuItem("コピー  Ctrl + C");
-            itemCopy.Click += ItemCopy_Click;
-            menu.Items.Add(itemCopy);
-
-            // 貼り付け
-            ToolStripMenuItem itemPaste = new ToolStripMenuItem("貼り付け  Ctrl + V");
-            itemPaste.Click += ItemPaste_Click;
-            menu.Items.Add(itemPaste);
-
-            // DataGridViewにコンテクストメニューを設定
-            memoryChDataGridView.ContextMenuStrip = menu;
-        }
-
-        private void ItemClear_Click(object sender, EventArgs e)
-        {
-            var handler = new DataGridViewEventHandler(memoryChDataGridView);
-            handler.CellDelete();
-        }
-
-        private void ItemInsert_Click(object sender, EventArgs e)
-        {
-            var handler = new DataGridViewEventHandler(memoryChDataGridView);
-            handler.AddRowAndRenumber();
-        }
-
-        private void ItemDelete_Click(object sender, EventArgs e)
-        {
-            var handler = new DataGridViewEventHandler(memoryChDataGridView);
-            handler.DeleteRowAndRenumber();
-        }
-
-        private List<DataGridViewRow> copiedRows = new List<DataGridViewRow>();
-
-        private void ItemCopy_Click(object sender, EventArgs e)
-        {
-            // クリップボードにコピーします
-            if (this.memoryChDataGridView.GetCellCount(DataGridViewElementStates.Selected) > 0)
-            {
-                try
-                {
-                    // クリップボードにコピーします。
-                    Clipboard.SetDataObject(this.memoryChDataGridView.GetClipboardContent());
-
-                    // コピーした行の参照を保存します。
-                    copiedRows.Clear();
-                    foreach (DataGridViewRow row in memoryChDataGridView.SelectedRows)
-                    {
-                        copiedRows.Add((DataGridViewRow)row.Clone());
-                        for (int i = 0; i < row.Cells.Count; i++)
-                        {
-                            copiedRows[copiedRows.Count - 1].Cells[i].Value = row.Cells[i].Value;
-                        }
-                    }
-                }
-                catch (System.Runtime.InteropServices.ExternalException)
-                {
-                    MessageBox.Show("コピーに失敗しました。");
-                }
-            }
-        }
-
-        private void ItemPaste_Click(object sender, EventArgs e)
-        {
-            // 貼り付け操作
-            if (copiedRows.Count > 0 && memoryChDataGridView.SelectedCells.Count > 0)
-            {
-                int startRowIndex = memoryChDataGridView.SelectedCells[0].RowIndex;
-
-                foreach (DataGridViewRow row in copiedRows)
-                {
-                    if (startRowIndex < memoryChDataGridView.Rows.Count)
-                    {
-                        for (int i = 0; i < row.Cells.Count; i++)
-                        {
-                            memoryChDataGridView.Rows[startRowIndex].Cells[i].Value = row.Cells[i].Value;
-                        }
-                        startRowIndex++;
-                    }
-                    else
-                    {
-                        DataGridViewRow newRow = (DataGridViewRow)memoryChDataGridView.RowTemplate.Clone();
-                        newRow.CreateCells(memoryChDataGridView);
-                        for (int i = 0; i < row.Cells.Count; i++)
-                        {
-                            newRow.Cells[i].Value = row.Cells[i].Value;
-                        }
-                        memoryChDataGridView.Rows.Add(newRow);
-                        startRowIndex++;
-                    }
-                }
-
-                // 左列の数値を採番し直す
-                for (int i = 0; i < memoryChDataGridView.Rows.Count; i++)
-                {
-                    memoryChDataGridView.Rows[i].Cells[0].Value = i.ToString("D3");
-                }
-            }
         }
 
         private void Form1_Load(object sender, EventArgs e)
         {
             DialogResult dialogResult = MessageBox.Show(
-                "このソフトはベータ版です。\n" +
+                "このソフトは非公式ツールです。\n" +
                 "DJ-X100本体などの不具合発生時の責任について\n" +
                 "作者は一切の責任を負いかねます。\n\n" +
                 "アプリケーションを立ち上げると同意したものとします。\n" +
@@ -477,6 +352,24 @@ namespace DJ_X100_memory_writer
             var x100cmdForm = new X100cmdForm();
             if (!x100cmdForm.ReadMemoryChannel(selectedPort)) return;
             csvUtils.ImportX100cmdCsvToDataGridView(memoryChDataGridView);
+        }
+
+        private void 使い方HToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            System.Diagnostics.ProcessStartInfo psi = new System.Diagnostics.ProcessStartInfo
+            {
+                FileName = "cmd",
+                WindowStyle = System.Diagnostics.ProcessWindowStyle.Hidden,
+                UseShellExecute = false,
+                RedirectStandardOutput = true,
+                Arguments = "/C start https://radio-network.jp/djx100-unofficial-memory-writer/"
+            };
+            System.Diagnostics.Process.Start(psi);
+        }
+
+        private void バージョン情報VToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            MessageBox.Show("DJ-X100 Memory Writer(非公式) \nVer" + version + "\nCopyright(C) 2023 by kaz", "バージョン情報", MessageBoxButtons.OK, MessageBoxIcon.Asterisk);
         }
     }
 }

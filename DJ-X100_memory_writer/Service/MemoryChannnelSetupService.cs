@@ -26,10 +26,9 @@ namespace DJ_X100_memory_writer.Service
             memoryChDataGridView.EditingControlShowing += handler.MemoryChDataGridView_EditingControlShowing;
             memoryChDataGridView.CellEndEdit += handler.MemoryChDataGridView_CellEndEdit;
             memoryChDataGridView.DataError += handler.memoryChDataGridView_DataError;
-
             memoryChDataGridView.CellValueChanged += handler.MemoryChDataGridView_CellValueChanged;
-
-
+            memoryChDataGridView.MouseClick += handler.memoryChDataGridView_MouseClick;
+            memoryChDataGridView.CellValidating += handler.MemoryChDataGridView_CellValidating;
 
             // 表示部
             memoryChDataGridView.RowHeadersVisible = true;

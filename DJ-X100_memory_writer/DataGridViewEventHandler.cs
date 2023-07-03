@@ -16,6 +16,157 @@ namespace DJ_X100_memory_writer
             memoryChDataGridView = _memoryChDataGridView;
         }
 
+        public void memoryChDataGridView_MouseClick(object sender, MouseEventArgs e)
+        {
+            if (e.Button == MouseButtons.Right)
+            {
+                // DataGridViewのClipboardCopyModeをEnableWithoutHeaderTextに設定します。
+                this.memoryChDataGridView.ClipboardCopyMode = DataGridViewClipboardCopyMode.EnableWithoutHeaderText;
+
+                // コンテクストメニューの作成
+                ContextMenuStrip menu = new ContextMenuStrip();
+
+                // クリア
+                ToolStripMenuItem itemClear = new ToolStripMenuItem("クリア  Del");
+                itemClear.Click += ItemClear_Click;
+                menu.Items.Add(itemClear);
+
+                // 挿入
+                ToolStripMenuItem itemInsert = new ToolStripMenuItem("挿入   Ctrl + +");
+                itemInsert.Click += ItemInsert_Click;
+                menu.Items.Add(itemInsert);
+
+                // 削除
+                ToolStripMenuItem itemDelete = new ToolStripMenuItem("削除   Ctrl + -");
+                itemDelete.Click += ItemDelete_Click;
+                menu.Items.Add(itemDelete);
+
+                // コピー
+                ToolStripMenuItem itemCopy = new ToolStripMenuItem("コピー  Ctrl + C");
+                itemCopy.Click += ItemCopy_Click;
+                menu.Items.Add(itemCopy);
+
+                // 貼り付け
+                ToolStripMenuItem itemPaste = new ToolStripMenuItem("貼り付け  Ctrl + V");
+                itemPaste.Click += ItemPaste_Click;
+                menu.Items.Add(itemPaste);
+
+                // カーソルの現在の位置にメニューを表示します。
+                menu.Show(Cursor.Position);
+
+            }
+        }
+
+
+
+        private void ItemClear_Click(object sender, EventArgs e)
+        {
+            memoryChDataGridView.CurrentCell.OwningRow.Selected = true;
+            CellDelete();
+        }
+
+        private void ItemInsert_Click(object sender, EventArgs e)
+        {
+            memoryChDataGridView.CurrentCell.OwningRow.Selected = true;
+            AddRowAndRenumber();
+        }
+
+        private void ItemDelete_Click(object sender, EventArgs e)
+        {
+            memoryChDataGridView.CurrentCell.OwningRow.Selected = true;
+            DeleteRowAndRenumber();
+        }
+
+        private List<DataGridViewRow> copiedRows = new List<DataGridViewRow>();
+
+        private void ItemCopy_Click(object sender, EventArgs e)
+        {
+            memoryChDataGridView.CurrentCell.OwningRow.Selected = true;
+            // クリップボードにコピーします
+            if (this.memoryChDataGridView.GetCellCount(DataGridViewElementStates.Selected) > 0)
+            {
+                try
+                {
+                    // クリップボードにコピーします。
+                    Clipboard.SetDataObject(this.memoryChDataGridView.GetClipboardContent());
+
+                    // コピーした行の参照を保存します。
+                    copiedRows.Clear();
+                    foreach (DataGridViewRow row in memoryChDataGridView.SelectedRows)
+                    {
+                        copiedRows.Add((DataGridViewRow)row.Clone());
+                        for (int i = 0; i < row.Cells.Count; i++)
+                        {
+                            copiedRows[copiedRows.Count - 1].Cells[i].Value = row.Cells[i].Value;
+                        }
+                    }
+                }
+                catch (System.Runtime.InteropServices.ExternalException)
+                {
+                    MessageBox.Show("コピーに失敗しました。");
+                }
+            }
+        }
+
+        private void ItemPaste_Click(object sender, EventArgs e)
+        {
+            memoryChDataGridView.CurrentCell.OwningRow.Selected = true;
+            // 貼り付け操作
+            if (copiedRows.Count > 0 && memoryChDataGridView.SelectedCells.Count > 0)
+            {
+                int startRowIndex = memoryChDataGridView.SelectedCells[0].RowIndex;
+
+                foreach (DataGridViewRow row in copiedRows)
+                {
+                    if (startRowIndex < memoryChDataGridView.Rows.Count)
+                    {
+                        for (int i = 0; i < row.Cells.Count; i++)
+                        {
+                            memoryChDataGridView.Rows[startRowIndex].Cells[i].Value = row.Cells[i].Value;
+                        }
+                        startRowIndex++;
+                    }
+                    else
+                    {
+                        DataGridViewRow newRow = (DataGridViewRow)memoryChDataGridView.RowTemplate.Clone();
+                        newRow.CreateCells(memoryChDataGridView);
+                        for (int i = 0; i < row.Cells.Count; i++)
+                        {
+                            newRow.Cells[i].Value = row.Cells[i].Value;
+                        }
+                        memoryChDataGridView.Rows.Add(newRow);
+                        startRowIndex++;
+                    }
+                }
+
+                // 左列の数値を採番し直す
+                for (int i = 0; i < memoryChDataGridView.Rows.Count; i++)
+                {
+                    memoryChDataGridView.Rows[i].Cells[0].Value = i.ToString("D3");
+                }
+            }
+        }
+
+
+
+        public void MemoryChDataGridView_CellValidating(object sender, DataGridViewCellValidatingEventArgs e)
+        {
+            var dataGridView = (DataGridView)sender;
+
+            if (dataGridView.CurrentCell is DataGridViewComboBoxCell comboBoxCell)
+            {
+                if (!comboBoxCell.Items.Contains(e.FormattedValue))
+                {
+                    return;
+                }
+
+                // 新しい値を適用
+                comboBoxCell.Value = e.FormattedValue;
+            }
+        }
+
+
+
         public void MemoryChDataGridView_EditingControlShowing(object sender, DataGridViewEditingControlShowingEventArgs e)
         {
 

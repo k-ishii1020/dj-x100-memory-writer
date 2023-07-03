@@ -76,16 +76,17 @@ namespace DJ_X100_memory_writer
             読み込みRToolStripMenuItem = new ToolStripMenuItem();
             書き込みToolStripMenuItem = new ToolStripMenuItem();
             ヘルプHToolStripMenuItem = new ToolStripMenuItem();
+            使い方HToolStripMenuItem = new ToolStripMenuItem();
+            バージョン情報VToolStripMenuItem = new ToolStripMenuItem();
             splitContainer1 = new SplitContainer();
             treeView1 = new TreeView();
             imageList1 = new ImageList(components);
             memoryChDataGridView = new DataGridView();
             statusStrip1 = new StatusStrip();
-            toolStripProgressBar1 = new ToolStripProgressBar();
             statusLabel1 = new ToolStripStatusLabel();
             selectedComportLabel = new ToolStripStatusLabel();
-            toolStripStatusLabel1 = new ToolStripStatusLabel();
             toolStripStatusLabel2 = new ToolStripStatusLabel();
+            toolStripStatusLabel1 = new ToolStripStatusLabel();
             menuStrip1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)splitContainer1).BeginInit();
             splitContainer1.Panel1.SuspendLayout();
@@ -199,9 +200,24 @@ namespace DJ_X100_memory_writer
             // 
             // ヘルプHToolStripMenuItem
             // 
+            ヘルプHToolStripMenuItem.DropDownItems.AddRange(new ToolStripItem[] { 使い方HToolStripMenuItem, バージョン情報VToolStripMenuItem });
             ヘルプHToolStripMenuItem.Name = "ヘルプHToolStripMenuItem";
             ヘルプHToolStripMenuItem.Size = new Size(65, 20);
             ヘルプHToolStripMenuItem.Text = "ヘルプ(&H)";
+            // 
+            // 使い方HToolStripMenuItem
+            // 
+            使い方HToolStripMenuItem.Name = "使い方HToolStripMenuItem";
+            使い方HToolStripMenuItem.Size = new Size(157, 22);
+            使い方HToolStripMenuItem.Text = "使い方(&H)";
+            使い方HToolStripMenuItem.Click += 使い方HToolStripMenuItem_Click;
+            // 
+            // バージョン情報VToolStripMenuItem
+            // 
+            バージョン情報VToolStripMenuItem.Name = "バージョン情報VToolStripMenuItem";
+            バージョン情報VToolStripMenuItem.Size = new Size(157, 22);
+            バージョン情報VToolStripMenuItem.Text = "バージョン情報(&V)";
+            バージョン情報VToolStripMenuItem.Click += バージョン情報VToolStripMenuItem_Click;
             // 
             // splitContainer1
             // 
@@ -344,17 +360,12 @@ namespace DJ_X100_memory_writer
             // 
             // statusStrip1
             // 
-            statusStrip1.Items.AddRange(new ToolStripItem[] { toolStripProgressBar1, statusLabel1, selectedComportLabel, toolStripStatusLabel2, toolStripStatusLabel1 });
+            statusStrip1.Items.AddRange(new ToolStripItem[] { statusLabel1, selectedComportLabel, toolStripStatusLabel2, toolStripStatusLabel1 });
             statusStrip1.Location = new Point(0, 689);
             statusStrip1.Name = "statusStrip1";
             statusStrip1.Size = new Size(1284, 22);
             statusStrip1.TabIndex = 3;
             statusStrip1.Text = "statusStrip1";
-            // 
-            // toolStripProgressBar1
-            // 
-            toolStripProgressBar1.Name = "toolStripProgressBar1";
-            toolStripProgressBar1.Size = new Size(100, 16);
             // 
             // statusLabel1
             // 
@@ -367,19 +378,19 @@ namespace DJ_X100_memory_writer
             selectedComportLabel.Size = new Size(148, 17);
             selectedComportLabel.Text = "選択中のCOMポート: 未選択";
             // 
+            // toolStripStatusLabel2
+            // 
+            toolStripStatusLabel2.Name = "toolStripStatusLabel2";
+            toolStripStatusLabel2.Size = new Size(966, 17);
+            toolStripStatusLabel2.Spring = true;
+            toolStripStatusLabel2.Text = "行移動は左端を選択してCtrl+↑↓です。ウィンドウの表示範囲をNoからNAMEまでにするとスムーズに動作します";
+            // 
             // toolStripStatusLabel1
             // 
             toolStripStatusLabel1.Name = "toolStripStatusLabel1";
             toolStripStatusLabel1.Size = new Size(155, 17);
             toolStripStatusLabel1.Text = "※000chはプライオリティCHです";
             toolStripStatusLabel1.TextAlign = ContentAlignment.MiddleRight;
-            // 
-            // toolStripStatusLabel2
-            // 
-            toolStripStatusLabel2.Name = "toolStripStatusLabel2";
-            toolStripStatusLabel2.Size = new Size(833, 17);
-            toolStripStatusLabel2.Spring = true;
-            toolStripStatusLabel2.Text = "行移動は左端を選択してCtrl+↑↓です。ウィンドウの表示範囲をNoからNAMEまでにするとスムーズに動作します";
             // 
             // Form1
             // 
@@ -392,7 +403,7 @@ namespace DJ_X100_memory_writer
             Icon = (Icon)resources.GetObject("$this.Icon");
             MainMenuStrip = menuStrip1;
             Name = "Form1";
-            Text = "DJ-X100 Memory Writer (非公式) v0.9.2 (β版)";
+            Text = "DJ-X100 Memory Writer (非公式) ";
             menuStrip1.ResumeLayout(false);
             menuStrip1.PerformLayout();
             splitContainer1.Panel1.ResumeLayout(false);
@@ -422,7 +433,6 @@ namespace DJ_X100_memory_writer
         private ImageList imageList1;
         private DataGridView memoryChDataGridView;
         private StatusStrip statusStrip1;
-        private ToolStripProgressBar toolStripProgressBar1;
         private ToolStripMenuItem cOMポートCToolStripMenuItem;
         private ToolStripStatusLabel statusLabel1;
         private ToolStripStatusLabel selectedComportLabel;
@@ -433,5 +443,7 @@ namespace DJ_X100_memory_writer
         private ToolStripMenuItem 読み込みRToolStripMenuItem;
         private ToolStripStatusLabel toolStripStatusLabel1;
         private ToolStripStatusLabel toolStripStatusLabel2;
+        private ToolStripMenuItem 使い方HToolStripMenuItem;
+        private ToolStripMenuItem バージョン情報VToolStripMenuItem;
     }
 }
