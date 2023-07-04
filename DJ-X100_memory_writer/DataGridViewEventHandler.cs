@@ -83,12 +83,10 @@ namespace DJ_X100_memory_writer
         private void ItemCopy_Click(object sender, EventArgs e)
         {
             memoryChDataGridView.CurrentCell.OwningRow.Selected = true;
-            // クリップボードにコピーします
             if (this.memoryChDataGridView.GetCellCount(DataGridViewElementStates.Selected) > 0)
             {
                 try
                 {
-                    // コピーした行の参照を保存します。
                     copiedRows.Clear();
                     foreach (DataGridViewRow row in memoryChDataGridView.SelectedRows)
                     {
@@ -96,7 +94,6 @@ namespace DJ_X100_memory_writer
                         for (int i = 0; i < row.Cells.Count; i++)
                         {
                             var cellValue = row.Cells[i].Value.ToString();
-                            // Check if the value starts with a tab and remove it if it does
                             if (cellValue.StartsWith("\t"))
                             {
                                 cellValue = cellValue.Substring(1);
@@ -106,7 +103,6 @@ namespace DJ_X100_memory_writer
                         copiedRows.Add(clonedRow);
                     }
 
-                    // Manually build clipboard content
                     var clipboardContent = new StringBuilder();
                     foreach (DataGridViewRow row in copiedRows)
                     {
@@ -125,8 +121,6 @@ namespace DJ_X100_memory_writer
                 }
             }
         }
-
-
 
         private void ItemPaste_Click(object sender, EventArgs e)
         {
@@ -167,7 +161,6 @@ namespace DJ_X100_memory_writer
                 }
             }
         }
-
 
 
 

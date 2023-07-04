@@ -6,7 +6,7 @@ namespace DJ_X100_memory_writer
 {
     public partial class Form1 : Form
     {
-        string version = "1.0.0";
+        string version = "1.0.1";
 
         CsvFileService csvUtils = new CsvFileService();
         WriteMemoryService writeMemory = new WriteMemoryService();
