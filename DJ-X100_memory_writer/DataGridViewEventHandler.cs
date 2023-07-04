@@ -1,4 +1,5 @@
 ﻿using System.Globalization;
+using System.Text;
 using System.Text.RegularExpressions;
 using System.Windows.Forms;
 using DJ_X100_memory_writer.Util;
@@ -87,19 +88,36 @@ namespace DJ_X100_memory_writer
             {
                 try
                 {
-                    // クリップボードにコピーします。
-                    Clipboard.SetDataObject(this.memoryChDataGridView.GetClipboardContent());
-
                     // コピーした行の参照を保存します。
                     copiedRows.Clear();
                     foreach (DataGridViewRow row in memoryChDataGridView.SelectedRows)
                     {
-                        copiedRows.Add((DataGridViewRow)row.Clone());
+                        DataGridViewRow clonedRow = (DataGridViewRow)row.Clone();
                         for (int i = 0; i < row.Cells.Count; i++)
                         {
-                            copiedRows[copiedRows.Count - 1].Cells[i].Value = row.Cells[i].Value;
+                            var cellValue = row.Cells[i].Value.ToString();
+                            // Check if the value starts with a tab and remove it if it does
+                            if (cellValue.StartsWith("\t"))
+                            {
+                                cellValue = cellValue.Substring(1);
+                            }
+                            clonedRow.Cells[i].Value = cellValue;
                         }
+                        copiedRows.Add(clonedRow);
                     }
+
+                    // Manually build clipboard content
+                    var clipboardContent = new StringBuilder();
+                    foreach (DataGridViewRow row in copiedRows)
+                    {
+                        var cellValues = row.Cells.Cast<DataGridViewCell>()
+                                                  .Select(cell => cell.Value.ToString())
+                                                  .ToArray();
+                        clipboardContent.AppendLine(string.Join("\t", cellValues));
+                    }
+
+                    // Set clipboard content
+                    Clipboard.SetText(clipboardContent.ToString());
                 }
                 catch (System.Runtime.InteropServices.ExternalException)
                 {
@@ -107,6 +125,8 @@ namespace DJ_X100_memory_writer
                 }
             }
         }
+
+
 
         private void ItemPaste_Click(object sender, EventArgs e)
         {
@@ -116,8 +136,9 @@ namespace DJ_X100_memory_writer
             {
                 int startRowIndex = memoryChDataGridView.SelectedCells[0].RowIndex;
 
-                foreach (DataGridViewRow row in copiedRows)
+                for (int rowIndex = copiedRows.Count - 1; rowIndex >= 0; rowIndex--)
                 {
+                    DataGridViewRow row = copiedRows[rowIndex];
                     if (startRowIndex < memoryChDataGridView.Rows.Count)
                     {
                         for (int i = 0; i < row.Cells.Count; i++)
@@ -146,6 +167,7 @@ namespace DJ_X100_memory_writer
                 }
             }
         }
+
 
 
 
@@ -248,53 +270,19 @@ namespace DJ_X100_memory_writer
 
                 e.Handled = true;
             }
-            
-            // Ctrl + V で貼り付け
+            // コピー
+            if (e.Control && e.KeyCode == Keys.C)
+            {
+                ItemCopy_Click(sender, e);
+            }
+
+            // 貼り付け
             if (e.Control && e.KeyCode == Keys.V)
             {
-                DataObject o = (DataObject)Clipboard.GetDataObject();
-                if (o.GetDataPresent(DataFormats.Text))
-                {
-                    if (memoryChDataGridView.RowCount > 0)
-                    {
-                        int row = memoryChDataGridView.CurrentCell.RowIndex;
-                        int col = memoryChDataGridView.CurrentCell.ColumnIndex;
-                        string[] pastedRows = Regex.Split(o.GetData(DataFormats.Text).ToString().TrimEnd("\r\n".ToCharArray()), "\r\n");
-                        foreach (string pastedRow in pastedRows)
-                        {
-                            string[] pastedRowCells = pastedRow.Split(new char[] { '\t' });
-
-                            // 既存の行に貼り付けるか、新たに行を作成して貼り付ける
-                            DataGridViewRow dgrvRow;
-                            if (row < memoryChDataGridView.Rows.Count)
-                            {
-                                dgrvRow = memoryChDataGridView.Rows[row];
-                            }
-                            else
-                            {
-                                dgrvRow = new DataGridViewRow();
-                                dgrvRow.CreateCells(memoryChDataGridView);
-                                memoryChDataGridView.Rows.Add(dgrvRow);
-                            }
-
-                            for (int i = 0; i < pastedRowCells.Length; i++)
-                            {
-                                if (col + i < dgrvRow.Cells.Count)
-                                {
-                                    dgrvRow.Cells[col + i].Value = pastedRowCells[i];
-                                }
-                            }
-                            row++;
-                        }
-
-                        // 左列の数値を採番し直す
-                        for (int i = 0; i < memoryChDataGridView.Rows.Count; i++)
-                        {
-                            memoryChDataGridView.Rows[i].Cells[0].Value = i.ToString("D3");
-                        }
-                    }
-                }
+                ItemPaste_Click(sender, e);
             }
+
+
         }
 
         private void PasteClipboardData()
